@@ -1,0 +1,6 @@
+[submodule "Deploy/OpenGL.Net"]
+	path = Deploy/OpenGL.Net
+	url = https://github.com/luca-piccioni/OpenGL.Net.git
+[submodule "Deploy/Glfw.Net"]
+	path = Deploy/Glfw.Net
+	url = https://github.com/Chman/Glfw.Net.git

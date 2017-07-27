@@ -1,0 +1,114 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
+    <HasSharedItems>true</HasSharedItems>
+    <SharedGUID>ba373e87-63c8-4b2e-a878-f6720dcd60f1</SharedGUID>
+  </PropertyGroup>
+  <PropertyGroup Label="Configuration">
+    <Import_RootNamespace>pEngine.Core</Import_RootNamespace>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="$(MSBuildThisFileDirectory)Audio\AudioDevice.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Audio\AudioManager.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Audio\Base\IMixableComponent.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Audio\Base\IPlayableComponent.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Audio\Base\PlaybackState.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Audio\DSP\BarGate.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Audio\DSP\Chorus.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Audio\DSP\DSP.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Audio\DSP\Flanger.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Audio\DSP\Glitcher.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Audio\DSP\IEffect.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Audio\DSP\WahWah.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Audio\Mixing\Mixer.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Audio\Playable\Song.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Audio\Playable\Sound.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Audio\Playable\TimedSong.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Data\Files\File.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Data\Files\TrueTypeFont.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Data\Files\Image.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Data\FrameDependency\FrameDependencyManager.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Data\FrameDependency\IDependency.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Data\FrameDependency\IDependencyDescriptor.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Data\FrameDependency\IDependencyReference.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Data\FrameDependency\IFrameDependencyManager.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Data\IResource.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Data\Resource.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Data\ResourceLoader.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Game.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Data\GameObjectLoader.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)GameObject.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Graphics\Containers\Box.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Graphics\Containers\Container.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Graphics\Drawable.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Graphics\Drawables\Paragraph.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Graphics\Drawables\Sprite.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Graphics\Drawables\SpriteBatch.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Graphics\Renderer\Batches\DrawElement.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Graphics\Renderer\Batches\GLVertex.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Graphics\Renderer\Batches\BatchDescriptor.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Graphics\Renderer\Batches\BatchesStore.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Graphics\Renderer\Batches\GLVertexMemory.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Graphics\Renderer\Batches\IVertexBatch.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Graphics\Renderer\Batches\QuadVertexBatch.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Graphics\Renderer\Batches\VertexBatch.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Graphics\Renderer\Clipping\ClippingInformations.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Graphics\Fonts\DynamicFont.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Graphics\Fonts\FTHelpers.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Graphics\Fonts\Glyph.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Graphics\Fonts\IFont.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Graphics\Fonts\StaticFont.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Graphics\Fonts\Unicode.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Graphics\Renderer\FrameBuffering\GLFrameBuffer.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Graphics\Renderer\FrameBuffering\FrameBufferDescriptor.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Graphics\Renderer\FrameRenderInfo.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Graphics\Renderer\Renderer.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Graphics\Shading\DefaultShaders\FillShader.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Graphics\Shading\DefaultShaders\SpriteShader.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Graphics\Shading\DefaultShaders\TextShader.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Graphics\Renderer\Shading\GLShader.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Graphics\Shading\IShader.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Graphics\Renderer\Shading\IUniform.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Graphics\Shading\ShaderStore.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Graphics\Renderer\Shading\Uniforms.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Graphics\Renderer\Tessellator\Interpolator.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Graphics\Renderer\Tessellator\MeshCache.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Graphics\Renderer\Tessellator\Tessellator.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Graphics\Textures\DependencyTexture.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Graphics\Textures\DynamicTextureAtlas.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Graphics\Renderer\Textures\GLTexture.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Graphics\Renderer\Textures\GLTextureMemory.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Graphics\Textures\ITexture.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Graphics\Textures\StaticTextureAtlas.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Graphics\Textures\StandaloneTexture.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Graphics\Renderer\Textures\TextureDescriptor.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Graphics\Textures\TextureStore.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Graphics\Containers\Scene.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Graphics\Containers\SceneManager.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)IGameObject.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Graphics\Renderer\Asset.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Graphics\Renderer\Tessellator\DrawablePoint.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Network\Base\FileTransfer.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Network\Base\Protocol.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Network\Base\Socket.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Physics\Geometry\DefaultMeshes\Quad.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Physics\Geometry\Edge.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Physics\Geometry\Face.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Physics\Geometry\IPoint.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Graphics\Renderer\Tessellator\Mesh.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Graphics\Renderer\Tessellator\MeshDescriptor.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Graphics\Renderer\Tessellator\MeshManager.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Physics\Geometry\Point.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Physics\Geometry\Shape.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Physics\Movable.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Graphics\Buffering\VideoBuffer.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Graphics\Buffering\VideoBufferStore.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="$(MSBuildThisFileDirectory)Graphics\Renderer\Shading\" />
+    <Folder Include="$(MSBuildThisFileDirectory)Graphics\Renderer\Textures\" />
+    <Folder Include="$(MSBuildThisFileDirectory)Physics\CollisionDetection\" />
+    <Folder Include="$(MSBuildThisFileDirectory)Graphics\Buffering\" />
+  </ItemGroup>
+</Project>

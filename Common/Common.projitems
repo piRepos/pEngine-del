@@ -1,0 +1,65 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
+    <HasSharedItems>true</HasSharedItems>
+    <SharedGUID>4add372c-1323-46da-a4b9-cdb5868ef028</SharedGUID>
+  </PropertyGroup>
+  <PropertyGroup Label="Configuration">
+    <Import_RootNamespace>pEngine.Common</Import_RootNamespace>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="$(MSBuildThisFileDirectory)Color4.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)DataModel\BindAttribute.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)DataModel\NotifyPropertyChanged.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Delegates\InvokeOnDisposal.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Diagnostic\PerformanceCollector.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Extensions\ListExtensions.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)IStateObject.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)IUpdatable.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Math\IMovablef.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Math\Interpolation.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Math\IPositionedf.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Math\IScalablef.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Math\ISizedf.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Math\Rect.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Memory\ArrayHandler.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Memory\DistributedArray.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Memory\RectanglePacker.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Memory\ILogicMemory.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Memory\ILogicMemoryPointer.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Memory\PixelBuffer.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Threading\GameLoop.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Threading\Progress.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Threading\ScheduledDelegate.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Threading\Scheduler.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Threading\ThreadedGameLoop.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Threading\ThreadedScheduler.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Memory\TripleBuffer.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Timing\Base\IAdjustableClock.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Timing\Base\IBeatClock.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Timing\Base\IClock.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Timing\Base\IFrameBasedClock.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Timing\Clocks\BeatClock.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Timing\Clocks\FramedClock.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Timing\Clocks\InterpolatedFramedClock.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Timing\Clocks\ManualClock.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Timing\Clocks\OffsetClock.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Timing\Clocks\StopWatchClock.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Timing\Clocks\ThrottledFramedClock.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Math\IMovable.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Math\IPositioned.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Math\IScalable.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Math\ISized.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Math\MathHelpers.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Math\Matrix.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Vector2.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Vector3.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Vector3i.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Vector4.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Vector4i.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Vector2i.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Math\Angle.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)DataModel\LoaderFunction.cs" />
+  </ItemGroup>
+</Project>

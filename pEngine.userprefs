@@ -1,0 +1,45 @@
+﻿<Properties StartupConfiguration="{E4B18C36-344B-4455-809D-8F161AA0388A}|Default">
+  <MonoDevelop.Ide.ItemProperties.Test.pEngine_220visual_220text PreferredExecutionTarget="MonoDevelop.Default" />
+  <MonoDevelop.Ide.ItemProperties.Test.pEngine_220visual_220test PreferredExecutionTarget="MonoDevelop.Default" />
+  <MonoDevelop.Ide.Workbench ActiveDocument="Deploy/OpenGL.Net/OpenGL.Net/Gl.cs">
+    <Files>
+      <File FileName="pEngine/pEngine.cs" Line="25" Column="1" />
+      <File FileName="Core/Graphics/Renderer/Batches/GLVertexMemory.cs" Line="52" Column="1" />
+      <File FileName="Core/Graphics/Renderer/Renderer.cs" Line="38" Column="1" />
+      <File FileName="Deploy/OpenGL.Net/OpenGL.Net/Gl.VERSION_3_0.cs" Line="7300" Column="34" />
+      <File FileName="Platform/Windows/GlfwWindow.cs" Line="73" Column="1" />
+      <File FileName="Deploy/OpenGL.Net/OpenGL.Net/Gl.cs" Line="1" Column="1" />
+    </Files>
+    <Pads>
+      <Pad Id="ProjectPad">
+        <State name="__root__">
+          <Node name="pEngine" expanded="True">
+            <Node name="Deploy" expanded="True">
+              <Node name="OpenGL.Net" expanded="True">
+                <Node name="Gl.cs" selected="True" />
+              </Node>
+            </Node>
+            <Node name="Test" expanded="True" />
+            <Node name="pEngine" expanded="True" />
+            <Node name="Platform" expanded="True">
+              <Node name="Monitors" expanded="True" />
+              <Node name="Windows" expanded="True" />
+            </Node>
+          </Node>
+        </State>
+      </Pad>
+    </Pads>
+  </MonoDevelop.Ide.Workbench>
+  <MonoDevelop.Ide.ItemProperties.Tests.pEngine_220visual_220text PreferredExecutionTarget="MonoDevelop.Default" />
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
+  <MonoDevelop.Ide.DebuggingService.Breakpoints>
+    <BreakpointStore>
+      <Breakpoint file="/Users/PizzaKun/Desktop/pEngine/Deploy/OpenGL.Net/OpenGL.Net/Gl.VERSION_3_0.cs" relfile="Deploy/OpenGL.Net/OpenGL.Net/Gl.VERSION_3_0.cs" line="7299" column="1" />
+      <Breakpoint file="/Users/PizzaKun/Desktop/pEngine/Platform/Windows/GlfwWindow.cs" relfile="Platform/Windows/GlfwWindow.cs" line="64" column="1" />
+    </BreakpointStore>
+  </MonoDevelop.Ide.DebuggingService.Breakpoints>
+  <MonoDevelop.Ide.DebuggingService.PinnedWatches>
+    <Watch file="Core/Data/ResourceLoader.cs" line="50" offsetX="313" offsetY="735" expression="e.StackTrace" liveUpdate="True" />
+  </MonoDevelop.Ide.DebuggingService.PinnedWatches>
+  <MultiItemStartupConfigurations />
+</Properties>
