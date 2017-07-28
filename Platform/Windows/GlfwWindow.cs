@@ -61,7 +61,7 @@ namespace pEngine.Platform.Windows
 
             OperatingSystem OS = Environment.OS;
 
-            if (OS.Platform != PlatformID.Unix)
+            if (OS.Platform == PlatformID.Unix)
             {
                 Glfw.WindowHint(Glfw.Hint.ContextVersionMajor, 3);
                 Glfw.WindowHint(Glfw.Hint.ContextVersionMinor, 2);

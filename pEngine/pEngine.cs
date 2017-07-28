@@ -269,6 +269,12 @@ namespace pEngine
 				// - Initialize openGL
 				try
 				{
+                    if (Platform.Environment.OS.Platform == PlatformID.Unix)
+                    {
+						Egl.IsRequired = true;
+
+                    }
+
 					Gl.Initialize();
 				}
 				catch (Exception ex)
