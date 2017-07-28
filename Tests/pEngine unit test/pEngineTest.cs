@@ -1,15 +1,15 @@
 ﻿using System;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace pEngineTests
+namespace pEngine_unit_test
 {
 	[TestClass]
-	public class pEngineTests
+	public class pEngineTest
 	{
 		[TestMethod]
-		public void ImplementTests()
+		public void GenericTest()
 		{
-			// TODO: Implement tests
+			// TODO: Make test
 			Assert.IsTrue(true);
 		}
 	}

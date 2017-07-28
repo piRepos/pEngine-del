@@ -11,6 +11,7 @@
 bin/
 obj/
 packages/
+TestResults/
 
 #######################
 # VisualStudio formats
@@ -18,3 +19,4 @@ packages/
 *.userprefs
 *.suo
 *.psess
+*.sqlite
