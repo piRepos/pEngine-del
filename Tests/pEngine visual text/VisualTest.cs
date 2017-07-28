@@ -18,6 +18,7 @@ namespace pEngineVisualText
 			currScene.Load<TestScene>(this);
 
 			Background.PullScene(currScene);
+			
 		}
 
 
