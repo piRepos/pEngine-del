@@ -13,8 +13,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Deploy", "Deploy", "{34BB5D
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Test", "Test", "{D784B61A-2853-4356-BD05-D8CC2D557CBE}"
 EndProject
-Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "pEngine", "pEngine\pEngine.shproj", "{46928B4E-4E27-492B-B1A0-0B462DA170DA}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "pEngine visual test", "Tests\pEngine visual text\pEngine visual test.csproj", "{E4B18C36-344B-4455-809D-8F161AA0388A}"
 EndProject
 Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "Debug", "Debug\Debug.shproj", "{1B8D26E7-F34C-4773-AC14-6A610D6F40AB}"

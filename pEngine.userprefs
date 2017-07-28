@@ -1,18 +1,13 @@
 ﻿<Properties StartupConfiguration="{E4B18C36-344B-4455-809D-8F161AA0388A}|Default">
   <MonoDevelop.Ide.ItemProperties.Test.pEngine_220visual_220text PreferredExecutionTarget="MonoDevelop.Default" />
   <MonoDevelop.Ide.ItemProperties.Test.pEngine_220visual_220test PreferredExecutionTarget="MonoDevelop.Default" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Deploy/OpenGL.Net/OpenGL.Net/Gl.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Core/Graphics/Renderer/Asset.cs">
     <Files>
       <File FileName="pEngine/pEngine.cs" Line="274" Column="10" />
-      <File FileName="Core/Graphics/Renderer/Batches/GLVertexMemory.cs" Line="52" Column="1" />
-      <File FileName="Core/Graphics/Renderer/Renderer.cs" Line="38" Column="1" />
-      <File FileName="Platform/Windows/GlfwWindow.cs" Line="64" Column="30" />
-      <File FileName="Deploy/OpenGL.Net/OpenGL.Net/Gl.cs" Line="63" Column="12" />
-      <File FileName="Deploy/OpenGL.Net/OpenGL.Net/DeviceContext.cs" Line="70" Column="1" />
-      <File FileName="Deploy/OpenGL.Net/OpenGL.Net/KhronosApi.cs" Line="235" Column="1" />
-      <File FileName="Deploy/OpenGL.Net/OpenGL.Net/GetProcAddress.cs" Line="591" Column="4" />
-      <File FileName="Deploy/OpenGL.Net/OpenGL.Net/Platform.cs" Line="127" Column="1" />
-      <File FileName="Deploy/OpenGL.Net/OpenGL.Net/Bcm.cs" Line="50" Column="5" />
+      <File FileName="Core/Graphics/Buffering/VideoBuffer.cs" Line="1" Column="1" />
+      <File FileName="Core/Graphics/Buffering/VideoBufferStore.cs" Line="1" Column="1" />
+      <File FileName="Core/Graphics/Renderer/FrameBuffering/FrameBufferDescriptor.cs" Line="1" Column="1" />
+      <File FileName="Core/Graphics/Renderer/Asset.cs" Line="1" Column="1" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.ItemProperties.Tests.pEngine_220visual_220text PreferredExecutionTarget="MonoDevelop.Default" />

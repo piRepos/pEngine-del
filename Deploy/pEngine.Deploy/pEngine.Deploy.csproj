@@ -143,7 +143,6 @@
     </ProjectReference>
   </ItemGroup>
   <Import Project="..\..\Platform\Platform.projitems" Label="Shared" Condition="Exists('..\..\Platform\Platform.projitems')" />
-  <Import Project="..\..\pEngine\pEngine.projitems" Label="Shared" Condition="Exists('..\..\pEngine\pEngine.projitems')" />
   <Import Project="..\..\Debug\Debug.projitems" Label="Shared" Condition="Exists('..\..\Debug\Debug.projitems')" />
   <Import Project="..\..\Core\Core.projitems" Label="Shared" Condition="Exists('..\..\Core\Core.projitems')" />
   <Import Project="..\..\Common\Common.projitems" Label="Shared" Condition="Exists('..\..\Common\Common.projitems')" />

@@ -104,6 +104,8 @@
     <Compile Include="$(MSBuildThisFileDirectory)Physics\Movable.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Graphics\Buffering\VideoBuffer.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Graphics\Buffering\VideoBufferStore.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)pEngine.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)pEngineGLFW.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="$(MSBuildThisFileDirectory)Graphics\Renderer\Shading\" />
