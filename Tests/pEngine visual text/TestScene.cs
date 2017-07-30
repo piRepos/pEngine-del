@@ -19,58 +19,98 @@ namespace pEngineVisualText
 	{
 		Paragraph mamma;
 
-		[LoaderFunction]
-		private void Initializer(TextureStore Textures)
-		{
-			DynamicFont s = new DynamicFont("DejaVuSansCondensed.ttf", 100, false);
-			s.Charsets = new List<KeyValuePair<int, int>>
+        [LoaderFunction]
+        private void Initializer(TextureStore Textures)
+        {
+            #region Fonts
+
+            DynamicFont comfortaaRegular120 = new DynamicFont("Resources/Comfortaa-Regular.ttf", 120, false);
+            DynamicFont comfortaaRegular70 = new DynamicFont("Resources/Comfortaa-Regular.ttf", 70, false);
+            DynamicFont comfortaaRegular40 = new DynamicFont("Resources/Comfortaa-Regular.ttf", 40, false);
+            DynamicFont comfortaaLight = new DynamicFont("Resources/Comfortaa-Light.ttf", 70, false);
+            DynamicFont comfortaaBold = new DynamicFont("Resources/Comfortaa-Bold.ttf", 120, false);
+
+            var charsets = new List<KeyValuePair<int, int>>
+            {
+              Charset.BasicLatin
+            };
+
+            comfortaaRegular120.Charsets = charsets;
+            comfortaaRegular70.Charsets = charsets;
+            comfortaaRegular40.Charsets = charsets;
+            comfortaaLight.Charsets = charsets;
+            comfortaaBold.Charsets = charsets;
+
+			comfortaaRegular120.Load(Game);
+            comfortaaRegular70.Load(Game);
+			comfortaaRegular40.Load(Game);
+            comfortaaLight.Load(Game);
+            comfortaaBold.Load(Game);
+
+            #endregion
+
+            #region Textures
+
+            StaticTextureAtlas a = new StaticTextureAtlas();
+            a.LoadFromFiles
+            (
+                ("Background", "Resources/pEngineBackground.jpg")
+            );
+            a.Load(Game);
+
+            #endregion
+
+            #region Background
+
+            Children.Add(new Sprite(a["Background"])
+            {
+                Size = Size,
+                ScaleSize = pEngine.Core.Physics.Axes.Both,
+                Stretch = StretchMode.UniformToFill
+
+            }.Load(Game));
+
+			#endregion
+
+			#region pEngine title
+
+			Children.Add((mamma = new Paragraph(comfortaaRegular120)
 			{
-				Charset.BasicLatin
-			};
-			s.Load(Game);
-
-			StaticTextureAtlas a = new StaticTextureAtlas();
-
-			a.LoadFromFiles
-			(
-				("Immagine", "Sfondo2.jpg"),
-				("ImmagineSeconda", "Sfondo.jpg")
-			);
-
-			a.Load(Game);
-
-			Children.Add(new Sprite(a["Immagine"])
-			{
-				Size = Size,
-				ScaleSize = pEngine.Core.Physics.Axes.Both,
-				Stretch = StretchMode.Uniform
-
-			}.Load(Game));
-
-
-			Children.Add((mamma = new Paragraph(s)
-			{
-				Text = $@"Test",
-				Color = Color4.Aqua,
-				Position = new Vector2i(10, 10),
+				Text = $@"pEngine",
+				Color = Color4.White,
+				Position = new Vector2i(20, 30),
+				ScaleWithParent = true
 			}.Load<Paragraph>(Game)));
 
-			mamma.Underline = new Underline()
+			Children.Add((mamma = new Paragraph(comfortaaLight)
 			{
-				Enabled = false,
-				Color = Color4.Aqua,
-				Thickness = 1
-			};
-		}
+				Text = $@"2D game engine.",
+				Color = Color4.White,
+				Position = new Vector2i(580, 75),
+				ScaleWithParent = true
+			}.Load<Paragraph>(Game)));
+
+			Children.Add((mamma = new Paragraph(comfortaaRegular40)
+			{
+				Text = $@"Developed by Andrea Demontis 2017",
+				Color = Color4.White,
+				Position = new Vector2i(20, 165),
+                ScaleWithParent = true
+			}.Load<Paragraph>(Game)));
+
+            //mamma.Underline = new Underline()
+            //{
+            //	Enabled = false,
+            //	Color = Color4.Aqua,
+            //	Thickness = 1
+            //};
+
+            #endregion
+        }
 
 
 		public override void Update(IFrameBasedClock clock)
 		{
-			//if (s <= 0)
-			{
-				//mamma.Text = $@"{Host.GraphicsLoop.Clock.FramesPerSecond} FPS";
-			}
-
 			
 			base.Update(clock);
 
