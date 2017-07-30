@@ -20,26 +20,21 @@ namespace pEngineVisualText
 		Paragraph mamma;
 
         [LoaderFunction]
-        private void Initializer(TextureStore Textures)
+        private void Initializer(TextureStore Textures, FontStore Fonts)
         {
             #region Fonts
 
-            DynamicFont comfortaaRegular120 = new DynamicFont("Resources/Comfortaa-Regular.ttf", 120, false);
+            DynamicFont comfortaaRegular120 = Fonts.GetFont("Resources/Comfortaa-Regular.ttf", 120);
             DynamicFont comfortaaRegular70 = new DynamicFont("Resources/Comfortaa-Regular.ttf", 70, false);
             DynamicFont comfortaaRegular40 = new DynamicFont("Resources/Comfortaa-Regular.ttf", 40, false);
             DynamicFont comfortaaLight = new DynamicFont("Resources/Comfortaa-Light.ttf", 70, false);
             DynamicFont comfortaaBold = new DynamicFont("Resources/Comfortaa-Bold.ttf", 120, false);
 
-            var charsets = new List<KeyValuePair<int, int>>
-            {
-              Charset.BasicLatin
-            };
-
-            comfortaaRegular120.Charsets = charsets;
-            comfortaaRegular70.Charsets = charsets;
-            comfortaaRegular40.Charsets = charsets;
-            comfortaaLight.Charsets = charsets;
-            comfortaaBold.Charsets = charsets;
+            comfortaaRegular120.Charsets.Add(Charset.BasicLatin);
+            comfortaaRegular70.Charsets.Add(Charset.BasicLatin);
+            comfortaaRegular40.Charsets.Add(Charset.BasicLatin);
+            comfortaaLight.Charsets.Add(Charset.BasicLatin);
+            comfortaaBold.Charsets.Add(Charset.BasicLatin);
 
 			comfortaaRegular120.Load(Game);
             comfortaaRegular70.Load(Game);

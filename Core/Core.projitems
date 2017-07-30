@@ -106,6 +106,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Graphics\Buffering\VideoBufferStore.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)pEngine.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)pEngineGLFW.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Graphics\Fonts\FontStore.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="$(MSBuildThisFileDirectory)Graphics\Renderer\Shading\" />

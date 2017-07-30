@@ -10,6 +10,7 @@ using pEngine.Core.Graphics.Renderer.Batches;
 using pEngine.Core.Graphics.Shading;
 using pEngine.Core.Graphics.Textures;
 using pEngine.Core.Graphics.Buffering;
+using pEngine.Core.Graphics.Fonts;
 using pEngine.Core.Audio;
 
 using pEngine.Debug;
@@ -81,9 +82,10 @@ namespace pEngine
 			// - Loader
 			Loader = new GameObjectLoader();
 
-			// - Modules
+            // - Modules
+            Fonts = new FontStore(this);
+            Renderer = new Renderer(this);
 			Audio = new AudioManager(this);
-			Renderer = new Renderer(this);
             Shaders = new ShaderStore(this);
 			Batches = new BatchesStore(this);
             Textures = new TextureStore(this);
@@ -93,6 +95,7 @@ namespace pEngine
 			// - Register loader servicess
 			Loader.AddService(Audio);
             Loader.AddService(Debug);
+            Loader.AddService(Fonts);
             Loader.AddService(Loader);
             Loader.AddService(Batches);
             Loader.AddService(Shaders);
@@ -189,6 +192,11 @@ namespace pEngine
 		/// Manage all game texture resources.
 		/// </summary>
 		public TextureStore Textures { get; }
+
+		/// <summary>
+		/// Manage all game font resources.
+		/// </summary>
+		public FontStore Fonts { get; }
 
         /// <summary>
         /// This module manages all video buffers (framebuffers) for optimizations.
@@ -399,7 +407,8 @@ namespace pEngine
 							Assets = currAssets,
 							FrameID = PhysicsLoop.FrameId,
 							Batches = Batches.GetDependencyDescriptors().ToList(),
-							Textures = Textures.GetDependencyDescriptors().ToList(),
+                            Textures = Textures.GetDependencyDescriptors().ToList()
+                                               .Concat(Fonts.GetDependencyDescriptors().ToList()),
                             Buffers = VideoBuffers.GetDependencyDescriptors().ToList(),
 							VertexMemorySize = (int)Batches.VertexHeapSize,
 							IndexMemorySize = (int)Batches.IndexHeapSize
