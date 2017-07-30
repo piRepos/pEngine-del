@@ -9,6 +9,6 @@ I wish to constantly improve the engine, ther's **no ETA** for any build of this
 
 ## Requirements
 
-- A desktop platform (windows or OSX) with **.NET 4.6** or **Mono** installed and Visualstudio or Visualstudio for MAC.
+- A desktop platform (windows or OSX) with **.NET 4.5.2** or **Mono** installed and Visualstudio or Visualstudio for MAC.
 - Remember to download **submodules** (use `--recursive` parameter in git clone).
 

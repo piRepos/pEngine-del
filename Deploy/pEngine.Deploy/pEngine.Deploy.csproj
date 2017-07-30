@@ -9,7 +9,7 @@
     <OutputType>Library</OutputType>
     <RootNamespace>pEngine</RootNamespace>
     <AssemblyName>pEngine.Deploy</AssemblyName>
-    <TargetFrameworkVersion>v4.6.2</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <NuGetPackageImportStamp>
     </NuGetPackageImportStamp>
     <TargetFrameworkProfile>
@@ -48,12 +48,6 @@
     <Reference Include="ManagedBass, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\..\packages\ManagedBass.2.0.1\lib\net45\ManagedBass.dll</HintPath>
     </Reference>
-    <Reference Include="ManagedBass.Fx, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\ManagedBass.Fx.2.0.0\lib\netstandard1.4\ManagedBass.Fx.dll</HintPath>
-    </Reference>
-    <Reference Include="ManagedBass.Mix, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\ManagedBass.Mix.2.0.0\lib\netstandard1.4\ManagedBass.Mix.dll</HintPath>
-    </Reference>
     <Reference Include="Microsoft.VisualStudio.QualityTools.UnitTestFramework, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
     <Reference Include="SharpFont, Version=4.0.1.200, Culture=neutral, PublicKeyToken=48add4c483071cdf, processorArchitecture=MSIL">
       <HintPath>..\..\packages\SharpFont.4.0.1\lib\net45\SharpFont.dll</HintPath>
@@ -74,6 +68,12 @@
     </Reference>
     <Reference Include="System.Management" />
     <Reference Include="Mono.Management" />
+    <Reference Include="ManagedBass.Mix">
+      <HintPath>..\..\packages\ManagedBass.Mix.1.0.1\lib\portable-net45+MonoAndroid+uap\ManagedBass.Mix.dll</HintPath>
+    </Reference>
+    <Reference Include="ManagedBass.Fx">
+      <HintPath>..\..\packages\ManagedBass.Fx.1.0.2\lib\portable-net45+MonoAndroid+uap\ManagedBass.Fx.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <None Include="glfw3.dll">
