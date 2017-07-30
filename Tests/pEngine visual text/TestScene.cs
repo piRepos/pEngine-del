@@ -93,13 +93,6 @@ namespace pEngineVisualText
                 ScaleWithParent = true
 			}.Load<Paragraph>(Game)));
 
-            //mamma.Underline = new Underline()
-            //{
-            //	Enabled = false,
-            //	Color = Color4.Aqua,
-            //	Thickness = 1
-            //};
-
             #endregion
         }
 
