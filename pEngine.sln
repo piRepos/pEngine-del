@@ -23,7 +23,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OpenGL.Net", "Deploy\OpenGL
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "pEngine unit test", "Tests\pEngine unit test\pEngine unit test.csproj", "{7F938612-D248-4B73-8C99-94E0A42545DC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "pEngine visual test", "pEngine visual test\pEngine visual test.csproj", "{6787A10F-3ABB-4EA7-AC43-BF1FA29E274F}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "pEngine visual test", "Tests\pEngine visual test\pEngine visual test.csproj", "{6787A10F-3ABB-4EA7-AC43-BF1FA29E274F}"
 EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
