@@ -12,7 +12,7 @@ using pEngine.Core.Audio;
 using pEngine.Common.DataModel;
 using pEngine.Common.Timing.Base;
 
-namespace pEngineVisualText
+namespace pEngineVisualTest
 {
 
 	public class TestScene : Scene

@@ -56,9 +56,9 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\Deploy\pEngine.Deploy\pEngine.Deploy.csproj">
+    <ProjectReference Include="..\..\Deploy\pEngine.Deploy\pEngine.csproj">
       <Project>{e0bae370-c9e1-48cb-80a7-0f4122818ef0}</Project>
-      <Name>pEngine.Deploy</Name>
+      <Name>pEngine</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets" Condition="Exists('$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets')" />
