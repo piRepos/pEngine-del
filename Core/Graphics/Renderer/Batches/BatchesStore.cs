@@ -21,7 +21,8 @@ namespace pEngine.Core.Graphics.Renderer.Batches
 		{
 			VertexHeap = new DistributedArray<GLVertex>();
 			IndexHeap = new DistributedArray<uint>();
-			
+
+			DefaultQuad = GetBatch<QuadVertexBatch>(1);
 		}
 
 		/// <summary>
@@ -43,6 +44,11 @@ namespace pEngine.Core.Graphics.Renderer.Batches
 		/// Index heap size.
 		/// </summary>
 		public uint IndexHeapSize => IndexHeap.Count;
+
+		/// <summary>
+		/// Quad for generic use.
+		/// </summary>
+		public QuadVertexBatch DefaultQuad { get; private set; }
 
 		/// <summary>
 		/// Releases all resource used by the <see cref="BatchesStore"/> object.

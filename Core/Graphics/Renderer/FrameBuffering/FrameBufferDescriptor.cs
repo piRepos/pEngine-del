@@ -22,6 +22,11 @@ namespace pEngine.Core.Graphics.Renderer.FrameBuffering
 		public bool Invalidated { get; set; }
 
 		/// <summary>
+		/// Enables multisampling on this buffer.
+		/// </summary>
+		public bool Multisampled { get; set; }
+
+		/// <summary>
 		/// Frame buffer target texture.
 		/// </summary>
 		public long TextureId { get; set; }

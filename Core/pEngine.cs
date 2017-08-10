@@ -110,8 +110,9 @@ namespace pEngine
 
 			// - Register default shaders
 			Shaders.RegisterShader(new FillShader());
-			Shaders.RegisterShader(new SpriteShader());
 			Shaders.RegisterShader(new TextShader());
+			Shaders.RegisterShader(new SpriteShader());
+			Shaders.RegisterShader(new FrameBufferShader());
 		}
 
 		#region Window

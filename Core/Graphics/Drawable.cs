@@ -3,12 +3,17 @@ using System.Text;
 using System.Collections.Generic;
 
 using pEngine.Common.Timing.Base;
+using pEngine.Common.DataModel;
 
-using pEngine.Core.Graphics.Renderer.FrameBuffering;
+using pEngine.Core.Graphics.Buffering;
 using pEngine.Core.Graphics.Renderer.Clipping;
 using pEngine.Core.Graphics.Textures;
 using pEngine.Core.Graphics.Renderer;
+using pEngine.Core.Graphics.Shading;
+using pEngine.Core.Graphics.Renderer.Batches;
 using pEngine.Core.Physics;
+
+using pEngine.Core.Graphics.Drawables;
 
 using pEngine.Core.Graphics.Renderer.Shading;
 
@@ -26,6 +31,18 @@ namespace pEngine.Core.Graphics
 			Visible = true;
 			Opacity = 1;
 		}
+
+		#region Initialization
+
+		[LoaderFunction]
+		private void Load(BatchesStore batches)
+		{
+			quad = batches.DefaultQuad;
+		}
+
+		private QuadVertexBatch quad;
+
+		#endregion
 
 		#region Visibility
 
@@ -69,7 +86,42 @@ namespace pEngine.Core.Graphics
 
 				if (FrameBuffered)
 				{
+					for (int i = 0; i < assetCache.Count; ++i)
+					{
+						if (assetCache[i].TargetID < 0)
+						{
+							Asset curr = assetCache[i];
+							curr.TargetID = VideoBuffer.DependencyID;
+							assetCache[i] = curr;
+						}
+					}
 
+					assetCache.Add(new Asset()
+					{
+						Transformation = DrawMatrix,
+						Shader = new FrameBufferShader
+						{
+							TextureAttachment = 0
+						},
+						Textures = new KeyValuePair<int, long>[]
+						{
+							new KeyValuePair<int, long>(0, VideoBuffer.TargetTexture.DependencyID)
+						},
+						Elements = new DrawElement[]
+						{
+							new DrawElement
+							{
+								ElementOffset = (int)quad.Indexes.Offset,
+								ElementSize = (int)quad.Indexes.Size,
+								Primitive = quad.Primitive,
+							}
+						},
+						AlphaBlendingDst = OpenGL.BlendingFactor.OneMinusSrcAlpha,
+						AlphaBlendingSrc = OpenGL.BlendingFactor.SrcAlpha,
+						ColorBlendingDst = OpenGL.BlendingFactor.OneMinusSrcAlpha,
+						ColorBlendingSrc = OpenGL.BlendingFactor.One,
+						TargetID = -1
+					});
 				}
 			}
 
@@ -86,6 +138,7 @@ namespace pEngine.Core.Graphics
 		#region Update logic
 
 		private long invalidationId;
+		private bool wasBuffered;
 
 		/// <summary>
 		/// Update this object physics.
@@ -95,10 +148,22 @@ namespace pEngine.Core.Graphics
 		{
 			base.Update(clock);
 
+
 			if (State == LoadState.Loaded && Host.PhysicsLoop.FrameId > invalidationId)
 			{
 				assetCache = null;
 				invalidationId = long.MaxValue;
+			}
+
+			if (wasBuffered != FrameBuffered)
+			{
+				Invalidate(InvalidationType.Assets, InvalidationDirection.Parent, this);
+				wasBuffered = FrameBuffered;
+			}
+
+			if (FrameBuffered && VideoBuffer == null)
+			{
+				VideoBuffer = Host.VideoBuffers.GetVideoBuffer(Host.Window.BufferSize);
 			}
 		}
 
@@ -148,7 +213,15 @@ namespace pEngine.Core.Graphics
 		/// </summary>
 		public bool FrameBuffered { get; set; }
 
+		/// <summary>
+		/// Object video buffer (if the property FrameBuffered is false this property is null).
+		/// </summary>
+		public VideoBuffer VideoBuffer { get; private set; }
 
+		/// <summary>
+		/// Object texture (if the property FrameBuffered is false this property is null).
+		/// </summary>
+		public ITexture ObjectTexture => VideoBuffer?.TargetTexture;
 
 		#endregion
 

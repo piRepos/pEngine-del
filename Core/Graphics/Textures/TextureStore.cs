@@ -66,6 +66,20 @@ namespace pEngine.Core.Graphics.Textures
 			return tx;
 		}
 
+		/// <summary>
+		/// Gets an empty texture.
+		/// </summary>
+		/// <returns>A texture resource.</returns>
+		public StandaloneTexture GetTexture(Vector2i size)
+		{
+			StandaloneTexture tx = new StandaloneTexture(new Common.Memory.PixelBuffer(size));
+
+			tx.Aborted += (IResource res, Exception e) => throw e;
+			LoadTexture(tx);
+
+			return tx;
+		}
+
 		#region Frame dependency
 
 		/// <summary>

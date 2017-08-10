@@ -60,11 +60,13 @@
     <Compile Include="$(MSBuildThisFileDirectory)Graphics\Fonts\IFont.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Graphics\Fonts\StaticFont.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Graphics\Fonts\Unicode.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Graphics\Renderer\FrameBuffering\FrameBufferBatch.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Graphics\Renderer\FrameBuffering\GLFrameBuffer.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Graphics\Renderer\FrameBuffering\FrameBufferDescriptor.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Graphics\Renderer\FrameRenderInfo.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Graphics\Renderer\Renderer.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Graphics\Shading\DefaultShaders\FillShader.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Graphics\Shading\DefaultShaders\FrameBufferShader.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Graphics\Shading\DefaultShaders\SpriteShader.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Graphics\Shading\DefaultShaders\TextShader.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Graphics\Renderer\Shading\GLShader.cs" />

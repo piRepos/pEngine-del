@@ -21,7 +21,7 @@ namespace pEngine.Core.Graphics.Buffering
         /// Gets a new video buffer from a texture.
         /// </summary>
         /// <returns>The video buffer.</returns>
-        /// <param name="target">Target.</param>
+        /// <param name="target">Target texture.</param>
         public VideoBuffer GetVideoBuffer(ITexture target)
         {
             VideoBuffer newVideoBuffer = new VideoBuffer(target);
@@ -30,5 +30,18 @@ namespace pEngine.Core.Graphics.Buffering
 
             return newVideoBuffer;
         }
-    }
+
+		/// <summary>
+		/// Gets a new video buffer.
+		/// </summary>
+		/// <returns>The video buffer.</returns>
+		public VideoBuffer GetVideoBuffer(Vector2i size)
+		{
+			VideoBuffer newVideoBuffer = new VideoBuffer(host.Textures.GetTexture(size));
+
+			base.AddDependency(newVideoBuffer);
+
+			return newVideoBuffer;
+		}
+	}
 }

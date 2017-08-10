@@ -11,8 +11,6 @@ namespace pEngine.Core.Graphics.Renderer.FrameBuffering
 		public GLFrameBuffer(Vector2i Size)
 		{
 			this.Size = Size;
-
-			Texture = new GLTexture();
 		}
 
 		#region Handler
@@ -117,11 +115,6 @@ namespace pEngine.Core.Graphics.Renderer.FrameBuffering
 		/// Framebuffer size.
 		/// </summary>
 		public Vector2i Size { get; set; }
-
-		/// <summary>
-		/// Video buffer texture.
-		/// </summary>
-		public GLTexture Texture { get; }
 	}
 
 	/// <summary>

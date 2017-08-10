@@ -322,7 +322,7 @@ namespace pEngine.Core.Graphics.Drawables
 
 		#region Assets
 
-		public override IEnumerable<Asset> GetAssets()
+		protected override List<Asset> CalculateAssets()
 		{
 			List<Asset> assets = new List<Asset>();
 
@@ -353,6 +353,7 @@ namespace pEngine.Core.Graphics.Drawables
 				AlphaBlendingSrc = OpenGL.BlendingFactor.SrcAlpha,
 				ColorBlendingDst = OpenGL.BlendingFactor.OneMinusSrcAlpha,
 				ColorBlendingSrc = OpenGL.BlendingFactor.One,
+				TargetID = -1
 			});
 
 			if (Underline.Enabled)
@@ -374,6 +375,7 @@ namespace pEngine.Core.Graphics.Drawables
 					AlphaBlendingSrc = OpenGL.BlendingFactor.SrcAlpha,
 					ColorBlendingDst = OpenGL.BlendingFactor.OneMinusSrcAlpha,
 					ColorBlendingSrc = OpenGL.BlendingFactor.SrcAlpha,
+					TargetID = -1
 				});
 			}
 

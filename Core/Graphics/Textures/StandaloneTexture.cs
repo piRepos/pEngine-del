@@ -16,7 +16,7 @@ namespace pEngine.Core.Graphics.Textures
 		/// <summary>
 		/// Creates a new <see cref="Texture"/>.
 		/// </summary>
-		protected StandaloneTexture()
+		public StandaloneTexture()
 		{
 			// - Create first mipmap
 			Mipmaps = new PixelBuffer[1];
@@ -239,7 +239,7 @@ namespace pEngine.Core.Graphics.Textures
 		public virtual TextureDescriptor GetDescriptor()
 		{
 			PixelBuffer[] mipmaps = new PixelBuffer[CurrentMipmapLevel];
-			Array.Copy(Mipmaps, mipmaps, CurrentMipmapLevel);
+			Array.Copy(Mipmaps, mipmaps, Math.Min(Mipmaps.Length, CurrentMipmapLevel));
 
 			return new TextureDescriptor
 			{
