@@ -9,12 +9,13 @@ using pEngine.Common.Math;
 using pEngine.Core.Graphics.Renderer.Shading;
 using pEngine.Core.Graphics.Renderer.Batches;
 using pEngine.Core.Graphics.Renderer.Textures;
+using pEngine.Core.Graphics.Renderer.FrameBuffering;
 
 namespace pEngine.Core.Graphics.Renderer
 {
 	using TextureChannel = Int64;
 
-    public class Renderer
+	public class Renderer
     {
 		private pEngine gameHost;
 
@@ -28,6 +29,7 @@ namespace pEngine.Core.Graphics.Renderer
 
 			Vertexs = new GLVertexMemory();
 			Textures = new GLTextureMemory();
+			Buffers = new FrameBufferBatch(this);
 		}
 
 		/// <summary>
@@ -53,6 +55,11 @@ namespace pEngine.Core.Graphics.Renderer
 		/// </summary>
 		public GLTextureMemory Textures { get; }
 
+		/// <summary>
+		/// 
+		/// </summary>
+		public FrameBufferBatch Buffers { get; }
+
 		#endregion
 
 		#region State
@@ -61,6 +68,11 @@ namespace pEngine.Core.Graphics.Renderer
 		/// Current binded shader.
 		/// </summary>
 		GLShader currentShader;
+
+		/// <summary>
+		/// 
+		/// </summary>
+		GLFrameBuffer currentFrameBuffer;
 
 		/// <summary>
 		/// Current binded texture.
@@ -83,55 +95,85 @@ namespace pEngine.Core.Graphics.Renderer
 
 			currentShader = null;
 
-			foreach (Asset a in assets)
-			{
-				// - Gets render shader
-				GLShader s = gameHost.Shaders.GetGLShader(a.Shader.GetType());
-
-				// - Bind render shader if not binded
-				if (currentShader != s)
+            foreach (Asset a in assets)
+            {
+				// - Setting frame buffer
+				if (a.TargetID < 0)
 				{
-					(currentShader = s).Bind();
+					if (currentFrameBuffer != null)
+						currentFrameBuffer.End(FramebufferBindMode.Buffer);
 
-					// - Bind vertex memory with shader pointers
-					Vertexs.Bind(s.VertexAttrPointer, s.TexCoordAttrPointer, s.ColorAttrPointer);
+					currentFrameBuffer = null;
 				}
-
-				// - Apply shader uniforms
-				foreach (IUniform uniform in a.Shader.Uniforms)
-					uniform.Apply(s.Program);
-
-				// - Set asset model view
-				s.SetModelView(a.Transformation);
-
-				// - Texture binding
-				if (a.Textures != null)
+				else
 				{
-					foreach (var tex in a.Textures)
+					GLFrameBuffer currBuffer = Buffers.GetBuffer(a.TargetID);
+					if (currBuffer != currentFrameBuffer)
 					{
-						if (currentTextures[tex.Key] == tex.Value)
-							continue;
+						if (currentFrameBuffer != null)
+							currentFrameBuffer.End(FramebufferBindMode.Buffer);
 
-						currentTextures[tex.Key] = tex.Value;
-						GLTexture tx = Textures.ResolveTexture(tex.Value);
+						currentFrameBuffer = currBuffer;
 
-						tx.Bind(tex.Key);
+						currentFrameBuffer.Begin(FramebufferBindMode.Buffer);
+						currentFrameBuffer.Clear();
+
 					}
 				}
 
-				// - Set blending function ---------------------------------------------------------------------------------------------
-				Gl.BlendFuncSeparate(a.ColorBlendingSrc, a.ColorBlendingDst, a.AlphaBlendingSrc, a.AlphaBlendingDst);
-				// ---------------------------------------------------------------------------------------------------------------------
+				// - Gets render shader
+				GLShader s = gameHost.Shaders.GetGLShader(a.Shader.GetType());
 
-				foreach (DrawElement e in a.Elements)
-				{
-					// - Draw asset ----------------------------------------------------------------------------------------------------
-					Gl.DrawElements(e.Primitive, e.ElementSize, DrawElementsType.UnsignedInt, (IntPtr)(e.ElementOffset * sizeof(uint)));
-					// -----------------------------------------------------------------------------------------------------------------
-				}
-			}
+                // - Bind render shader if not binded
+                if (currentShader != s)
+                {
+                    (currentShader = s).Bind();
+
+                    // - Bind vertex memory with shader pointers
+                    Vertexs.Bind(s.VertexAttrPointer, s.TexCoordAttrPointer, s.ColorAttrPointer);
+                }
+
+                // - Apply shader uniforms
+                foreach (IUniform uniform in a.Shader.Uniforms)
+                    uniform.Apply(s.Program);
+
+                // - Set asset model view
+                s.SetModelView(a.Transformation);
+
+                // - Texture binding
+                if (a.Textures != null)
+                {
+                    foreach (var tex in a.Textures)
+                    {
+                        if (currentTextures[tex.Key] == tex.Value)
+                            continue;
+
+                        currentTextures[tex.Key] = tex.Value;
+                        GLTexture tx = Textures.ResolveTexture(tex.Value);
+
+                        tx.Bind(tex.Key);
+                    }
+                }
+
+                // - Set blending function ---------------------------------------------------------------------------------------------
+                Gl.BlendFuncSeparate(a.ColorBlendingSrc, a.ColorBlendingDst, a.AlphaBlendingSrc, a.AlphaBlendingDst);
+                // ---------------------------------------------------------------------------------------------------------------------
+
+                foreach (DrawElement e in a.Elements)
+                {
+                    // - Draw asset ----------------------------------------------------------------------------------------------------
+                    Gl.DrawElements(e.Primitive, e.ElementSize, DrawElementsType.UnsignedInt, (IntPtr)(e.ElementOffset * sizeof(uint)));
+                    // -----------------------------------------------------------------------------------------------------------------
+                }
+            }
 
 			Vertexs.Unbind();
+
+			if (currentShader != null)
+				currentShader.Unbind();
+
+			if (currentFrameBuffer != null)
+				currentFrameBuffer.End(FramebufferBindMode.Buffer);
 		}
 
 		#endregion

@@ -221,7 +221,7 @@ namespace pEngine.Core.Graphics.Drawables
 				Ty = Texture.BotLeft.Y
 			};
 
-			plane.Invalidated = true;
+			plane.InvalidateDependency();
 			plane.InvalidationType |= BatchInvalidationType.Vertexs;
 		}
 

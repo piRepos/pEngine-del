@@ -10,5 +10,10 @@ namespace pEngine.Core.Data.FrameDependency
 		/// Identifier for this instance of descriptor.
 		/// </summary>
 		long DescriptorID { get; set; }
-    }
+
+		/// <summary>
+		/// Actual dependency load state.
+		/// </summary>
+		DependencyState State { get; set; }
+	}
 }

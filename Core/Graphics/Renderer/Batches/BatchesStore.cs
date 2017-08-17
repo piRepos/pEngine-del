@@ -23,6 +23,55 @@ namespace pEngine.Core.Graphics.Renderer.Batches
 			IndexHeap = new DistributedArray<uint>();
 
 			DefaultQuad = GetBatch<QuadVertexBatch>(1);
+
+
+			DefaultQuad.Vertexs[0] = new GLVertex
+			{
+				X = 0,
+				Y = 0,
+				R = 1,
+				G = 1,
+				B = 1,
+				A = 1,
+				Tx = 0,
+				Ty = 1
+			};
+
+			DefaultQuad.Vertexs[1] = new GLVertex
+			{
+				X = 1,
+				Y = 0,
+				R = 1,
+				G = 1,
+				B = 1,
+				A = 1,
+				Tx = 1,
+				Ty = 1
+			};
+
+			DefaultQuad.Vertexs[2] = new GLVertex
+			{
+				X = 1,
+				Y = 1,
+				R = 1,
+				G = 1,
+				B = 1,
+				A = 1,
+				Tx = 1,
+				Ty = 0
+			};
+
+			DefaultQuad.Vertexs[3] = new GLVertex
+			{
+				X = 0,
+				Y = 1,
+				R = 1,
+				G = 1,
+				B = 1,
+				A = 1,
+				Tx = 0,
+				Ty = 0
+			};
 		}
 
 		/// <summary>
@@ -107,11 +156,27 @@ namespace pEngine.Core.Graphics.Renderer.Batches
 				if (defragged)
 				{
 					foreach (var dep in Dependencies)
-						dep.Invalidated = true;
+						dep.InvalidateDependency();
 				}
 			}
 
 			return base.GetDependencyDescriptors();
+		}
+
+		#endregion
+
+		#region Dependency management
+
+		protected override void OnDependencyChange(IVertexBatch dependency)
+		{
+		}
+
+		protected override void OnDependencyDispose(IVertexBatch dependency)
+		{
+		}
+
+		protected override void OnDependencyLoad(IVertexBatch dependency)
+		{
 		}
 
 		#endregion

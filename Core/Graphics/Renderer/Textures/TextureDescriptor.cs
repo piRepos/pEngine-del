@@ -26,6 +26,11 @@ namespace pEngine.Core.Graphics.Renderer.Textures
 		public uint Mipmaps { get; set; }
 
 		/// <summary>
+		/// Actual dependency load state.
+		/// </summary>
+		public DependencyState State { get; set; }
+
+		/// <summary>
 		/// Identifier for this instance of descriptor.
 		/// </summary>
 		public long DescriptorID { get; set; }

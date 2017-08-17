@@ -4,7 +4,7 @@ using System.Text;
 
 namespace pEngine.Core.Data.FrameDependency
 {
-    public interface IDependencyReference
+	public interface IDependencyReference
     {
 
 		/// <summary>

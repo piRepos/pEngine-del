@@ -43,5 +43,20 @@ namespace pEngine.Core.Graphics.Buffering
 
 			return newVideoBuffer;
 		}
+
+		protected override void OnDependencyChange(VideoBuffer dependency)
+		{
+
+		}
+
+		protected override void OnDependencyDispose(VideoBuffer dependency)
+		{
+
+		}
+
+		protected override void OnDependencyLoad(VideoBuffer dependency)
+		{
+
+		}
 	}
 }

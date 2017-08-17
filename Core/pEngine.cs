@@ -139,7 +139,7 @@ namespace pEngine
 			{
 				// - Invalidate positions and sizes
 				Core.Physics.Movable.UpdateMatrixViewport(Window.BufferSize);
-				RunningGame.Invalidate(InvalidationType.Geometry, InvalidationDirection.Children, RunningGame);
+				RunningGame.Invalidate(InvalidationType.All, InvalidationDirection.Children, RunningGame);
 			});
 		}
 
@@ -427,6 +427,7 @@ namespace pEngine
 		/// <param name="clock">Game loop clock.</param>
 		protected virtual void Draw(IFrameBasedClock clock)
 		{
+			Glfw3.Glfw.SwapInterval(0);
 			using (var buffer = assetBuffer.Get(UsageType.Read))
 			{
 				if (buffer?.Value != null && buffer.Value.FrameID != lastFrameID)
@@ -446,7 +447,7 @@ namespace pEngine
 							PhysicsLoop.Scheduler.Add(() =>
 							{
 								// - Set mesh loaded
-								Batches.SetDependencyLoaded(batch.DescriptorID, buffer.Value.FrameID);
+								Batches.SetDependency(batch);
 							});
 						}
 					}
@@ -462,7 +463,23 @@ namespace pEngine
 							PhysicsLoop.Scheduler.Add(() =>
 							{
 								// - Set texture loaded
-								Textures.SetDependencyLoaded(texture.DescriptorID, buffer.Value.FrameID);
+								Textures.SetDependency(texture);
+							});
+						}
+					}
+
+					// - Load buffers
+					using (GraphicsLoop.Performance.StartCollect("BuffersLoading"))
+					{
+						foreach (var currBuffer in buffer.Value.Buffers)
+						{
+							// - Load texture
+							Renderer.Buffers.LoadBuffer(currBuffer);
+
+							PhysicsLoop.Scheduler.Add(() =>
+							{
+								// - Set texture loaded
+								VideoBuffers.SetDependency(currBuffer);
 							});
 						}
 					}

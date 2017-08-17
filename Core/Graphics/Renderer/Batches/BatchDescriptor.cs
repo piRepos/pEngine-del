@@ -39,5 +39,9 @@ namespace pEngine.Core.Graphics.Renderer.Batches
 		/// </summary>
 		public BatchInvalidationType InvalidationType { get; set; }
 
+		/// <summary>
+		/// Actual dependency load state.
+		/// </summary>
+		public DependencyState State { get; set; }
 	}
 }

@@ -313,7 +313,7 @@ namespace pEngine.Core.Graphics.Drawables
 					A = Visible ? (float)Opacity * Underline.Color.Af : 0
 				};
 
-				underline.Invalidated = true;
+				underline.InvalidateDependency();
 				underline.InvalidationType |= BatchInvalidationType.Vertexs;
 			}
 		}

@@ -6,7 +6,7 @@ using System.Text;
 
 namespace pEngine.Core.Data.FrameDependency
 {
-    public class FrameDependencyManager<DependencyType, DescriptorType> : IDisposable
+    public abstract class FrameDependencyManager<DependencyType, DescriptorType> : IDisposable
 		where DependencyType : IDependency<DescriptorType>
 		where DescriptorType : IDependencyDescriptor
     {
@@ -32,8 +32,29 @@ namespace pEngine.Core.Data.FrameDependency
 		/// the garbage collector can reclaim the memory that the <see cref="FrameDependencyManager{DependencyType, DescriptorType}"/> was occupying.</remarks>
 		public virtual void Dispose()
 		{
-
 		}
+
+		#region Actions
+
+		/// <summary>
+		/// Called on new dependency load request.
+		/// </summary>
+		/// <param name="dependency">Dependency to load.</param>
+		abstract protected void OnDependencyLoad(DependencyType dependency);
+
+		/// <summary>
+		/// Called on a dependency dispose.
+		/// </summary>
+		/// <param name="dependency">Dependency to remove.</param>
+		abstract protected void OnDependencyDispose(DependencyType dependency);
+
+		/// <summary>
+		/// Called on dependency property change.
+		/// </summary>
+		/// <param name="dependency">Modified dependency.</param>
+		abstract protected void OnDependencyChange(DependencyType dependency);
+
+		#endregion
 
 		#region Dependencies
 
@@ -53,29 +74,19 @@ namespace pEngine.Core.Data.FrameDependency
 		/// Add a dependency to the manager.
 		/// </summary>
 		/// <param name="dependency">Dependency to add.</param>
-		public virtual void AddDependency(DependencyType dependency)
+		protected virtual void AddDependency(DependencyType dependency)
 		{
+			OnDependencyLoad(dependency);
+
 			dependency.DependencyID = key;
 
 			if (dependencies.ContainsKey(dependency.DependencyID))
 				return;
 
 			validation[key] = new DescriptorValidation
-			{ LoadFrame = -1, UpdateFrame = 0 };
+			{ State = DependencyState.NotLoaded };
 
 			dependencies.TryAdd(key++, dependency);
-		}
-
-		/// <summary>
-		/// Remove a dependency to the manager.
-		/// </summary>
-		/// <param name="dependency">Dependency to remove.</param>
-		public virtual void RemoveDependency(DependencyType dependency)
-		{ 
-			DescriptorValidation d;
-			DependencyType t;
-			validation.TryRemove(dependency.DependencyID, out d);
-			dependencies.TryRemove(dependency.DependencyID, out t);
 		}
 
 		#endregion
@@ -88,18 +99,39 @@ namespace pEngine.Core.Data.FrameDependency
 		private ConcurrentDictionary<long, DescriptorValidation> validation;
 
 		/// <summary>
-		/// Set a dependency as loaded from the loader thread.
+		/// Set a dependency at the next state from the loader thread.
 		/// </summary>
-		/// <param name="frame">Frame when is loaded.</param>
-		public virtual void SetDependencyLoaded(long descriptorId, long frame)
+		/// <param name="descriptor">Dependency descriptor.</param>
+		public void SetDependency(DescriptorType descriptor)
 		{
-			if (!validation.ContainsKey(descriptorId))
+			if (!validation.ContainsKey(descriptor.DescriptorID))
 				throw new InvalidOperationException("This dependency is not avaiable.");
 
-			long update = validation[descriptorId].UpdateFrame;
+			DependencyState nextState = DependencyState.NotLoaded;
+			switch (descriptor.State)
+			{
+				case DependencyState.NotLoaded:
+				case DependencyState.Loaded:
+				case DependencyState.Modified:
+					nextState = DependencyState.Loaded;
+					break;
+				case DependencyState.Disposed:
+					nextState = DependencyState.Disposed;
+					break;
+			}
 
-			validation[descriptorId] = new DescriptorValidation
-			{ UpdateFrame = update, LoadFrame = frame };
+			// - Delete dependency
+			if (nextState == DependencyState.NotLoaded)
+			{
+				DependencyType t;
+				dependencies.TryRemove(descriptor.DescriptorID, out t);
+				DescriptorValidation d;
+				validation.TryRemove(descriptor.DescriptorID, out d);
+				return;
+			}
+
+			validation[descriptor.DescriptorID] = new DescriptorValidation
+			{ State = nextState };
 		}
 
 		/// <summary>
@@ -110,36 +142,35 @@ namespace pEngine.Core.Data.FrameDependency
 		{
 			foreach (var dependency in dependencies)
 			{
-				if (dependency.Value.Invalidated)
-				{
-					DescriptorValidation v = validation[dependency.Key];
-					v.UpdateFrame = host.PhysicsLoop.FrameId;
-					validation[dependency.Key] = v;
-					dependency.Value.Invalidated = false;
-				}
-
 				var va = validation[dependency.Key];
 
-				if (va.LoadFrame < va.UpdateFrame)
+				if (dependency.Value.State == DependencyState.Modified)
+					OnDependencyChange(dependency.Value);
+
+				if (dependency.Value.State == DependencyState.Disposed)
+					OnDependencyDispose(dependency.Value);
+
+				if (dependency.Value.State != DependencyState.Loaded)
+				{
+					va.State = dependency.Value.State;
+					validation[dependency.Key] = va;
+				}
+
+				if (va.State != DependencyState.Loaded)
 				{
 					yield return dependency.Value.GetDescriptor();
 				}
 
-				dependencies[dependency.Key].Invalidated = false;
+				dependencies[dependency.Key].State = DependencyState.Loaded;
 			}
 		}
 
 		struct DescriptorValidation
 		{
 			/// <summary>
-			/// Last frame when the object is updated.
+			/// Dependency frame state.
 			/// </summary>
-			public long UpdateFrame { get; set; }
-
-			/// <summary>
-			/// Last frame when the object is loaded.
-			/// </summary>
-			public long LoadFrame { get; set; }
+			public DependencyState State { get; set; }
 		}
 
 		#endregion

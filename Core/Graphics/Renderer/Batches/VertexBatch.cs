@@ -41,7 +41,7 @@ namespace pEngine.Core.Graphics.Renderer.Batches
 			BuildIndexes();
 
 			InvalidationType |= BatchInvalidationType.Both;
-			Invalidated = true;
+			State = DependencyState.NotLoaded;
 		}
 
 		/// <summary>
@@ -64,7 +64,7 @@ namespace pEngine.Core.Graphics.Renderer.Batches
 			BuildIndexes();
 
 			InvalidationType |= BatchInvalidationType.Both;
-			Invalidated = true;
+			State = DependencyState.NotLoaded;
 		}
 
 		/// <summary>
@@ -79,7 +79,7 @@ namespace pEngine.Core.Graphics.Renderer.Batches
 			Vertexs.Dispose();
 			Indexes.Dispose();
 
-			
+			State = DependencyState.Disposed;
 		}
 
 		DistributedArray<GLVertex> vertexManager;
@@ -166,8 +166,7 @@ namespace pEngine.Core.Graphics.Renderer.Batches
 			if (changed)
 			{
 				BuildIndexes();
-
-				Invalidated = true;
+				InvalidateDependency();
 			}
 		}
 
@@ -192,7 +191,7 @@ namespace pEngine.Core.Graphics.Renderer.Batches
 		public virtual void BuildIndexes()
 		{
 			InvalidationType |= BatchInvalidationType.Indexes;
-			Invalidated = true;
+			InvalidateDependency();
 		}
 
 		private void OnDefrag(object sender, EventArgs e)
@@ -200,7 +199,7 @@ namespace pEngine.Core.Graphics.Renderer.Batches
 			BuildIndexes();
 
 			InvalidationType |= BatchInvalidationType.Both;
-			Invalidated = true;
+			InvalidateDependency();
 		}
 
 		#endregion
@@ -208,9 +207,18 @@ namespace pEngine.Core.Graphics.Renderer.Batches
 		#region Dependency
 
 		/// <summary>
-		/// True if the resource is changed.
+		/// Sets the dependency modified.
 		/// </summary>
-		public bool Invalidated { get; set; }
+		public void InvalidateDependency()
+		{
+			if (State == DependencyState.Loaded)
+				State = DependencyState.Modified;
+		}
+
+		/// <summary>
+		/// Actual dependency load state.
+		/// </summary>
+		public DependencyState State { get; set; }
 
 		/// <summary>
 		/// Dependency identifier.

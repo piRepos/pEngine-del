@@ -18,5 +18,20 @@ namespace pEngine.Core.Graphics.Renderer.Tessellator
 
 		}
 
-    }
+		protected override void OnDependencyChange(Mesh dependency)
+		{
+			throw new NotImplementedException();
+		}
+
+		protected override void OnDependencyDispose(Mesh dependency)
+		{
+			throw new NotImplementedException();
+		}
+
+		protected override void OnDependencyLoad(Mesh dependency)
+		{
+			throw new NotImplementedException();
+		}
+
+	}
 }

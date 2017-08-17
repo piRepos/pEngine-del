@@ -11,6 +11,8 @@ namespace pEngine.Core.Graphics.Renderer.FrameBuffering
 		public GLFrameBuffer(Vector2i Size)
 		{
 			this.Size = Size;
+
+			Handler = Gl.GenFramebuffer();
 		}
 
 		#region Handler
@@ -39,23 +41,7 @@ namespace pEngine.Core.Graphics.Renderer.FrameBuffering
 		/// </summary>
 		public virtual void Begin(FramebufferBindMode Target)
 		{
-			if (Target.HasFlag(FramebufferBindMode.DrawBuffer))
-			{
-				if (BoundMode.HasFlag(FramebufferBindMode.DrawBuffer))
-					return;
-
-				Gl.BindFramebuffer(FramebufferTarget.DrawFramebuffer, Handler);
-			}
-
-			if (Target.HasFlag(FramebufferBindMode.ReadBuffer))
-			{
-				if (BoundMode.HasFlag(FramebufferBindMode.ReadBuffer))
-					throw new InvalidOperationException("Buffer already bound.");
-
-				Gl.BindFramebuffer(FramebufferTarget.ReadFramebuffer, Handler);
-			}
-
-			BoundMode |= Target;
+			Gl.BindFramebuffer(FramebufferTarget.Framebuffer, Handler);
 		}
 
 		/// <summary>
@@ -63,24 +49,7 @@ namespace pEngine.Core.Graphics.Renderer.FrameBuffering
 		/// </summary>
 		public virtual void End(FramebufferBindMode Target)
 		{
-			if (Target.HasFlag(FramebufferBindMode.DrawBuffer))
-			{
-				if (!BoundMode.HasFlag(FramebufferBindMode.DrawBuffer))
-					throw new InvalidOperationException("Buffer already unbound.");
-
-				Gl.BindFramebuffer(FramebufferTarget.DrawFramebuffer, 0);
-			}
-
-			if (Target.HasFlag(FramebufferBindMode.ReadBuffer))
-			{
-				if (!BoundMode.HasFlag(FramebufferBindMode.ReadBuffer))
-					throw new InvalidOperationException("Buffer already unbound.");
-
-				Gl.BindFramebuffer(FramebufferTarget.ReadFramebuffer, 0);
-			}
-
-			// TODO: Remove flag operator
-			BoundMode = BoundMode & Target;
+			Gl.BindFramebuffer(FramebufferTarget.Framebuffer, 0);
 		}
 
 		#endregion
@@ -98,10 +67,8 @@ namespace pEngine.Core.Graphics.Renderer.FrameBuffering
 		/// </summary>
 		public virtual void Clear()
 		{
-			if (!BoundMode.HasFlag(FramebufferBindMode.DrawBuffer))
-				throw new InvalidOperationException("This framebuffer is not bound for drawing.");
-
 			Color4 C = Color4.Black; C.Ab = 0;
+			Gl.Viewport(0, 0, Size.Width, Size.Height);
 			Gl.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
 			Gl.ClearBuffer(OpenGL.Buffer.Color, 0, new float[] { C.Rf, C.Gf, C.Bf, C.Af });
 		}

@@ -250,7 +250,7 @@ namespace pEngine.Core.Graphics.Drawables
 				Ty = s.Texture.BotLeft.Y
 			};
 
-			Vertexs.Invalidated = true;
+			Vertexs.InvalidateDependency();
 			Vertexs.InvalidationType |= BatchInvalidationType.Vertexs;
 
 			s.Modified = false;

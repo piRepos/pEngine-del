@@ -32,7 +32,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Data\FrameDependency\IDependency.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Data\FrameDependency\IDependencyDescriptor.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Data\FrameDependency\IDependencyReference.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Data\FrameDependency\IFrameDependencyManager.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Data\FrameDependency\KeyFrameDependencyManager.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Data\IResource.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Data\Resource.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Data\ResourceLoader.cs" />

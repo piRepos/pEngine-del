@@ -29,7 +29,7 @@ namespace pEngine.Core.Graphics.Buffering
         /// that the <see cref="T:pEngine.Core.Graphics.Buffering.VideoBuffer"/> was occupying.</remarks>
         public void Dispose()
         {
-            
+			State = DependencyState.Disposed;
         }
 
         /// <summary>
@@ -75,7 +75,7 @@ namespace pEngine.Core.Graphics.Buffering
         {
             return new FrameBufferDescriptor
             {
-                Invalidated = VideoInvalidated,
+				State = State,
                 Size = Size,
                 Type = Type,
                 TextureId = TargetTexture.DependencyID,
@@ -84,9 +84,18 @@ namespace pEngine.Core.Graphics.Buffering
         }
 
 		/// <summary>
-		/// True if the resource is changed.
+		/// Sets the dependency modified.
 		/// </summary>
-		public bool Invalidated { get; set; }
+		public void InvalidateDependency()
+		{
+			if (State == DependencyState.Loaded)
+				State = DependencyState.Modified;
+		}
+
+		/// <summary>
+		/// Actual dependency load state.
+		/// </summary>
+		public DependencyState State { get; set; }
 
 		/// <summary>
 		/// Dependency identifier.

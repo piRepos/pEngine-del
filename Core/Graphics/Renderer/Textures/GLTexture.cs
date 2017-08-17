@@ -209,24 +209,22 @@ namespace pEngine.Core.Graphics.Renderer.Textures
 		{
 			frameBuffer.Begin(FramebufferBindMode.Buffer);
 
+			Gl.BindTexture(TextureTarget.Texture2d, Handler);
+
 			Size = frameBuffer.Size;
 
-			Gl.TexParameter(TextureTarget.Texture2d, TextureParameterName.TextureMinFilter, (int)TextureMinFilter.Linear);
-			Gl.TexParameter(TextureTarget.Texture2d, TextureParameterName.TextureMagFilter, (int)TextureMagFilter.Nearest);
-			Gl.TexParameter(TextureTarget.Texture2d, TextureParameterName.TextureWrapS, (int)TextureWrapMode.ClampToEdge);
-			Gl.TexParameter(TextureTarget.Texture2d, TextureParameterName.TextureWrapT, (int)TextureWrapMode.ClampToEdge);
-
 			// Depends On GL_ARB_texture_non_power_of_two
-			Gl.TexImage2D(TextureTarget.Texture2d, 0, InternalFormat.Rgba8, Size.Width, Size.Height,
-				0, PixelFormat.Bgra, PixelType.UnsignedByte, IntPtr.Zero);
+			Gl.TexImage2D(TextureTarget.Texture2d, 0, InternalFormat.Rgba, Size.Width, Size.Height,
+				0, PixelFormat.Rgba, PixelType.UnsignedByte, IntPtr.Zero);
 
-			Gl.GenerateMipmap(TextureTarget.Texture2d);
+			Gl.TexParameter(TextureTarget.Texture2d, TextureParameterName.TextureMinFilter, (int)TextureMinFilter.Linear);
+			Gl.TexParameter(TextureTarget.Texture2d, TextureParameterName.TextureMagFilter, (int)TextureMagFilter.Linear);
 
-			Gl.BindTexture(TextureTarget.Texture2d, 0);
 
-			Gl.FramebufferTexture2D(FramebufferTarget.Framebuffer, FramebufferAttachment.ColorAttachment0, TextureTarget.Texture2d, Handler, 0);
-
-			Gl.BindTexture(TextureTarget.Texture2d, Handler);
+			Gl.FramebufferTexture2D(FramebufferTarget.DrawFramebuffer, FramebufferAttachment.ColorAttachment0, TextureTarget.Texture2d, Handler, 0);
+			
+			if (Gl.CheckFramebufferStatus(FramebufferTarget.Framebuffer) != FramebufferStatus.FramebufferComplete)
+				throw new Exception("Frame buffer is not complete.");
 
 			frameBuffer.End(FramebufferBindMode.Buffer);
 		}

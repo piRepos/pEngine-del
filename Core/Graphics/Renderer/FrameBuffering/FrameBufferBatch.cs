@@ -4,7 +4,7 @@ using System.Text;
 
 namespace pEngine.Core.Graphics.Renderer.FrameBuffering
 {
-    class FrameBufferBatch
+    public class FrameBufferBatch
     {
 		private Renderer renderer;
 
@@ -14,6 +14,8 @@ namespace pEngine.Core.Graphics.Renderer.FrameBuffering
 		public FrameBufferBatch(Renderer renderer)
 		{
 			this.renderer = renderer;
+
+			bufferStore = new Dictionary<long, GLFrameBuffer>();
 		}
 
 		#region References

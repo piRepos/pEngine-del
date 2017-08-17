@@ -146,6 +146,7 @@ namespace pEngine.Core.Graphics.Textures
 		/// collector can reclaim the memory that the <see cref="Texture"/> was occupying.</remarks>
 		public override void Dispose()
 		{
+			State = DependencyState.Disposed;
 			base.Dispose();
 		}
 
@@ -183,7 +184,7 @@ namespace pEngine.Core.Graphics.Textures
 			base.OnComplete();
 
 			Dependencies.RemoveAll(x => x is Image);
-			Invalidated = true;
+			InvalidateDependency();
 		}
 
 		/// <summary>
@@ -243,6 +244,7 @@ namespace pEngine.Core.Graphics.Textures
 
 			return new TextureDescriptor
 			{
+				State = State,
 				Buffer = mipmaps,
 				DescriptorID = DependencyID,
 				Mipmaps = CurrentMipmapLevel,
@@ -251,9 +253,18 @@ namespace pEngine.Core.Graphics.Textures
 		}
 
 		/// <summary>
-		/// True if the resource is changed.
+		/// Sets the dependency modified.
 		/// </summary>
-		public virtual bool Invalidated { get; set; }
+		public void InvalidateDependency()
+		{
+			if (State == DependencyState.Loaded)
+				State = DependencyState.Modified;
+		}
+
+		/// <summary>
+		/// Actual dependency load state.
+		/// </summary>
+		public DependencyState State { get; set; }
 
 		/// <summary>
 		/// Dependency identifier.
