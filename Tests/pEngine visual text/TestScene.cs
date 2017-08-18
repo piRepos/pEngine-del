@@ -72,7 +72,7 @@ namespace pEngineVisualText
 			Children.Add((mamma = new Paragraph(comfortaaRegular120)
 			{
 				Text = $@"pEngine",
-				FrameBuffered = true,
+				FrameBuffered = false,
 				Color = Color4.White,
 				Position = new Vector2i(20, 30),
 				ScaleWithParent = true

@@ -22,7 +22,7 @@ namespace pEngine.Core.Graphics.Buffering
         /// </summary>
         /// <returns>The video buffer.</returns>
         /// <param name="target">Target texture.</param>
-        public VideoBuffer GetVideoBuffer(ITexture target)
+        public VideoBuffer GetVideoBuffer(StandaloneTexture target)
         {
             VideoBuffer newVideoBuffer = new VideoBuffer(target);
 

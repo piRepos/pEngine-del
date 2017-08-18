@@ -114,24 +114,10 @@ namespace pEngine.Core.Graphics.Textures
 		/// <returns>A texture resource.</returns>
 		public StandaloneTexture GetTexture(Vector2i size)
 		{
-			StandaloneTexture tx = new StandaloneTexture(new Common.Memory.PixelBuffer(size));
+			StandaloneTexture tx = new StandaloneTexture(size);
 
 			tx.Aborted += (IResource res, Exception e) => throw e;
 			LoadTexture(tx);
-
-			return tx;
-		}
-
-		/// <summary>
-		/// Gets an empty texture.
-		/// </summary>
-		/// <returns>A texture resource.</returns>
-		public StandaloneTexture GetTexture(string name, Vector2i size)
-		{
-			StandaloneTexture tx = new StandaloneTexture(new Common.Memory.PixelBuffer(size));
-
-			tx.Aborted += (IResource res, Exception e) => throw e;
-			LoadTexture(name, tx);
 
 			return tx;
 		}

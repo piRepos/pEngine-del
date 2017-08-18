@@ -101,7 +101,7 @@ namespace pEngine.Core.Graphics.Renderer
 				if (a.TargetID < 0)
 				{
 					if (currentFrameBuffer != null)
-						currentFrameBuffer.End(FramebufferBindMode.Buffer);
+						currentFrameBuffer.End();
 
 					currentFrameBuffer = null;
 				}
@@ -111,11 +111,11 @@ namespace pEngine.Core.Graphics.Renderer
 					if (currBuffer != currentFrameBuffer)
 					{
 						if (currentFrameBuffer != null)
-							currentFrameBuffer.End(FramebufferBindMode.Buffer);
+							currentFrameBuffer.End();
 
 						currentFrameBuffer = currBuffer;
 
-						currentFrameBuffer.Begin(FramebufferBindMode.Buffer);
+						currentFrameBuffer.Begin();
 						currentFrameBuffer.Clear();
 
 					}
@@ -173,7 +173,7 @@ namespace pEngine.Core.Graphics.Renderer
 				currentShader.Unbind();
 
 			if (currentFrameBuffer != null)
-				currentFrameBuffer.End(FramebufferBindMode.Buffer);
+				currentFrameBuffer.End();
 		}
 
 		#endregion

@@ -67,15 +67,13 @@ namespace pEngine.Core.Graphics.Renderer.FrameBuffering
 		{
 			if (!loadedBuffers.ContainsKey(info.DescriptorID))
 			{
-				GLFrameBuffer buffer = new GLFrameBuffer(info.Size);
-
-				buffer = new GLFrameBuffer(info.Size)
+				GLFrameBuffer buffer = new GLFrameBuffer(info.Size)
 				{
 					Multisampled = info.Multisampled
 				};
 
-				var bufferTextue = renderer.Textures.ResolveTexture(info.TextureId);
-				bufferTextue.Attach(buffer);
+				var bufferTexture = renderer.Textures.ResolveTexture(info.TextureId);
+				buffer.Attach(bufferTexture);
 
 				loadedBuffers.Add(info.DescriptorID, buffer);
 			}
@@ -89,15 +87,13 @@ namespace pEngine.Core.Graphics.Renderer.FrameBuffering
 		{
 			if (loadedBuffers.ContainsKey(info.DescriptorID))
 			{
-				var oldBuffer = loadedBuffers[info.DescriptorID];
-				oldBuffer.Size = info.Size;
+				var buffer = loadedBuffers[info.DescriptorID];
+				buffer.Size = info.Size;
 
 				var bufferTexture = renderer.Textures.ResolveTexture(info.TextureId);
-				bufferTexture.Dispose();
-				bufferTexture = renderer.Textures.loadedTextures[info.TextureId] = new Textures.GLTexture();
-				bufferTexture.Size = info.Size;
 
-				bufferTexture.Attach(oldBuffer, true);
+				buffer.Attach(bufferTexture);
+				
 			}
 		}
 

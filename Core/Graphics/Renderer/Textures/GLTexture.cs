@@ -49,13 +49,47 @@ namespace pEngine.Core.Graphics.Renderer.Textures
 			Gl.DeleteTextures(Handler);
 		}
 
+		#region Properties
+
 		/// <summary>
 		/// Texture handler.
 		/// </summary>
 		public uint Handler { get; }
 
+		/// <summary>
+		/// Number of mipmaps (default 0).
+		/// </summary>
+		public uint MipmapLevel { get; set; }
+
+		/// <summary>
+		/// Texture size.
+		/// </summary>
+		public Vector2i Size { get; private set; }
+
+		/// <summary>
+		/// Shrink filter.
+		/// </summary>
+		public TextureMinFilter MinificationFilter { get; set; } = TextureMinFilter.Linear;
+
+		/// <summary>
+		/// Grow filter.
+		/// </summary>
+		public TextureMagFilter MagnificationFilter { get; set; } = TextureMagFilter.Linear;
+
+		/// <summary>
+		/// Texture border warping.
+		/// </summary>
+		public TextureWrapMode HorizontalWarp { get; set; } = TextureWrapMode.ClampToEdge;
+
+		/// <summary>
+		/// Texture border warping.
+		/// </summary>
+		public TextureWrapMode VerticalWarp { get; set; } = TextureWrapMode.ClampToEdge;
+
+		#endregion
+
 		#region Binding
-		
+
 
 		/// <summary>
 		/// Bind the current texture.
@@ -93,41 +127,7 @@ namespace pEngine.Core.Graphics.Renderer.Textures
 
 		#endregion
 
-		#region Filters
-
-		/// <summary>
-		/// Shrink filter.
-		/// </summary>
-		public TextureMinFilter MinificationFilter { get; set; } = TextureMinFilter.Linear;
-
-		/// <summary>
-		/// Grow filter.
-		/// </summary>
-		public TextureMagFilter MagnificationFilter { get; set; } = TextureMagFilter.Linear;
-
-		/// <summary>
-		/// Texture border warping.
-		/// </summary>
-		public TextureWrapMode HorizontalWarp { get; set; } = TextureWrapMode.ClampToEdge;
-
-		/// <summary>
-		/// Texture border warping.
-		/// </summary>
-		public TextureWrapMode VerticalWarp { get; set; } = TextureWrapMode.ClampToEdge;
-
-		#endregion
-
 		#region Pixels
-
-		/// <summary>
-		/// Texture size.
-		/// </summary>
-		public Vector2i Size { get; set; }
-
-		/// <summary>
-		/// Number of mipmaps (default 0).
-		/// </summary>
-		public uint MipmapLevel { get; set; }
 
 		/// <summary>
 		/// Returns RGBA texture pixels.
@@ -147,6 +147,38 @@ namespace pEngine.Core.Graphics.Renderer.Textures
 		}
 
 		/// <summary>
+		/// Alloc in the VRAM a texture with the specified size.
+		/// </summary>
+		/// <param name="size">Texture size.</param>
+		public void PreAlloc(Vector2i size)
+		{
+			Size = size;
+
+			if (Size == Vector2i.Zero)
+				return;
+
+			Gl.BindTexture(TextureTarget.Texture2d, Handler);
+			{
+				Gl.TexImage2D
+				(
+					TextureTarget.Texture2d, 0,
+					InternalFormat.Rgba, Size.Width, Size.Height, 0,
+					PixelFormat.Rgba, PixelType.UnsignedByte,
+					IntPtr.Zero
+				);
+
+				Gl.TexParameter(TextureTarget.Texture2d, TextureParameterName.TextureMagFilter, (int)MagnificationFilter);
+
+				// Filter for shrink scale
+				if (MipmapLevel > 1)
+				{
+					Gl.TexParameter(TextureTarget.Texture2d, TextureParameterName.TextureMinFilter, (int)TextureMinFilter.LinearMipmapLinear);
+				}
+				else Gl.TexParameter(TextureTarget.Texture2d, TextureParameterName.TextureMinFilter, (int)MinificationFilter);
+			}
+		}
+
+		/// <summary>
 		/// Send this texture to video memory.
 		/// </summary>
 		public void Upload(params PixelBuffer[] Image)
@@ -156,7 +188,9 @@ namespace pEngine.Core.Graphics.Renderer.Textures
 
 			Size = Image[0].BufferSize;
 
-			// Bind texture
+			if (Image[0].BufferSize == Vector2i.Zero)
+				return;
+
 			Bind();
 			{
 				// OpenGL VRAM upload all mipmaps
@@ -186,7 +220,6 @@ namespace pEngine.Core.Graphics.Renderer.Textures
 					Gl.TexParameter(TextureTarget.Texture2d, (TextureParameterName)GetTextureParameter.TextureBaseLevel, 0);
 				}
 			}
-			// Unbind texture
 			Unbind();
 		}
 
@@ -209,41 +242,6 @@ namespace pEngine.Core.Graphics.Renderer.Textures
 			// Unbind texture
 			Unbind();
 		}
-
-		// TODO: Framebuffer in texture class
-
-		
-		/// <summary>
-		/// Attach this texture to a framebuffer.
-		/// </summary>
-		/// <param name="FrameBuffer">Framebuffer to attach.</param>
-		public void Attach(GLFrameBuffer frameBuffer, bool refresh = false)
-		{
-			frameBuffer.Begin(FramebufferBindMode.Buffer);
-
-
-			Size = frameBuffer.Size;
-
-			//if (!refresh)
-			//{
-				Gl.BindTexture(TextureTarget.Texture2d, Handler);
-
-				// Depends On GL_ARB_texture_non_power_of_two
-				Gl.TexImage2D(TextureTarget.Texture2d, 0, InternalFormat.Rgba, Size.Width, Size.Height,
-				0, PixelFormat.Rgba, PixelType.UnsignedByte, IntPtr.Zero);
-
-				Gl.TexParameter(TextureTarget.Texture2d, TextureParameterName.TextureMinFilter, (int)TextureMinFilter.Nearest);
-				Gl.TexParameter(TextureTarget.Texture2d, TextureParameterName.TextureMagFilter, (int)TextureMagFilter.Nearest);
-			//}
-
-			Gl.FramebufferTexture2D(FramebufferTarget.DrawFramebuffer, FramebufferAttachment.ColorAttachment0, TextureTarget.Texture2d, Handler, 0);
-
-			if (Gl.CheckFramebufferStatus(FramebufferTarget.Framebuffer) != FramebufferStatus.FramebufferComplete)
-				throw new Exception("Frame buffer is not complete.");
-
-			frameBuffer.End(FramebufferBindMode.Buffer);
-		}
-		
 
 		#endregion
 	}

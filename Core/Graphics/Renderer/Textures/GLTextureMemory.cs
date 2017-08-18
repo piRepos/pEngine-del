@@ -75,10 +75,15 @@ namespace pEngine.Core.Graphics.Renderer.Textures
             {
                 GLTexture texture = new GLTexture();
 
-                texture.MipmapLevel = info.Mipmaps;
+				loadedTextures.Add(info.DescriptorID, texture);
 
-                if (info.Buffer == null)
-                    return;
+				texture.MipmapLevel = info.Mipmaps;
+
+				if (info.Buffer == null || info.Buffer.Length <= 0)
+				{
+					texture.PreAlloc(info.Size);
+					return;
+				}
 
                 if (info.GenerateMipmaps)
                 {
@@ -86,9 +91,6 @@ namespace pEngine.Core.Graphics.Renderer.Textures
                     texture.GenerateMipmaps();
                 }
                 else texture.Upload(info.Buffer);
-
-                if (!loadedTextures.ContainsKey(info.DescriptorID))
-                    loadedTextures.Add(info.DescriptorID, texture);
             }
 		}
 
@@ -104,10 +106,13 @@ namespace pEngine.Core.Graphics.Renderer.Textures
 
                 texture.MipmapLevel = info.Mipmaps;
 
-                if (info.Buffer == null)
-                    return;
+				if (info.Buffer == null || info.Buffer.Length <= 0)
+				{
+					texture.PreAlloc(info.Size);
+					return;
+				}
 
-                if (info.GenerateMipmaps)
+				if (info.GenerateMipmaps)
                 {
                     texture.Upload(info.Buffer[0]);
                     texture.GenerateMipmaps();

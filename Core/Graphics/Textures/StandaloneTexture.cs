@@ -14,7 +14,7 @@ namespace pEngine.Core.Graphics.Textures
     public class StandaloneTexture : Resource, IDependency<TextureDescriptor>, ITexture
     {
 		/// <summary>
-		/// Creates a new <see cref="Texture"/>.
+		/// Creates a new <see cref="StandaloneTexture"/>.
 		/// </summary>
 		public StandaloneTexture()
 		{
@@ -26,7 +26,7 @@ namespace pEngine.Core.Graphics.Textures
 		}
 
 		/// <summary>
-		/// Creates a new <see cref="Texture"/> from a pixel buffer.
+		/// Creates a new <see cref="StandaloneTexture"/> from a pixel buffer.
 		/// </summary>
 		/// <param name="rawImage">Texture pixels</param>
 		public StandaloneTexture(PixelBuffer rawImage)
@@ -42,7 +42,7 @@ namespace pEngine.Core.Graphics.Textures
 		}
 
 		/// <summary>
-		/// Load a new <see cref="Texture"/> from an <see cref="Image"/> resource.
+		/// Load a new <see cref="StandaloneTexture"/> from an <see cref="Image"/> resource.
 		/// </summary>
 		/// <param name="bitmapImage">Image to load.</param>
 		public StandaloneTexture(Image bitmapImage)
@@ -56,6 +56,20 @@ namespace pEngine.Core.Graphics.Textures
 			Mipmapping = true;
 			LegacyMipmapping = true;
 		}
+
+		/// <summary>
+		/// Creates a new <see cref="StandaloneTexture"/>.
+		/// </summary>
+		/// <param name="size">Virtual texture size.</param>
+		public StandaloneTexture(Vector2i size)
+		{
+			this.size = size;
+
+			Mipmapping = false;
+			LegacyMipmapping = true;
+		}
+
+		private Vector2i size;
 
 		/// <summary>
 		/// Texture image raw pixels.
@@ -105,7 +119,7 @@ namespace pEngine.Core.Graphics.Textures
 		/// <summary>
 		/// Real texture size in pixels.
 		/// </summary>
-		public Vector2i Size => Mipmaps[0].BufferSize;
+		public Vector2i Size => Mipmaps == null ? size : Mipmaps[0].BufferSize;
 
 		/// <summary>
 		/// Real texture position if ther's a parent.
@@ -239,12 +253,19 @@ namespace pEngine.Core.Graphics.Textures
 		/// <returns>The dependency descriptor.</returns>
 		public virtual TextureDescriptor GetDescriptor()
 		{
-			PixelBuffer[] mipmaps = new PixelBuffer[CurrentMipmapLevel];
-			Array.Copy(Mipmaps, mipmaps, Math.Min(Mipmaps.Length, CurrentMipmapLevel));
+
+			PixelBuffer[] mipmaps = null;
+
+			if (Mipmaps != null)
+			{
+				mipmaps = new PixelBuffer[CurrentMipmapLevel];
+				Array.Copy(Mipmaps, mipmaps, Math.Min(Mipmaps.Length, CurrentMipmapLevel));
+			}
 
 			return new TextureDescriptor
 			{
 				State = State,
+				Size = Size,
 				Buffer = mipmaps,
 				DescriptorID = DependencyID,
 				Mipmaps = CurrentMipmapLevel,
