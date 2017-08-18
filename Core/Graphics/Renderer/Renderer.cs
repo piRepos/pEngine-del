@@ -29,7 +29,7 @@ namespace pEngine.Core.Graphics.Renderer
 
 			Vertexs = new GLVertexMemory();
 			Textures = new GLTextureMemory();
-			Buffers = new FrameBufferBatch(this);
+			Buffers = new FrameBufferMemory(this);
 		}
 
 		/// <summary>
@@ -58,7 +58,7 @@ namespace pEngine.Core.Graphics.Renderer
 		/// <summary>
 		/// 
 		/// </summary>
-		public FrameBufferBatch Buffers { get; }
+		public FrameBufferMemory Buffers { get; }
 
 		#endregion
 

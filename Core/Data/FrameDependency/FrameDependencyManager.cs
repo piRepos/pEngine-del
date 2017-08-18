@@ -132,6 +132,8 @@ namespace pEngine.Core.Data.FrameDependency
 
 			validation[descriptor.DescriptorID] = new DescriptorValidation
 			{ State = nextState };
+
+            dependencies[descriptor.DescriptorID].State = DependencyState.Loaded;
 		}
 
 		/// <summary>
@@ -160,8 +162,6 @@ namespace pEngine.Core.Data.FrameDependency
 				{
 					yield return dependency.Value.GetDescriptor();
 				}
-
-				dependencies[dependency.Key].State = DependencyState.Loaded;
 			}
 		}
 

@@ -458,7 +458,7 @@ namespace pEngine
 						foreach (var texture in buffer.Value.Textures)
 						{
 							// - Load texture
-							Renderer.Textures.LoadTexture(texture);
+							Renderer.Textures.DispatchTexture(texture);
 
 							PhysicsLoop.Scheduler.Add(() =>
 							{
@@ -474,7 +474,7 @@ namespace pEngine
 						foreach (var currBuffer in buffer.Value.Buffers)
 						{
 							// - Load texture
-							Renderer.Buffers.LoadBuffer(currBuffer);
+							Renderer.Buffers.DispatchDescriptor(currBuffer);
 
 							PhysicsLoop.Scheduler.Add(() =>
 							{

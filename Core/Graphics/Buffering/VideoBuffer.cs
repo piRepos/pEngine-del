@@ -16,6 +16,7 @@ namespace pEngine.Core.Graphics.Buffering
         public VideoBuffer(ITexture targetTexture)
         {
             TargetTexture = targetTexture;
+			Size = targetTexture.Size;
         }
 
         /// <summary>
@@ -35,7 +36,7 @@ namespace pEngine.Core.Graphics.Buffering
         /// <summary>
         /// Gets or sets the buffer size in pixels.
         /// </summary>
-        public Vector2i Size => TargetTexture.Size;
+        public Vector2i Size { get; set; }
 
         /// <summary>
         /// Gets or sets the framebuffer type.
@@ -50,19 +51,6 @@ namespace pEngine.Core.Graphics.Buffering
         /// Gets or sets the target texture.
         /// </summary>
         public ITexture TargetTexture { get; set; }
-
-        /// <summary>
-        /// Gets a value indicating whether this <see cref="T:pEngine.Core.Graphics.Buffering.VideoBuffer"/> is invalidated.
-        /// </summary>
-        public bool VideoInvalidated { get; private set; }
-
-        /// <summary>
-        /// Force the target items to redraw on this buffer.
-        /// </summary>
-        public void Invalidate()
-        {
-            VideoInvalidated = true;
-        }
 
 		#region Dependency
 

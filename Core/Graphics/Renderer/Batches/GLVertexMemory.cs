@@ -109,33 +109,46 @@ namespace pEngine.Core.Graphics.Renderer.Batches
 		/// </summary>
 		public void LoadBatch(BatchDescriptor batch)
 		{
-			if (batch.InvalidationType.HasFlag(BatchInvalidationType.Vertexs))
+			switch (batch.State)
 			{
-				Gl.BindBuffer(BufferTarget.ArrayBuffer, VertexHandler);
+				case Data.FrameDependency.DependencyState.NotLoaded:
+				case Data.FrameDependency.DependencyState.Modified:
 
-				Gl.BufferSubData(
-					BufferTarget.ArrayBuffer,
-					new IntPtr(batch.VertexOffset * GLVertex.Stride),
-					(uint)batch.Vertexs.Length * GLVertex.Stride,
-					batch.Vertexs
-					);
+					if (batch.InvalidationType.HasFlag(BatchInvalidationType.Vertexs))
+					{
+						Gl.BindBuffer(BufferTarget.ArrayBuffer, VertexHandler);
 
-				Gl.BindBuffer(BufferTarget.ArrayBuffer, 0);
+						Gl.BufferSubData(
+							BufferTarget.ArrayBuffer,
+							new IntPtr(batch.VertexOffset * GLVertex.Stride),
+							(uint)batch.Vertexs.Length * GLVertex.Stride,
+							batch.Vertexs
+							);
+
+						Gl.BindBuffer(BufferTarget.ArrayBuffer, 0);
+					}
+
+					if (batch.InvalidationType.HasFlag(BatchInvalidationType.Indexes))
+					{
+						Gl.BindBuffer(BufferTarget.ElementArrayBuffer, IndexHandler);
+
+						Gl.BufferSubData(
+							BufferTarget.ElementArrayBuffer,
+							new IntPtr(batch.IndexOffset * sizeof(uint)),
+							(uint)batch.Indexes.Length * sizeof(uint),
+							batch.Indexes
+							);
+
+						Gl.BindBuffer(BufferTarget.ElementArrayBuffer, 0);
+					}
+
+					break;
+
+				case Data.FrameDependency.DependencyState.Disposed:
+				case Data.FrameDependency.DependencyState.Loaded:
+					break;
 			}
-
-			if (batch.InvalidationType.HasFlag(BatchInvalidationType.Indexes))
-			{
-				Gl.BindBuffer(BufferTarget.ElementArrayBuffer, IndexHandler);
-
-				Gl.BufferSubData(
-					BufferTarget.ElementArrayBuffer,
-					new IntPtr(batch.IndexOffset * sizeof(uint)),
-					(uint)batch.Indexes.Length * sizeof(uint),
-					batch.Indexes
-					);
-
-				Gl.BindBuffer(BufferTarget.ElementArrayBuffer, 0);
-			}
+			
 		}
 
 		/// <summary>

@@ -95,10 +95,11 @@ namespace pEngine.Core.Graphics
 							assetCache[i] = curr;
 						}
 					}
+					
 
 					assetCache.Add(new Asset()
 					{
-						Transformation = DrawMatrix,
+						Transformation = Common.Math.Matrix.CreateScale(Host.Window.BufferSize.Width, Host.Window.BufferSize.Height, 0) * ToRelativeFloat,
 						Shader = new FrameBufferShader
 						{
 							TextureAttachment = 0
@@ -175,8 +176,15 @@ namespace pEngine.Core.Graphics
 		/// <param name="sender">Object sender.</param>
 		public override void Invalidate(InvalidationType type, InvalidationDirection propagation, IGameObject sender)
 		{
+			if (State == LoadState.Loaded && type.HasFlag(InvalidationType.Buffer) && invalidationId == long.MaxValue && VideoBuffer != null)
+			{
+				VideoBuffer.Size = Host.Window.BufferSize;
+				VideoBuffer.InvalidateDependency();
+			}
+
 			if (State == LoadState.Loaded && type.HasFlag(InvalidationType.Assets) && invalidationId == long.MaxValue)
 				invalidationId = Host.PhysicsLoop.FrameId;
+
 
 			base.Invalidate(type, propagation, sender);
 		}

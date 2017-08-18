@@ -6,13 +6,29 @@ using OpenGL;
 
 namespace pEngine.Core.Graphics.Renderer.FrameBuffering
 {
-	public class GLFrameBuffer
+	public class GLFrameBuffer : IDisposable
 	{
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="Size"></param>
 		public GLFrameBuffer(Vector2i Size)
 		{
 			this.Size = Size;
 
 			Handler = Gl.GenFramebuffer();
+		}
+
+		/// <summary>
+		/// Releases all resource used by the <see cref="GLFrameBuffer"/> object.
+		/// </summary>
+		/// <remarks>Call <see cref="Dispose"/> when you are finished using the <see cref="GLFrameBuffer"/>. The
+		/// <see cref="Dispose"/> method leaves the <see cref="GLFrameBuffer"/> in an unusable state. After
+		/// calling <see cref="Dispose"/>, you must release all references to the <see cref="GLFrameBuffer"/> so
+		/// the garbage collector can reclaim the memory that the <see cref="GLFrameBuffer"/> was occupying.</remarks>
+		public void Dispose()
+		{
+			Gl.DeleteBuffers(Handler);
 		}
 
 		#region Handler

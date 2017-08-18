@@ -15,7 +15,7 @@ namespace pEngine.Core.Graphics.Renderer.Textures
 	/// <summary>
 	/// Makes a 2D texture
 	/// </summary>
-	public class GLTexture
+	public class GLTexture : IDisposable
 	{
 
 		/// <summary>
@@ -35,6 +35,18 @@ namespace pEngine.Core.Graphics.Renderer.Textures
 			: base()
 		{
 			Handler = Gl.GenTexture();
+		}
+
+		/// <summary>
+		/// Releases all resource used by the <see cref="GLTexture"/> object.
+		/// </summary>
+		/// <remarks>Call <see cref="Dispose"/> when you are finished using the <see cref="GLTexture"/>. The
+		/// <see cref="Dispose"/> method leaves the <see cref="GLTexture"/> in an unusable state. After
+		/// calling <see cref="Dispose"/>, you must release all references to the <see cref="GLTexture"/> so
+		/// the garbage collector can reclaim the memory that the <see cref="GLTexture"/> was occupying.</remarks>
+		public void Dispose()
+		{
+			Gl.DeleteTextures(Handler);
 		}
 
 		/// <summary>
@@ -110,7 +122,7 @@ namespace pEngine.Core.Graphics.Renderer.Textures
 		/// <summary>
 		/// Texture size.
 		/// </summary>
-		public Vector2i Size { get; private set; }
+		public Vector2i Size { get; set; }
 
 		/// <summary>
 		/// Number of mipmaps (default 0).
@@ -205,7 +217,7 @@ namespace pEngine.Core.Graphics.Renderer.Textures
 		/// Attach this texture to a framebuffer.
 		/// </summary>
 		/// <param name="FrameBuffer">Framebuffer to attach.</param>
-		public void Attach(GLFrameBuffer frameBuffer)
+		public void Attach(GLFrameBuffer frameBuffer, bool refresh = false)
 		{
 			frameBuffer.Begin(FramebufferBindMode.Buffer);
 
@@ -213,16 +225,19 @@ namespace pEngine.Core.Graphics.Renderer.Textures
 
 			Size = frameBuffer.Size;
 
-			// Depends On GL_ARB_texture_non_power_of_two
-			Gl.TexImage2D(TextureTarget.Texture2d, 0, InternalFormat.Rgba, Size.Width, Size.Height,
+			if (!refresh)
+			{
+				// Depends On GL_ARB_texture_non_power_of_two
+				Gl.TexImage2D(TextureTarget.Texture2d, 0, InternalFormat.Rgba, Size.Width, Size.Height,
 				0, PixelFormat.Rgba, PixelType.UnsignedByte, IntPtr.Zero);
 
-			Gl.TexParameter(TextureTarget.Texture2d, TextureParameterName.TextureMinFilter, (int)TextureMinFilter.Linear);
-			Gl.TexParameter(TextureTarget.Texture2d, TextureParameterName.TextureMagFilter, (int)TextureMagFilter.Linear);
+				Gl.TexParameter(TextureTarget.Texture2d, TextureParameterName.TextureMinFilter, (int)TextureMinFilter.Linear);
+				Gl.TexParameter(TextureTarget.Texture2d, TextureParameterName.TextureMagFilter, (int)TextureMagFilter.Linear);
 
+			}
 
 			Gl.FramebufferTexture2D(FramebufferTarget.DrawFramebuffer, FramebufferAttachment.ColorAttachment0, TextureTarget.Texture2d, Handler, 0);
-			
+
 			if (Gl.CheckFramebufferStatus(FramebufferTarget.Framebuffer) != FramebufferStatus.FramebufferComplete)
 				throw new Exception("Frame buffer is not complete.");
 

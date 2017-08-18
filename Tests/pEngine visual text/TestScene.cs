@@ -24,7 +24,7 @@ namespace pEngineVisualText
         {
             #region Fonts
 
-            DynamicFont comfortaaRegular120 = Fonts.GetFont("Resources/Comfortaa-Regular.ttf", 120);
+            DynamicFont comfortaaRegular120 = new DynamicFont("Resources/Comfortaa-Regular.ttf", 120, false);
             DynamicFont comfortaaRegular70 = new DynamicFont("Resources/Comfortaa-Regular.ttf", 70, false);
             DynamicFont comfortaaRegular40 = new DynamicFont("Resources/Comfortaa-Regular.ttf", 40, false);
             DynamicFont comfortaaLight = new DynamicFont("Resources/Comfortaa-Light.ttf", 70, false);
@@ -81,6 +81,7 @@ namespace pEngineVisualText
 			Children.Add((mamma = new Paragraph(comfortaaLight)
 			{
 				Text = $@"2D game engine.",
+				FrameBuffered = true,
 				Color = Color4.White,
 				Position = new Vector2i(580, 75),
 				ScaleWithParent = true
@@ -89,6 +90,7 @@ namespace pEngineVisualText
 			Children.Add((mamma = new Paragraph(comfortaaRegular40)
 			{
 				Text = $@"Developed by Andrea Demontis 2017",
+				FrameBuffered = true,
 				Color = Color4.White,
 				Position = new Vector2i(20, 165),
                 ScaleWithParent = true

@@ -41,36 +41,105 @@ namespace pEngine.Core.Graphics.Renderer.Textures
 
 		#endregion
 
-		#region Loader
+		#region Descriptor dispatching
 
 		/// <summary>
 		/// Loads a texture in the VRAM.
 		/// </summary>
-		/// <param name="tex">Texture desciptor to load.</param>
-		public void LoadTexture(TextureDescriptor tex)
+		/// <param name="descriptor">Texture desciptor to load.</param>
+		public void DispatchTexture(TextureDescriptor descriptor)
 		{
-			GLTexture texture;
-			if (!loadedTextures.ContainsKey(tex.DescriptorID))
-				texture = new GLTexture();
-			else texture = loadedTextures[tex.DescriptorID];
-
-			texture.MipmapLevel = tex.Mipmaps;
-
-			if (tex.Buffer == null)
-				return;
-
-			if (tex.GenerateMipmaps)
+			switch (descriptor.State)
 			{
-				texture.Upload(tex.Buffer[0]);
-				texture.GenerateMipmaps();
+				case Data.FrameDependency.DependencyState.NotLoaded:
+					LoadTexture(descriptor);
+					break;
+				case Data.FrameDependency.DependencyState.Modified:
+					UpdateTexture(descriptor);
+					break;
+				case Data.FrameDependency.DependencyState.Disposed:
+					DisposeTexture(descriptor);
+					break;
+				case Data.FrameDependency.DependencyState.Loaded:
+					return;
 			}
-			else texture.Upload(tex.Buffer);
-
-			if (!loadedTextures.ContainsKey(tex.DescriptorID))
-				loadedTextures.Add(tex.DescriptorID, texture);
 		}
 
 		#endregion
 
+		#region Load
+
+		private void LoadTexture(TextureDescriptor info)
+		{
+            if (!loadedTextures.ContainsKey(info.DescriptorID))
+            {
+                GLTexture texture = new GLTexture();
+
+                texture.MipmapLevel = info.Mipmaps;
+
+                if (info.Buffer == null)
+                    return;
+
+                if (info.GenerateMipmaps)
+                {
+                    texture.Upload(info.Buffer[0]);
+                    texture.GenerateMipmaps();
+                }
+                else texture.Upload(info.Buffer);
+
+                if (!loadedTextures.ContainsKey(info.DescriptorID))
+                    loadedTextures.Add(info.DescriptorID, texture);
+            }
+		}
+
+        #endregion
+
+        #region Update
+
+        private void UpdateTexture(TextureDescriptor info)
+        {
+            if (loadedTextures.ContainsKey(info.DescriptorID))
+            {
+                GLTexture texture = new GLTexture();
+
+                texture.MipmapLevel = info.Mipmaps;
+
+                if (info.Buffer == null)
+                    return;
+
+                if (info.GenerateMipmaps)
+                {
+                    texture.Upload(info.Buffer[0]);
+                    texture.GenerateMipmaps();
+                }
+                else texture.Upload(info.Buffer);
+
+
+                if (!loadedTextures.ContainsKey(info.DescriptorID))
+                    loadedTextures.Add(info.DescriptorID, texture);
+
+                var oldTexture = loadedTextures[info.DescriptorID];
+                oldTexture.Dispose();
+
+                loadedTextures[info.DescriptorID] = texture;
+            }
+        }
+
+		#endregion
+
+		#region Dispose
+
+		private void DisposeTexture(TextureDescriptor info)
+		{
+			if (loadedTextures.ContainsKey(info.DescriptorID))
+			{
+				var oldTexture = loadedTextures[info.DescriptorID];
+				oldTexture.Dispose();
+
+				loadedTextures.Remove(info.DescriptorID);
+			}
+		}
+
+		#endregion
 	}
 }
