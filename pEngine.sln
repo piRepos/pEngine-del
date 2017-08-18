@@ -23,7 +23,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OpenGL.Net", "Deploy\OpenGL
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "pEngine unit test", "Tests\pEngine unit test\pEngine unit test.csproj", "{7F938612-D248-4B73-8C99-94E0A42545DC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "pEngine visual test", "Tests\pEngine visual test\pEngine visual test.csproj", "{6787A10F-3ABB-4EA7-AC43-BF1FA29E274F}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "pEngine visual test", "Tests\pEngine visual test\pEngine visual test.csproj", "{E4B18C36-344B-4455-809D-8F161AA0388A}"
 EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
@@ -75,14 +75,14 @@ Global
 		{7F938612-D248-4B73-8C99-94E0A42545DC}.Release|Any CPU.Build.0 = Release|Any CPU
 		{7F938612-D248-4B73-8C99-94E0A42545DC}.Release|x86.ActiveCfg = Release|Any CPU
 		{7F938612-D248-4B73-8C99-94E0A42545DC}.Release|x86.Build.0 = Release|Any CPU
-		{6787A10F-3ABB-4EA7-AC43-BF1FA29E274F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{6787A10F-3ABB-4EA7-AC43-BF1FA29E274F}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{6787A10F-3ABB-4EA7-AC43-BF1FA29E274F}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{6787A10F-3ABB-4EA7-AC43-BF1FA29E274F}.Debug|x86.Build.0 = Debug|Any CPU
-		{6787A10F-3ABB-4EA7-AC43-BF1FA29E274F}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{6787A10F-3ABB-4EA7-AC43-BF1FA29E274F}.Release|Any CPU.Build.0 = Release|Any CPU
-		{6787A10F-3ABB-4EA7-AC43-BF1FA29E274F}.Release|x86.ActiveCfg = Release|Any CPU
-		{6787A10F-3ABB-4EA7-AC43-BF1FA29E274F}.Release|x86.Build.0 = Release|Any CPU
+		{E4B18C36-344B-4455-809D-8F161AA0388A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E4B18C36-344B-4455-809D-8F161AA0388A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E4B18C36-344B-4455-809D-8F161AA0388A}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{E4B18C36-344B-4455-809D-8F161AA0388A}.Debug|x86.Build.0 = Debug|Any CPU
+		{E4B18C36-344B-4455-809D-8F161AA0388A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E4B18C36-344B-4455-809D-8F161AA0388A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E4B18C36-344B-4455-809D-8F161AA0388A}.Release|x86.ActiveCfg = Release|Any CPU
+		{E4B18C36-344B-4455-809D-8F161AA0388A}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -92,7 +92,7 @@ Global
 		{5C569301-50C6-47C4-9850-6CB36D4DA267} = {34BB5D7B-41EC-4EBF-981C-75700C852D39}
 		{9E3018F3-770E-4CFD-87D0-BAEE66E9FE8F} = {34BB5D7B-41EC-4EBF-981C-75700C852D39}
 		{7F938612-D248-4B73-8C99-94E0A42545DC} = {D784B61A-2853-4356-BD05-D8CC2D557CBE}
-		{6787A10F-3ABB-4EA7-AC43-BF1FA29E274F} = {D784B61A-2853-4356-BD05-D8CC2D557CBE}
+		{E4B18C36-344B-4455-809D-8F161AA0388A} = {D784B61A-2853-4356-BD05-D8CC2D557CBE}
 	EndGlobalSection
 	GlobalSection(Performance) = preSolution
 		HasPerformanceSessions = true

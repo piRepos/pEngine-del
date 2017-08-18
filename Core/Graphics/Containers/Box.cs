@@ -58,7 +58,7 @@ namespace pEngine.Core.Graphics.Containers
 			batch.Vertexs[2] = new GLVertex { X = 1, Y = 1, R = BackgroundColor.Rf, G = BackgroundColor.Gf, B = BackgroundColor.Bf, A = BackgroundColor.Af };
 			batch.Vertexs[3] = new GLVertex { X = 0, Y = 1, R = BackgroundColor.Rf, G = BackgroundColor.Gf, B = BackgroundColor.Bf, A = BackgroundColor.Af };
 
-			batch.Invalidated = true;
+			batch.InvalidateDependency();
 			batch.InvalidationType |= BatchInvalidationType.Vertexs;
 		}
 

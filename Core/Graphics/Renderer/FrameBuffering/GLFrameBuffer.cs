@@ -6,16 +6,31 @@ using OpenGL;
 
 namespace pEngine.Core.Graphics.Renderer.FrameBuffering
 {
-	public class GLFrameBuffer
+	public class GLFrameBuffer : IDisposable
 	{
-		public GLFrameBuffer(Vector2i Size)
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="Size"></param>
+		public GLFrameBuffer(Vector2i size)
 		{
-			this.Size = Size;
-
-			Texture = new GLTexture();
+			Size = size;
+			Handler = Gl.GenFramebuffer();
 		}
 
-		#region Handler
+		/// <summary>
+		/// Releases all resource used by the <see cref="GLFrameBuffer"/> object.
+		/// </summary>
+		/// <remarks>Call <see cref="Dispose"/> when you are finished using the <see cref="GLFrameBuffer"/>. The
+		/// <see cref="Dispose"/> method leaves the <see cref="GLFrameBuffer"/> in an unusable state. After
+		/// calling <see cref="Dispose"/>, you must release all references to the <see cref="GLFrameBuffer"/> so
+		/// the garbage collector can reclaim the memory that the <see cref="GLFrameBuffer"/> was occupying.</remarks>
+		public void Dispose()
+		{
+			Gl.DeleteBuffers(Handler);
+		}
+
+		#region Properties
 
 		/// <summary>
 		/// Opengl handler.
@@ -27,72 +42,29 @@ namespace pEngine.Core.Graphics.Renderer.FrameBuffering
 		/// </summary>
 		public virtual bool Multisampled { get; set; }
 
+		/// <summary>
+		/// Framebuffer size.
+		/// </summary>
+		public Vector2i Size { get; set; }
+
 		#endregion
 
 		#region Binding
 
 		/// <summary>
-		/// Current mode bound.
-		/// </summary>
-		public FramebufferBindMode BoundMode { get; private set; }
-
-		/// <summary>
 		/// Open framebuffer for drawing.
 		/// </summary>
-		public virtual void Begin(FramebufferBindMode Target)
+		public virtual void Begin()
 		{
-			if (Target.HasFlag(FramebufferBindMode.DrawBuffer))
-			{
-				if (BoundMode.HasFlag(FramebufferBindMode.DrawBuffer))
-					return;
-
-				Gl.BindFramebuffer(FramebufferTarget.DrawFramebuffer, Handler);
-			}
-
-			if (Target.HasFlag(FramebufferBindMode.ReadBuffer))
-			{
-				if (BoundMode.HasFlag(FramebufferBindMode.ReadBuffer))
-					throw new InvalidOperationException("Buffer already bound.");
-
-				Gl.BindFramebuffer(FramebufferTarget.ReadFramebuffer, Handler);
-			}
-
-			BoundMode |= Target;
+			Gl.BindFramebuffer(FramebufferTarget.Framebuffer, Handler);
 		}
 
 		/// <summary>
 		/// Close framebuffer and finalize it.
 		/// </summary>
-		public virtual void End(FramebufferBindMode Target)
+		public virtual void End()
 		{
-			if (Target.HasFlag(FramebufferBindMode.DrawBuffer))
-			{
-				if (!BoundMode.HasFlag(FramebufferBindMode.DrawBuffer))
-					throw new InvalidOperationException("Buffer already unbound.");
-
-				Gl.BindFramebuffer(FramebufferTarget.DrawFramebuffer, 0);
-			}
-
-			if (Target.HasFlag(FramebufferBindMode.ReadBuffer))
-			{
-				if (!BoundMode.HasFlag(FramebufferBindMode.ReadBuffer))
-					throw new InvalidOperationException("Buffer already unbound.");
-
-				Gl.BindFramebuffer(FramebufferTarget.ReadFramebuffer, 0);
-			}
-
-			// TODO: Remove flag operator
-			BoundMode = BoundMode & Target;
-		}
-
-		#endregion
-
-		/// <summary>
-		/// Reset this framebuffer.
-		/// </summary>
-		public virtual void ResetBuffer()
-		{
-
+			Gl.BindFramebuffer(FramebufferTarget.Framebuffer, 0);
 		}
 
 		/// <summary>
@@ -100,54 +72,60 @@ namespace pEngine.Core.Graphics.Renderer.FrameBuffering
 		/// </summary>
 		public virtual void Clear()
 		{
-			if (!BoundMode.HasFlag(FramebufferBindMode.DrawBuffer))
-				throw new InvalidOperationException("This framebuffer is not bound for drawing.");
-
 			Color4 C = Color4.Black; C.Ab = 0;
+			Gl.Viewport(0, 0, Size.Width, Size.Height);
 			Gl.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
 			Gl.ClearBuffer(OpenGL.Buffer.Color, 0, new float[] { C.Rf, C.Gf, C.Bf, C.Af });
 		}
+
+		#endregion
+
+		#region Attachment
+
+		public void Attach(GLTexture texture)
+		{
+			Begin();
+			{
+				texture.PreAlloc(Size);
+
+				Gl.FramebufferTexture2D
+				(
+					FramebufferTarget.DrawFramebuffer, 
+					FramebufferAttachment.ColorAttachment0, 
+					TextureTarget.Texture2d, 
+					texture.Handler, 0
+				);
+
+				StatusCheck();
+			}
+			End();
+		}
+
+		private void StatusCheck()
+		{
+			// TODO: Handle errors.
+
+			switch (Gl.CheckFramebufferStatus(FramebufferTarget.Framebuffer))
+			{
+				case FramebufferStatus.FramebufferComplete:
+					return;
+				case FramebufferStatus.FramebufferIncompleteAttachment:
+				case FramebufferStatus.FramebufferIncompleteDrawBuffer:
+				case FramebufferStatus.FramebufferIncompleteLayerTargets:
+				case FramebufferStatus.FramebufferIncompleteMissingAttachment:
+				case FramebufferStatus.FramebufferIncompleteMultisample:
+				case FramebufferStatus.FramebufferIncompleteReadBuffer:
+				case FramebufferStatus.FramebufferUndefined:
+				case FramebufferStatus.FramebufferUnsupported:
+					throw new Exception("Frame buffer error.");
+			}
+		}
+
+		#endregion
 
 		/// <summary>
 		/// Gets if the frame buffers are supported.
 		/// </summary>
 		public bool IsSupported => Gl.MAJOR_VERSION >= 3;
-
-		/// <summary>
-		/// Framebuffer size.
-		/// </summary>
-		public Vector2i Size { get; set; }
-
-		/// <summary>
-		/// Video buffer texture.
-		/// </summary>
-		public GLTexture Texture { get; }
-	}
-
-	/// <summary>
-	/// Begin mode.
-	/// </summary>
-	[Flags]
-	public enum FramebufferBindMode
-	{
-		/// <summary>
-		/// Open buffer in read mode.
-		/// </summary>
-		ReadBuffer = 1,
-
-		/// <summary>
-		/// Open buffer in draw mode.
-		/// </summary>
-		DrawBuffer = 2,
-
-		/// <summary>
-		/// Open buffer in standard mode.
-		/// </summary>
-		Buffer = ReadBuffer | DrawBuffer,
-
-		/// <summary>
-		/// Buffer not bound.
-		/// </summary>
-		None = 0
 	}
 }

@@ -235,7 +235,7 @@ namespace pEngine.Core.Graphics.Textures
 				}
 			}
 
-			Invalidated = true;
+			InvalidateDependency();
 
 			base.OnComplete();
 		}

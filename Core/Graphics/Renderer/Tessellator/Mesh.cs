@@ -56,9 +56,18 @@ namespace pEngine.Core.Graphics.Renderer.Tessellator
 		}
 
 		/// <summary>
-		/// True if the resource is changed.
+		/// Sets the dependency modified.
 		/// </summary>
-		public bool Invalidated { get; set; }
+		public void InvalidateDependency()
+		{
+			if (State == DependencyState.Loaded)
+				State = DependencyState.Modified;
+		}
+
+		/// <summary>
+		/// Actual dependency load state.
+		/// </summary>
+		public DependencyState State { get; set; }
 
 		/// <summary>
 		/// Dependency identifier.

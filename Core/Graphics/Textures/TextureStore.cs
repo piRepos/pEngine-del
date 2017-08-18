@@ -10,7 +10,7 @@ using pEngine.Core.Data;
 
 namespace pEngine.Core.Graphics.Textures
 {
-	using DependencyManager = FrameDependencyManager<StandaloneTexture, TextureDescriptor>;
+	using DependencyManager = KeyFrameDependencyManager<string, StandaloneTexture, TextureDescriptor>;
 
 	public class TextureStore : DependencyManager
 	{
@@ -35,12 +35,32 @@ namespace pEngine.Core.Graphics.Textures
 		}
 
 		/// <summary>
+		/// Loads a <see cref="Texture"/> for rendering.
+		/// </summary>
+		/// <param name="tex">Texture to load.</param>
+		public void LoadTexture(string name, StandaloneTexture tex)
+		{
+			tex.Completed += (IResource r) => AddDependency(name, tex);
+			host.Resources.Load(tex);
+		}
+
+		/// <summary>
 		/// Loads a <see cref="Texture"/> asyncronously.
 		/// </summary>
 		/// <param name="tex">Texture to load.</param>
 		public void LoadTextureAsync(StandaloneTexture tex)
 		{
 			tex.Completed += (IResource r) => AddDependency(tex);
+			host.Resources.LoadAsync(tex);
+		}
+		
+		/// <summary>
+		/// Loads a <see cref="Texture"/> asyncronously.
+		/// </summary>
+		/// <param name="tex">Texture to load.</param>
+		public void LoadTextureAsync(string name, StandaloneTexture tex)
+		{
+			tex.Completed += (IResource r) => AddDependency(name, tex);
 			host.Resources.LoadAsync(tex);
 		}
 
@@ -66,35 +86,40 @@ namespace pEngine.Core.Graphics.Textures
 			return tx;
 		}
 
-		#region Frame dependency
-
 		/// <summary>
-		/// Add a dependency to the manager.
+		/// Gets a texture from a file path.
 		/// </summary>
-		/// <param name="dependency">Dependency to add.</param>
-		public override void AddDependency(StandaloneTexture dependency)
+		/// <param name="path">Texture image file path.</param>
+		/// <returns>A texture resource.</returns>
+		public StandaloneTexture GetTexture(string name, string path, bool async = false)
 		{
-			base.AddDependency(dependency);
+			Image image = new Image(path);
+
+			StandaloneTexture tx = new StandaloneTexture(image);
+
+			if (async)
+				LoadTextureAsync(name, tx);
+			else
+			{
+				tx.Aborted += (IResource res, Exception e) => throw e;
+				LoadTexture(name, tx);
+			}
+
+			return tx;
 		}
 
 		/// <summary>
-		/// Remove a dependency to the manager.
+		/// Gets an empty texture.
 		/// </summary>
-		/// <param name="dependency">Dependency to remove.</param>
-		public override void RemoveDependency(StandaloneTexture dependency)
+		/// <returns>A texture resource.</returns>
+		public StandaloneTexture GetTexture(Vector2i size)
 		{
-			base.RemoveDependency(dependency);
-		}
+			StandaloneTexture tx = new StandaloneTexture(size);
 
-		/// <summary>
-		/// Set a dependency as loaded from the loader thread.
-		/// </summary>
-		/// <param name="frame">Frame when is loaded.</param>
-		public override void SetDependencyLoaded(long descriptorId, long frame)
-		{
-			base.SetDependencyLoaded(descriptorId, frame);
-		}
+			tx.Aborted += (IResource res, Exception e) => throw e;
+			LoadTexture(tx);
 
-		#endregion
+			return tx;
+		}
 	}
 }

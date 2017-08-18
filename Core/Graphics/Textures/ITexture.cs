@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Text;
 
 using pEngine.Core.Data.FrameDependency;
+using pEngine.Core.Graphics.Renderer.Textures;
 
 using pEngine.Common.Math;
 

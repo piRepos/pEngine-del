@@ -221,7 +221,7 @@ namespace pEngine.Core.Graphics.Drawables
 				Ty = Texture.BotLeft.Y
 			};
 
-			plane.Invalidated = true;
+			plane.InvalidateDependency();
 			plane.InvalidationType |= BatchInvalidationType.Vertexs;
 		}
 
@@ -264,6 +264,7 @@ namespace pEngine.Core.Graphics.Drawables
 					AlphaBlendingSrc = OpenGL.BlendingFactor.SrcAlpha,
 					ColorBlendingDst = OpenGL.BlendingFactor.OneMinusSrcAlpha,
 					ColorBlendingSrc = OpenGL.BlendingFactor.One,
+					TargetID = -1
 				});
 			}
 

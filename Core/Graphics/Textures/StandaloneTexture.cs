@@ -14,9 +14,9 @@ namespace pEngine.Core.Graphics.Textures
     public class StandaloneTexture : Resource, IDependency<TextureDescriptor>, ITexture
     {
 		/// <summary>
-		/// Creates a new <see cref="Texture"/>.
+		/// Creates a new <see cref="StandaloneTexture"/>.
 		/// </summary>
-		protected StandaloneTexture()
+		public StandaloneTexture()
 		{
 			// - Create first mipmap
 			Mipmaps = new PixelBuffer[1];
@@ -26,7 +26,7 @@ namespace pEngine.Core.Graphics.Textures
 		}
 
 		/// <summary>
-		/// Creates a new <see cref="Texture"/> from a pixel buffer.
+		/// Creates a new <see cref="StandaloneTexture"/> from a pixel buffer.
 		/// </summary>
 		/// <param name="rawImage">Texture pixels</param>
 		public StandaloneTexture(PixelBuffer rawImage)
@@ -42,7 +42,7 @@ namespace pEngine.Core.Graphics.Textures
 		}
 
 		/// <summary>
-		/// Load a new <see cref="Texture"/> from an <see cref="Image"/> resource.
+		/// Load a new <see cref="StandaloneTexture"/> from an <see cref="Image"/> resource.
 		/// </summary>
 		/// <param name="bitmapImage">Image to load.</param>
 		public StandaloneTexture(Image bitmapImage)
@@ -56,6 +56,20 @@ namespace pEngine.Core.Graphics.Textures
 			Mipmapping = true;
 			LegacyMipmapping = true;
 		}
+
+		/// <summary>
+		/// Creates a new <see cref="StandaloneTexture"/>.
+		/// </summary>
+		/// <param name="size">Virtual texture size.</param>
+		public StandaloneTexture(Vector2i size)
+		{
+			this.size = size;
+
+			Mipmapping = false;
+			LegacyMipmapping = true;
+		}
+
+		private Vector2i size;
 
 		/// <summary>
 		/// Texture image raw pixels.
@@ -105,7 +119,7 @@ namespace pEngine.Core.Graphics.Textures
 		/// <summary>
 		/// Real texture size in pixels.
 		/// </summary>
-		public Vector2i Size => Mipmaps[0].BufferSize;
+		public Vector2i Size => Mipmaps == null ? size : Mipmaps[0].BufferSize;
 
 		/// <summary>
 		/// Real texture position if ther's a parent.
@@ -146,6 +160,7 @@ namespace pEngine.Core.Graphics.Textures
 		/// collector can reclaim the memory that the <see cref="Texture"/> was occupying.</remarks>
 		public override void Dispose()
 		{
+			State = DependencyState.Disposed;
 			base.Dispose();
 		}
 
@@ -183,7 +198,7 @@ namespace pEngine.Core.Graphics.Textures
 			base.OnComplete();
 
 			Dependencies.RemoveAll(x => x is Image);
-			Invalidated = true;
+			InvalidateDependency();
 		}
 
 		/// <summary>
@@ -238,11 +253,19 @@ namespace pEngine.Core.Graphics.Textures
 		/// <returns>The dependency descriptor.</returns>
 		public virtual TextureDescriptor GetDescriptor()
 		{
-			PixelBuffer[] mipmaps = new PixelBuffer[CurrentMipmapLevel];
-			Array.Copy(Mipmaps, mipmaps, CurrentMipmapLevel);
+
+			PixelBuffer[] mipmaps = null;
+
+			if (Mipmaps != null)
+			{
+				mipmaps = new PixelBuffer[CurrentMipmapLevel];
+				Array.Copy(Mipmaps, mipmaps, Math.Min(Mipmaps.Length, CurrentMipmapLevel));
+			}
 
 			return new TextureDescriptor
 			{
+				State = State,
+				Size = Size,
 				Buffer = mipmaps,
 				DescriptorID = DependencyID,
 				Mipmaps = CurrentMipmapLevel,
@@ -251,9 +274,18 @@ namespace pEngine.Core.Graphics.Textures
 		}
 
 		/// <summary>
-		/// True if the resource is changed.
+		/// Sets the dependency modified.
 		/// </summary>
-		public virtual bool Invalidated { get; set; }
+		public void InvalidateDependency()
+		{
+			if (State == DependencyState.Loaded)
+				State = DependencyState.Modified;
+		}
+
+		/// <summary>
+		/// Actual dependency load state.
+		/// </summary>
+		public DependencyState State { get; set; }
 
 		/// <summary>
 		/// Dependency identifier.

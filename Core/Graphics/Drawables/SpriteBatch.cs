@@ -250,7 +250,7 @@ namespace pEngine.Core.Graphics.Drawables
 				Ty = s.Texture.BotLeft.Y
 			};
 
-			Vertexs.Invalidated = true;
+			Vertexs.InvalidateDependency();
 			Vertexs.InvalidationType |= BatchInvalidationType.Vertexs;
 
 			s.Modified = false;
@@ -260,7 +260,7 @@ namespace pEngine.Core.Graphics.Drawables
 
 		#region Assets calculation
 
-		public override IEnumerable<Asset> GetAssets()
+		protected override List<Asset> CalculateAssets()
 		{
 			List<Asset> assets = new List<Asset>();
 
@@ -291,6 +291,7 @@ namespace pEngine.Core.Graphics.Drawables
 				AlphaBlendingSrc = OpenGL.BlendingFactor.SrcAlpha,
 				ColorBlendingDst = OpenGL.BlendingFactor.OneMinusSrcAlpha,
 				ColorBlendingSrc = OpenGL.BlendingFactor.SrcAlpha,
+				TargetID = -1
 			});
 
 			return assets;

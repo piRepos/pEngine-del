@@ -17,9 +17,14 @@ namespace pEngine.Core.Graphics.Renderer.FrameBuffering
 		public long DescriptorID { get; set; }
 
 		/// <summary>
-		/// If true this buffer needs to be refreshed.
+		/// Actual dependency load state.
 		/// </summary>
-		public bool Invalidated { get; set; }
+		public DependencyState State { get; set; }
+
+		/// <summary>
+		/// Enables multisampling on this buffer.
+		/// </summary>
+		public bool Multisampled { get; set; }
 
 		/// <summary>
 		/// Frame buffer target texture.

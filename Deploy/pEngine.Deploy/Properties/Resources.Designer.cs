@@ -122,6 +122,62 @@ namespace pEngine.Properties {
         ///in vec2 FragTextCoord;
         ///in vec4 FragVertexColor;
         ///
+        ///// Color output
+        ///out vec4 FinalColor;
+        ///
+        ///void main() 
+        ///{
+        ///	vec4 Col = texture(Texture, FragTextCoord);
+        ///
+        ///	// Blend with a color
+        ///    FinalColor = Col;
+        ///
+        ///}.
+        /// </summary>
+        public static string FrameBufferShaderFrag {
+            get {
+                return ResourceManager.GetString("FrameBufferShaderFrag", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Cerca una stringa localizzata simile a #version 330 core
+        ///
+        ///// - Inputs
+        ///layout(location = 1) in vec2 Vertex;
+        ///layout(location = 2) in vec2 TexCoord;
+        ///layout(location = 3) in vec4 Color;
+        ///
+        ///uniform mat4 ModelView;
+        ///
+        ///// - Outputs
+        ///out vec4 FragVertexColor;
+        ///out vec2 FragTextCoord;
+        ///
+        ///void main() 
+        ///{
+        ///	FragVertexColor = Color;
+        ///	FragTextCoord = TexCoord;
+        ///
+        ///	gl_Position = ModelView * vec4(Vertex, 1, 1);
+        ///}.
+        /// </summary>
+        public static string FrameBufferShaderVert {
+            get {
+                return ResourceManager.GetString("FrameBufferShaderVert", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Cerca una stringa localizzata simile a #version 330 core
+        ///
+        ///// Texture uniform
+        ///uniform sampler2D Texture;
+        ///
+        ///// Input variables
+        ///in vec2 FragTextCoord;
+        ///in vec4 FragVertexColor;
+        ///
         ///// Parameters
         ///in float FragOpacity;
         ///in float FragBrightness;

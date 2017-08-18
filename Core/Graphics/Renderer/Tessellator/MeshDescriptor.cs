@@ -22,6 +22,7 @@ namespace pEngine.Core.Graphics.Renderer.Tessellator
 			DescriptorID = id;
 			Name = name;
 			Invalidation = MeshInvalidation.All;
+			State = DependencyState.NotLoaded;
 
 			Points = new DrawablePoint[vertexs];
 			Edges = new Edge[edges];
@@ -44,6 +45,11 @@ namespace pEngine.Core.Graphics.Renderer.Tessellator
 		/// Mesh name.
 		/// </summary>
 		public string Name { get; set; }
+
+		/// <summary>
+		/// Actual dependency load state.
+		/// </summary>
+		public DependencyState State { get; set; }
 
 		/// <summary>
 		/// Mesh invalidation informations for tessel loader.
