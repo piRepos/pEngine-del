@@ -93,7 +93,10 @@ namespace pEngine.Core.Graphics.Renderer.FrameBuffering
 				oldBuffer.Size = info.Size;
 
 				var bufferTexture = renderer.Textures.ResolveTexture(info.TextureId);
+				bufferTexture.Dispose();
+				bufferTexture = renderer.Textures.loadedTextures[info.TextureId] = new Textures.GLTexture();
 				bufferTexture.Size = info.Size;
+
 				bufferTexture.Attach(oldBuffer, true);
 			}
 		}

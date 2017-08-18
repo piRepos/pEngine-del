@@ -221,20 +221,20 @@ namespace pEngine.Core.Graphics.Renderer.Textures
 		{
 			frameBuffer.Begin(FramebufferBindMode.Buffer);
 
-			Gl.BindTexture(TextureTarget.Texture2d, Handler);
 
 			Size = frameBuffer.Size;
 
-			if (!refresh)
-			{
+			//if (!refresh)
+			//{
+				Gl.BindTexture(TextureTarget.Texture2d, Handler);
+
 				// Depends On GL_ARB_texture_non_power_of_two
 				Gl.TexImage2D(TextureTarget.Texture2d, 0, InternalFormat.Rgba, Size.Width, Size.Height,
 				0, PixelFormat.Rgba, PixelType.UnsignedByte, IntPtr.Zero);
 
-				Gl.TexParameter(TextureTarget.Texture2d, TextureParameterName.TextureMinFilter, (int)TextureMinFilter.Linear);
-				Gl.TexParameter(TextureTarget.Texture2d, TextureParameterName.TextureMagFilter, (int)TextureMagFilter.Linear);
-
-			}
+				Gl.TexParameter(TextureTarget.Texture2d, TextureParameterName.TextureMinFilter, (int)TextureMinFilter.Nearest);
+				Gl.TexParameter(TextureTarget.Texture2d, TextureParameterName.TextureMagFilter, (int)TextureMagFilter.Nearest);
+			//}
 
 			Gl.FramebufferTexture2D(FramebufferTarget.DrawFramebuffer, FramebufferAttachment.ColorAttachment0, TextureTarget.Texture2d, Handler, 0);
 
