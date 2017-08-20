@@ -27,6 +27,7 @@ namespace pEngine.Core.Graphics
 		public Drawable()
 			: base()
 		{
+			FrameBufferFilled = true;
 			invalidationId = long.MaxValue;
 			Visible = true;
 			Opacity = 1;
@@ -82,10 +83,18 @@ namespace pEngine.Core.Graphics
 			if (assetCache == null)
 			{
 				assetCache = new List<Asset>();
-				assetCache.AddRange(CalculateAssets());
+
+				if (LastInvalidatedFrame >= Host.LastRenderedFrame || !FrameBuffered)
+				{
+					assetCache.AddRange(CalculateAssets());
+
+					if (LastInvalidatedFrame >= Host.LastRenderedFrame && FrameBuffered)
+						Invalidate(InvalidationType.Assets, InvalidationDirection.Parent, this);
+				}
 
 				if (FrameBuffered)
 				{
+
 					for (int i = 0; i < assetCache.Count; ++i)
 					{
 						if (assetCache[i].TargetID < 0)
@@ -95,7 +104,6 @@ namespace pEngine.Core.Graphics
 							assetCache[i] = curr;
 						}
 					}
-					
 
 					assetCache.Add(new Asset()
 					{
@@ -162,6 +170,11 @@ namespace pEngine.Core.Graphics
 				wasBuffered = FrameBuffered;
 			}
 
+			if (VideoBuffer != null && VideoBuffer.State != Data.FrameDependency.DependencyState.Loaded)
+			{
+				LastInvalidatedFrame = Host.PhysicsLoop.FrameId;
+			}
+
 			if (FrameBuffered && VideoBuffer == null)
 			{
 				VideoBuffer = Host.VideoBuffers.GetVideoBuffer(Host.Window.BufferSize);
@@ -176,11 +189,14 @@ namespace pEngine.Core.Graphics
 		/// <param name="sender">Object sender.</param>
 		public override void Invalidate(InvalidationType type, InvalidationDirection propagation, IGameObject sender)
 		{
-			if (State == LoadState.Loaded && type.HasFlag(InvalidationType.Buffer) && invalidationId == long.MaxValue && VideoBuffer != null)
+			if (State == LoadState.Loaded && type.HasFlag(InvalidationType.Buffer) && VideoBuffer != null)
 			{
 				VideoBuffer.Size = Host.Window.BufferSize;
 				VideoBuffer.InvalidateDependency();
 			}
+
+			if (State == LoadState.Loaded && type.HasFlag(InvalidationType.Color))
+				LastInvalidatedFrame = Host.PhysicsLoop.FrameId;
 
 			if (State == LoadState.Loaded && type.HasFlag(InvalidationType.Assets) && invalidationId == long.MaxValue)
 				invalidationId = Host.PhysicsLoop.FrameId;
@@ -220,6 +236,16 @@ namespace pEngine.Core.Graphics
 		/// frame buffer, and will be renderized the buffer.
 		/// </summary>
 		public bool FrameBuffered { get; set; }
+
+		/// <summary>
+		/// True if frame buffer is refreshed.
+		/// </summary>
+		public bool FrameBufferFilled { get; private set; }
+
+		/// <summary>
+		/// Id of the last frame invalidation.
+		/// </summary>
+		public long LastInvalidatedFrame { get; private set; }
 
 		/// <summary>
 		/// Object video buffer (if the property FrameBuffered is false this property is null).

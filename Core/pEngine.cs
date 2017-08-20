@@ -334,8 +334,6 @@ namespace pEngine
 		#endregion
 
 		#region Game loops
-		
-		private long lastFrameID = -1;
 
 		/// <summary>
 		/// This thread updates the windows and the input.
@@ -358,6 +356,11 @@ namespace pEngine
 		/// Bridge from physics thread and graphics thread.
 		/// </summary>
 		private TripleBuffer<FrameRenderInfo> assetBuffer { get; }
+		
+		/// <summary>
+		/// Id of the last rendered frame.
+		/// </summary>
+		public long LastRenderedFrame { get; set; }
 
 		/// <summary>
 		/// Updates the input.
@@ -430,7 +433,7 @@ namespace pEngine
 			Glfw3.Glfw.SwapInterval(0);
 			using (var buffer = assetBuffer.Get(UsageType.Read))
 			{
-				if (buffer?.Value != null && buffer.Value.FrameID != lastFrameID)
+				if (buffer?.Value != null && buffer.Value.FrameID != LastRenderedFrame)
 				{
 
 					// - Load meshes
@@ -524,7 +527,10 @@ namespace pEngine
 						Window.SwapBuffer();
 					}
 
-					lastFrameID = buffer.Value.FrameID;
+					PhysicsLoop.Scheduler.Add(() =>
+					{
+						LastRenderedFrame = buffer.Value.FrameID;
+					});
 				}
 			}
 		}
@@ -543,4 +549,4 @@ namespace pEngine
 			Close();
 		}
     }
-}
+}                                 
