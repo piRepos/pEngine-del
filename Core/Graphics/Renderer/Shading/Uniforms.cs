@@ -39,6 +39,68 @@ namespace pEngine.Core.Graphics.Renderer.Shading
 
 	}
 
+	public struct Int1Uniform : IUniform
+	{
+
+		public Int1Uniform(string name, int value)
+		{
+			Value = value;
+			Name = name;
+		}
+
+		/// <summary>
+		/// Uniform value.
+		/// </summary>
+		public int Value { get; }
+
+		/// <summary>
+		/// Uniform name.
+		/// </summary>
+		public string Name { get; }
+
+		/// <summary>
+		/// Apply this uniform to a specified shader.
+		/// </summary>
+		/// <param name="program">Shader program.</param>
+		public void Apply(uint program)
+		{
+			int uniform = Gl.GetUniformLocation(program, Name);
+			Gl.Uniform1(uniform, Value);
+		}
+
+	}
+
+	public struct IntUniforms : IUniform
+	{
+
+		public IntUniforms(string name, params int[] values)
+		{
+			Values = values;
+			Name = name;
+		}
+
+		/// <summary>
+		/// Uniform value.
+		/// </summary>
+		public int[] Values { get; }
+
+		/// <summary>
+		/// Uniform name.
+		/// </summary>
+		public string Name { get; }
+
+		/// <summary>
+		/// Apply this uniform to a specified shader.
+		/// </summary>
+		/// <param name="program">Shader program.</param>
+		public void Apply(uint program)
+		{
+			int uniform = Gl.GetUniformLocation(program, Name);
+			Gl.Uniform1(uniform, Values.Length, Values);
+		}
+
+	}
+
 	public struct Float4Uniform : IUniform
 	{
 
@@ -124,6 +186,37 @@ namespace pEngine.Core.Graphics.Renderer.Shading
 		{
 			int uniform = Gl.GetUniformLocation(program, Name);
 			Gl.Uniform1(uniform, Attachment);
+		}
+
+	}
+
+	public struct TextureUniforms : IUniform
+	{
+
+		public TextureUniforms(string name, params int[] attachments)
+		{
+			Attachments = attachments;
+			Name = name;
+		}
+
+		/// <summary>
+		/// Uniform value.
+		/// </summary>
+		public int[] Attachments { get; }
+
+		/// <summary>
+		/// Uniform name.
+		/// </summary>
+		public string Name { get; }
+
+		/// <summary>
+		/// Apply this uniform to a specified shader.
+		/// </summary>
+		/// <param name="program">Shader program.</param>
+		public void Apply(uint program)
+		{
+			int uniform = Gl.GetUniformLocation(program, Name);
+			Gl.Uniform1(uniform, Attachments.Length, Attachments);
 		}
 
 	}

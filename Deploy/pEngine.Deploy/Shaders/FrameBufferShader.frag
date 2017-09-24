@@ -14,6 +14,9 @@ void main()
 {
 	vec4 Col = texture(Texture, FragTextCoord);
 
+	if (Col.a == 0)
+		discard;
+
 	// Blend with a color
     FinalColor = Col;
 

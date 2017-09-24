@@ -18,6 +18,9 @@ namespace pEngineVisualTest
 	public class TestScene : Scene
 	{
 		Paragraph mamma;
+		LayerMask mask;
+		Sprite background;
+		Box clip;
 
         [LoaderFunction]
         private void Initializer(TextureStore Textures, FontStore Fonts)
@@ -53,48 +56,67 @@ namespace pEngineVisualTest
             );
             a.Load(Game);
 
-            #endregion
+			#endregion
 
-            #region Background
+			#region Background
 
-            Children.Add(new Sprite(a["Background"])
-            {
-                Size = Size,
-                ScaleSize = pEngine.Core.Physics.Axes.Both,
-                Stretch = StretchMode.UniformToFill
-
-            }.Load(Game));
+			Children.Add((clip = new Box
+			{
+				Size = Size,
+				ScaleSize = pEngine.Core.Physics.Axes.Both,
+				Children =
+				{
+					(background = new Sprite(a["Background"])
+					{
+						Size = Size,
+						ScaleSize = pEngine.Core.Physics.Axes.Both,
+						Stretch = StretchMode.UniformToFill
+					}.Load<Sprite>(Game))
+				}
+			}).Load<Box>(Game));
 
 			#endregion
 
 			#region pEngine title
 
-			Children.Add((mamma = new Paragraph(comfortaaRegular120)
-			{
-				Text = $@"pEngine",
-				FrameBuffered = false,
-				Color = Color4.White,
-				Position = new Vector2i(20, 30),
-				ScaleWithParent = true
-			}.Load<Paragraph>(Game)));
-
 			Children.Add((mamma = new Paragraph(comfortaaLight)
 			{
 				Text = $@"2D game engine.",
-				FrameBuffered = true,
+				//FrameBuffered = true,
 				Color = Color4.White,
 				Position = new Vector2i(580, 75),
 				ScaleWithParent = true
 			}.Load<Paragraph>(Game)));
 
-			Children.Add((mamma = new Paragraph(comfortaaRegular40)
+
+			Children.Add(new Paragraph(comfortaaRegular40)
 			{
 				Text = $@"Developed by Andrea Demontis 2017",
-				FrameBuffered = true,
+				//FrameBuffered = true,
 				Color = Color4.White,
 				Position = new Vector2i(20, 165),
-                ScaleWithParent = true
-			}.Load<Paragraph>(Game)));
+				ScaleWithParent = true
+			}.Load<Paragraph>(Game));
+
+
+			Children.Add((mask = new LayerMask()
+			{
+				Size = Size,
+				Children =
+				{
+					new Paragraph(comfortaaRegular120)
+					{
+						Text = $@"pEngine",
+						//FrameBuffered = false,
+						Color = Color4.White,
+						Position = new Vector2i(200, 300),
+						ScaleWithParent = true
+					}.Load<Paragraph>(Game)
+				}
+
+			}.Load<LayerMask>(Game)));
+
+			clip.AddMask(mask, pEngine.Core.Graphics.Renderer.Clipping.MaskOperation.Add);
 
             #endregion
         }

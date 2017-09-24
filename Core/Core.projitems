@@ -41,6 +41,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)GameObject.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Graphics\Containers\Box.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Graphics\Containers\Container.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Graphics\Containers\LayerMask.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Graphics\Drawable.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Graphics\Drawables\Paragraph.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Graphics\Drawables\Sprite.cs" />
@@ -60,6 +61,9 @@
     <Compile Include="$(MSBuildThisFileDirectory)Graphics\Fonts\IFont.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Graphics\Fonts\StaticFont.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Graphics\Fonts\Unicode.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Graphics\Renderer\Clipping\Mask.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Graphics\Renderer\Clipping\MaskOperation.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Graphics\Renderer\Clipping\MaskType.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Graphics\Renderer\FrameBuffering\FrameBufferMemory.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Graphics\Renderer\FrameBuffering\GLFrameBuffer.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Graphics\Renderer\FrameBuffering\FrameBufferDescriptor.cs" />
@@ -67,6 +71,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Graphics\Renderer\Renderer.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Graphics\Shading\DefaultShaders\FillShader.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Graphics\Shading\DefaultShaders\FrameBufferShader.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Graphics\Shading\DefaultShaders\MaskShader.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Graphics\Shading\DefaultShaders\SpriteShader.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Graphics\Shading\DefaultShaders\TextShader.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Graphics\Renderer\Shading\GLShader.cs" />
@@ -113,7 +118,6 @@
   <ItemGroup>
     <Folder Include="$(MSBuildThisFileDirectory)Graphics\Renderer\Shading\" />
     <Folder Include="$(MSBuildThisFileDirectory)Graphics\Renderer\Textures\" />
-    <Folder Include="$(MSBuildThisFileDirectory)Physics\CollisionDetection\" />
     <Folder Include="$(MSBuildThisFileDirectory)Graphics\Buffering\" />
   </ItemGroup>
 </Project>

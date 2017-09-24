@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using pEngine.Common.Math;
 
 using pEngine.Core.Graphics.Renderer.FrameBuffering;
+using pEngine.Core.Graphics.Renderer.Clipping;
 using pEngine.Core.Graphics.Renderer.Batches;
 using pEngine.Core.Graphics.Textures;
 using pEngine.Core.Graphics.Shading;
@@ -42,6 +43,25 @@ namespace pEngine.Core.Graphics.Renderer
 		/// Draw shader parameters.
 		/// </summary>
 		public IShader Shader;
+
+		#region Clipping informations
+
+		/// <summary>
+		/// Scissor clipping area, null if no scissor clipping.
+		/// </summary>
+		public Rect? ScissorArea;
+
+		/// <summary>
+		/// Gets or sets the clipping mode.
+		/// </summary>
+		public MaskType ClippingType;
+
+		/// <summary>
+		/// Texture mask id list.
+		/// </summary>
+		public ClippingInformations[] LayerMasks;
+
+		#endregion
 
 		#region Blending function
 

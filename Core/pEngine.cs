@@ -113,6 +113,7 @@ namespace pEngine
 			Shaders.RegisterShader(new TextShader());
 			Shaders.RegisterShader(new SpriteShader());
 			Shaders.RegisterShader(new FrameBufferShader());
+			Shaders.RegisterShader(new MaskShader());
 		}
 
 		#region Window
@@ -508,6 +509,8 @@ namespace pEngine
                         {
                             Gl.Enable(EnableCap.AlphaTest);
                             Gl.Enable(EnableCap.Blend);
+							Gl.Enable(EnableCap.StencilTest);
+							Gl.Enable(EnableCap.ScissorTest);
                         }
                         catch (Exception) {}
 
@@ -515,9 +518,11 @@ namespace pEngine
 
 						try
 						{
+							Gl.Disable(EnableCap.ScissorTest);
+							Gl.Disable(EnableCap.StencilTest);
 						    Gl.Disable(EnableCap.Blend);
 						    Gl.Disable(EnableCap.AlphaTest);
-                        }
+						}
                         catch (Exception) { }
 					}
 

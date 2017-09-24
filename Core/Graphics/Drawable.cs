@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Text;
 using System.Collections.Generic;
 
@@ -14,6 +15,7 @@ using pEngine.Core.Graphics.Renderer.Batches;
 using pEngine.Core.Physics;
 
 using pEngine.Core.Graphics.Drawables;
+using pEngine.Core.Graphics.Containers;
 
 using pEngine.Core.Graphics.Renderer.Shading;
 
@@ -27,8 +29,9 @@ namespace pEngine.Core.Graphics
 		public Drawable()
 			: base()
 		{
-			FrameBufferFilled = true;
+
 			invalidationId = long.MaxValue;
+
 			Visible = true;
 			Opacity = 1;
 		}
@@ -235,17 +238,7 @@ namespace pEngine.Core.Graphics
 		/// If true this object's pixels will stored in a
 		/// frame buffer, and will be renderized the buffer.
 		/// </summary>
-		public bool FrameBuffered { get; set; }
-
-		/// <summary>
-		/// True if frame buffer is refreshed.
-		/// </summary>
-		public bool FrameBufferFilled { get; private set; }
-
-		/// <summary>
-		/// Id of the last frame invalidation.
-		/// </summary>
-		public long LastInvalidatedFrame { get; private set; }
+		public virtual bool FrameBuffered { get; }
 
 		/// <summary>
 		/// Object video buffer (if the property FrameBuffered is false this property is null).
@@ -257,7 +250,13 @@ namespace pEngine.Core.Graphics
 		/// </summary>
 		public ITexture ObjectTexture => VideoBuffer?.TargetTexture;
 
+		/// <summary>
+		/// Id of the last frame invalidation.
+		/// </summary>
+		protected long LastInvalidatedFrame { get; private set; }
+
 		#endregion
 
 	}
+
 }

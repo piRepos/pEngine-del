@@ -86,6 +86,8 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Include="packages.config" />
+    <None Include="Shaders\MaskShader.frag" />
+    <None Include="Shaders\MaskShader.vert" />
     <None Include="Shaders\FrameBufferShader.frag" />
     <None Include="Shaders\FrameBufferShader.vert" />
     <None Include="Shaders\TextShader.frag" />

@@ -612,6 +612,11 @@ namespace pEngine
 			}
 		}
 
+		public static explicit operator Vector2i(Vector2 d)
+		{
+			return new Vector2i((int)d.X, (int)d.Y);
+		}
+
 		/// <summary>
 		/// Adds the specified instances.
 		/// </summary>

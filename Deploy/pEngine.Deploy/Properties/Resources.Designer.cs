@@ -19,7 +19,7 @@ namespace pEngine.Properties {
     // tramite uno strumento quale ResGen o Visual Studio.
     // Per aggiungere o rimuovere un membro, modificare il file con estensione ResX ed eseguire nuovamente ResGen
     // con l'opzione /str oppure ricompilare il progetto VS.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "4.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "15.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     public class Resources {
@@ -129,6 +129,9 @@ namespace pEngine.Properties {
         ///{
         ///	vec4 Col = texture(Texture, FragTextCoord);
         ///
+        ///	if (Col.a == 0)
+        ///		discard;
+        ///
         ///	// Blend with a color
         ///    FinalColor = Col;
         ///
@@ -165,6 +168,74 @@ namespace pEngine.Properties {
         public static string FrameBufferShaderVert {
             get {
                 return ResourceManager.GetString("FrameBufferShaderVert", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Cerca una stringa localizzata simile a #version 330 core
+        ///
+        ///// Texture uniform
+        ///uniform sampler2D Textures[32];
+        ///
+        ///// Input variables
+        ///in vec2 FragTextCoord;
+        ///in vec4 FragVertexColor;
+        ///
+        ///// Parameters
+        ///in float FragOperations[31];
+        ///in int FragTextureCount;
+        ///
+        ///// Color output
+        ///out vec4 OutputColor;
+        ///
+        ///void main() 
+        ///{
+        ///	vec4 finalColor = texture(Texture[0], FragTextCoord);
+        ///
+        ///	for (int i = 1; i &lt; FragTextureCount + 1; i++)
+        ///	{
+        ///		vec4 MaskColor = texture(Texture[i], FragTextCoord);
+        ///
+        ///		float alphaChannel = MaskColor.a;
+        ///
+        ///		if (FragOperation[i -  [stringa troncata]&quot;;.
+        /// </summary>
+        public static string MaskShaderFrag {
+            get {
+                return ResourceManager.GetString("MaskShaderFrag", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Cerca una stringa localizzata simile a #version 330 core
+        ///
+        ///// - Inputs
+        ///layout(location = 1) in vec2 Vertex;
+        ///layout(location = 2) in vec2 TexCoord;
+        ///layout(location = 3) in vec4 Color;
+        ///
+        ///// - Layer mask operations
+        ///uniform float Operations[31];
+        ///uniform int TextureCount;
+        ///
+        ///uniform mat4 ModelView;
+        ///
+        ///// - Outputs
+        ///out float FragOperations[31];
+        ///out vec4 FragVertexColor;
+        ///out vec2 FragTextCoord;
+        ///out int FragTextureCount;
+        ///
+        ///void main() 
+        ///{
+        ///	FragVertexColor = Color;
+        ///	FragTextCoord = TexCoord;
+        ///	FragOperations = Operations;
+        ///	FragTextureCount [stringa troncata]&quot;;.
+        /// </summary>
+        public static string MaskShaderVert {
+            get {
+                return ResourceManager.GetString("MaskShaderVert", resourceCulture);
             }
         }
         
