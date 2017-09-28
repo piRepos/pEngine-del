@@ -108,7 +108,7 @@ namespace pEngine.Core.Graphics
 						}
 					}
 
-					assetCache.Add(new Asset()
+					assetCache.Add(new Asset
 					{
 						Transformation = Common.Math.Matrix.CreateScale(Host.Window.BufferSize.Width, Host.Window.BufferSize.Height, 0) * ToRelativeFloat,
 						Shader = new FrameBufferShader
@@ -238,7 +238,7 @@ namespace pEngine.Core.Graphics
 		/// If true this object's pixels will stored in a
 		/// frame buffer, and will be renderized the buffer.
 		/// </summary>
-		public virtual bool FrameBuffered { get; }
+        public virtual bool FrameBuffered { get; set; }
 
 		/// <summary>
 		/// Object video buffer (if the property FrameBuffered is false this property is null).

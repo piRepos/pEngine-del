@@ -52,11 +52,6 @@ namespace pEngine.Core.Graphics.Renderer
 		public Rect? ScissorArea;
 
 		/// <summary>
-		/// Gets or sets the clipping mode.
-		/// </summary>
-		public MaskType ClippingType;
-
-		/// <summary>
 		/// Texture mask id list.
 		/// </summary>
 		public ClippingInformations[] LayerMasks;

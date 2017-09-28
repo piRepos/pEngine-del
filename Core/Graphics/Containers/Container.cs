@@ -32,12 +32,12 @@ namespace pEngine.Core.Graphics.Containers
 			Children.CollectionChanged += ChindrenChanged;
 		}
 
-		#region Children management
+        #region Children management
 
-		/// <summary>
-		/// Container childrens.
-		/// </summary>
-		protected ObservableCollection<Type> Children { get; }
+        /// <summary>
+        /// Container childrens.
+        /// </summary>
+        protected ObservableCollection<Type> Children { get; }
 
 		private void ChindrenChanged(object sender, NotifyCollectionChangedEventArgs e)
 		{

@@ -32,9 +32,25 @@ namespace pEngine.Core.Graphics.Containers
 			BuildVertexs();
 		}
 
-		#region Assets management
+        #region Buffering
 
-		protected override List<Asset> CalculateAssets()
+        public override bool FrameBuffered
+        {
+            get
+            {
+                return base.FrameBuffered || MaskType == MaskType.ShaderMask;
+            }
+            set
+            {
+                base.FrameBuffered = value || MaskType == MaskType.ShaderMask;
+            }
+        }
+
+        #endregion
+
+        #region Assets management
+
+        protected override List<Asset> CalculateAssets()
 		{
 			var assets = base.CalculateAssets();
 
@@ -56,7 +72,7 @@ namespace pEngine.Core.Graphics.Containers
 					AlphaBlendingDst = OpenGL.BlendingFactor.OneMinusSrcAlpha,
 					AlphaBlendingSrc = OpenGL.BlendingFactor.SrcAlpha,
 					ColorBlendingDst = OpenGL.BlendingFactor.Zero,
-					ColorBlendingSrc = OpenGL.BlendingFactor.One,
+					ColorBlendingSrc = OpenGL.BlendingFactor.One
 				});
 			}
 
@@ -87,43 +103,51 @@ namespace pEngine.Core.Graphics.Containers
 
 			if (clippingMasks.Count > 0)
 			{
+                if (MaskType == MaskType.ShaderMask)
+                {
+                    Asset maskShaderAsset = new Asset
+                    {
 
-				if (FrameBuffered)
-				{
-					Asset lastAsset = assets[assets.Count - 1];
+                    };
 
-					lastAsset.LayerMasks = clippingMasks
-						.Where(x => x.Value.Enabled && x.Value.MaskNode.IsLoaded)
-						.Select(x => new ClippingInformations
-						{
-							MaskTexture = x.Value.MaskNode.VideoBuffer.TargetTexture.DependencyID,
-							Operation = x.Value.Operation
-						}).ToArray();
+                    assets.Add(maskShaderAsset);
+                }
 
-					lastAsset.ClippingType = MaskType;
+                if (MaskType == MaskType.StencilMask)
+                {
+                    if (FrameBuffered)
+                    {
+                        Asset lastAsset = assets[assets.Count - 1];
 
-					assets[assets.Count - 1] = lastAsset;
-				}
-				else
-				{
-					for (int i = 0; i < assets.Count; ++i)
-					{
-						Asset lastAsset = assets[i];
+                        lastAsset.LayerMasks = clippingMasks
+                            .Where(x => x.Value.Enabled && x.Value.MaskNode.IsLoaded)
+                            .Select(x => new ClippingInformations
+                            {
+                                MaskTexture = x.Value.MaskNode.VideoBuffer.TargetTexture.DependencyID,
+                                Operation = x.Value.Operation
+                            }).ToArray();
 
-						if (lastAsset.LayerMasks == null)
-							lastAsset.LayerMasks = new ClippingInformations[0];
+                        assets[assets.Count - 1] = lastAsset;
+                    }
+                    else
+                    {
+                        for (int i = 0; i < assets.Count; ++i)
+                        {
+                            Asset lastAsset = assets[i];
 
-						lastAsset.LayerMasks = lastAsset.LayerMasks.Union(clippingMasks.Where(x => x.Value.Enabled && x.Value.MaskNode.IsLoaded).Select(x => new ClippingInformations
-						{
-							MaskTexture = x.Value.MaskNode.VideoBuffer.TargetTexture.DependencyID,
-							Operation = x.Value.Operation
-						})).ToArray();
+                            if (lastAsset.LayerMasks == null)
+                                lastAsset.LayerMasks = new ClippingInformations[0];
 
-						lastAsset.ClippingType = MaskType;
+                            lastAsset.LayerMasks = lastAsset.LayerMasks.Union(clippingMasks.Where(x => x.Value.Enabled && x.Value.MaskNode.IsLoaded).Select(x => new ClippingInformations
+                            {
+                                MaskTexture = x.Value.MaskNode.VideoBuffer.TargetTexture.DependencyID,
+                                Operation = x.Value.Operation
+                            })).ToArray();
 
-						assets[i] = lastAsset;
-					}
-				}
+                            assets[i] = lastAsset;
+                        }
+                    }
+                }
 
 			}
 
@@ -192,6 +216,9 @@ namespace pEngine.Core.Graphics.Containers
 		/// <param name="enabled">Enables or disable the mask.</param>
 		public LayerMask AddMask(LayerMask mask, MaskOperation operation, bool enabled = true)
 		{
+            if (clippingMasks.Count >= 15)
+                throw new Exception("The number of used layer mask is more than 15.");
+
 			clippingMasks.Add(mask, new Mask
 			{
 				MaskNode = mask,
