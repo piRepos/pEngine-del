@@ -507,21 +507,21 @@ namespace pEngine
 					{
                         try
                         {
-                            Gl.Enable(EnableCap.AlphaTest);
                             Gl.Enable(EnableCap.Blend);
 							Gl.Enable(EnableCap.StencilTest);
 							Gl.Enable(EnableCap.ScissorTest);
+                            Gl.Enable(EnableCap.DepthTest);
                         }
-                        catch (Exception) {}
+                        catch (Exception) { }
 
 						Renderer.DrawFrame(buffer.Value.Assets);
 
 						try
 						{
+                            Gl.Disable(EnableCap.DepthTest);
 							Gl.Disable(EnableCap.ScissorTest);
 							Gl.Disable(EnableCap.StencilTest);
 						    Gl.Disable(EnableCap.Blend);
-						    Gl.Disable(EnableCap.AlphaTest);
 						}
                         catch (Exception) { }
 					}

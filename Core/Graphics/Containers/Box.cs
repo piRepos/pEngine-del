@@ -32,27 +32,50 @@ namespace pEngine.Core.Graphics.Containers
 			BuildVertexs();
 		}
 
-        #region Buffering
+		#region Buffering
 
-        public override bool FrameBuffered
-        {
-            get
-            {
-                return base.FrameBuffered || MaskType == MaskType.ShaderMask;
-            }
-            set
-            {
-                base.FrameBuffered = value || MaskType == MaskType.ShaderMask;
-            }
-        }
+		public override bool FrameBuffered
+		{
+			get
+			{
+				return base.FrameBuffered || (MaskType == MaskType.ShaderMask && LayerMasks.Count() > 0);
+			}
+			set
+			{
+				base.FrameBuffered = value || (MaskType == MaskType.ShaderMask && LayerMasks.Count() > 0);
+			}
+		}
 
-        #endregion
+        protected override bool BypassBuffer
+		{
+			get
+			{
+				return base.BypassBuffer || (MaskType == MaskType.ShaderMask && LayerMasks.Count() > 0);
+			}
+			set
+			{
+				base.BypassBuffer = value || (MaskType == MaskType.ShaderMask && LayerMasks.Count() > 0);
+			}
+		}
 
-        #region Assets management
+		#endregion
+
+		#region Assets management
+
+		private IEnumerable<MaskAttachment> maskAttachments =>
+		clippingMasks.Values.Select((x, i) => new MaskAttachment { TextureAttachment = i + 1, Operation = x.Operation });
 
         protected override List<Asset> CalculateAssets()
 		{
-			var assets = base.CalculateAssets();
+            var assets = new List<Asset>();
+
+			if (LastInvalidatedFrame >= Host.LastRenderedFrame || !FrameBuffered)
+			{
+				assets.AddRange(base.CalculateAssets());
+
+				if (LastInvalidatedFrame >= Host.LastRenderedFrame && FrameBuffered)
+					Invalidate(InvalidationType.Assets, InvalidationDirection.Parent, this);
+			}
 
 			if (Background)
 			{
@@ -105,9 +128,34 @@ namespace pEngine.Core.Graphics.Containers
 			{
                 if (MaskType == MaskType.ShaderMask)
                 {
+
                     Asset maskShaderAsset = new Asset
                     {
-
+                        Transformation = Common.Math.Matrix.CreateScale(Host.Window.BufferSize.Width, Host.Window.BufferSize.Height, 0) * ToRelativeFloat,
+                        Shader = new MaskShader
+                        {
+                            SourceTextureAttachment = 0,
+                            MaskTextureAttachments = maskAttachments
+                        },
+                        Elements = new DrawElement[]
+                        {
+                            new DrawElement
+                            {
+                                ElementOffset = (int)FullQuad.Indexes.Offset,
+                                ElementSize = (int)FullQuad.Indexes.Size,
+                                Primitive = FullQuad.Primitive
+                            }
+                        },
+                        Textures = new KeyValuePair<int, long>[]
+                        {
+                            new KeyValuePair<int, long>(0, VideoBuffer.TargetTexture.DependencyID),
+                            new KeyValuePair<int, long>(1, LayerMasks.First().MaskNode.VideoBuffer.TargetTexture.DependencyID)
+                        },
+						AlphaBlendingDst = OpenGL.BlendingFactor.One,
+						AlphaBlendingSrc = OpenGL.BlendingFactor.One,
+						ColorBlendingDst = OpenGL.BlendingFactor.OneMinusSrcAlpha,
+						ColorBlendingSrc = OpenGL.BlendingFactor.SrcAlpha,
+                        TargetID = -1
                     };
 
                     assets.Add(maskShaderAsset);

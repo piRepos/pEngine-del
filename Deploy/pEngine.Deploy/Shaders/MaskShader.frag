@@ -16,25 +16,26 @@ out vec4 OutputColor;
 
 void main() 
 {
-	vec4 finalColor = texture(Textures[0], FragTextCoord);
+	vec4 curr = texture(Textures[0], FragTextCoord);
 
 	for (int i = 1; i < FragTextureCount + 1; i++)
 	{
-		vec4 MaskColor = texture(Textures[i], FragTextCoord);
+		vec4 MaskColor = texture(Textures[1], FragTextCoord);
 
 		float alphaChannel = MaskColor.a;
 
 		if (int(FragOperations[i - 1]) == 0)
-			continue;
-		else if (int(FragOperations[i - 1]) == 2)
-			alphaChannel = 1 - alphaChannel;
+            continue;
+        else if (int(FragOperations[i - 1]) == 2)
+            alphaChannel = 1 - alphaChannel;
 
-		finalColor.a *= alphaChannel;
+        curr.a *= alphaChannel;
+
 	}
 
-	if (finalColor.a <= 0)
+	if (curr.a <= 0)
 		discard;
-
-    OutputColor = finalColor;
+    
+    OutputColor = curr;
 
 }

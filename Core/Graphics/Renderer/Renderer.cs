@@ -114,6 +114,7 @@ namespace pEngine.Core.Graphics.Renderer
             ScissorSetting(a.ScissorArea);
 
             // - Set blending function ---------------------------------------------------------------------------------------------
+
             Gl.BlendFuncSeparate(a.ColorBlendingSrc, a.ColorBlendingDst, a.AlphaBlendingSrc, a.AlphaBlendingDst);
             // ---------------------------------------------------------------------------------------------------------------------
 

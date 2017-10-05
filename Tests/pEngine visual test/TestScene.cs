@@ -60,22 +60,18 @@ namespace pEngineVisualTest
 
 			#region Background
 
-			Children.Add((clip = new Box
-			{
-				Size = Size,
-				ScaleSize = pEngine.Core.Physics.Axes.Both,
-				Children =
-				{
-					(background = new Sprite(a["Background"])
+			/*Children.Add(new Sprite(a["Background"])
 					{
-						Size = Size,
+                Opacity = 0.1,
+                Size = Size,
 						ScaleSize = pEngine.Core.Physics.Axes.Both,
 						Stretch = StretchMode.UniformToFill
-					}.Load<Sprite>(Game))
-				}
-			}).Load<Box>(Game));
+					}.Load<Sprite>(Game));*/
 
 			#endregion
+
+
+
 
 			#region pEngine title
 
@@ -98,6 +94,25 @@ namespace pEngineVisualTest
 				ScaleWithParent = true
 			}.Load<Paragraph>(Game));
 
+			#region Background
+
+			Children.Add((clip = new Box
+			{
+				Size = Size,
+				ScaleSize = pEngine.Core.Physics.Axes.Both,
+				Children =
+				{
+					(background = new Sprite(a["Background"])
+					{
+						Size = Size,
+						ScaleSize = pEngine.Core.Physics.Axes.Both,
+						Stretch = StretchMode.UniformToFill
+					}.Load<Sprite>(Game))
+				}
+			}).Load<Box>(Game));
+
+			#endregion
+
 
 			Children.Add((mask = new LayerMask()
 			{
@@ -109,7 +124,7 @@ namespace pEngineVisualTest
 						Text = $@"pEngine",
 						//FrameBuffered = false,
 						Color = Color4.White,
-						Position = new Vector2i(200, 300),
+						Position = new Vector2i(400, 500),
 						ScaleWithParent = true
 					}.Load<Paragraph>(Game)
 				}
@@ -117,7 +132,7 @@ namespace pEngineVisualTest
 			}.Load<LayerMask>(Game)));
 
 			clip.AddMask(mask, pEngine.Core.Graphics.Renderer.Clipping.MaskOperation.Add);
-
+            clip.MaskType = pEngine.Core.Graphics.Renderer.Clipping.MaskType.ShaderMask;
             #endregion
         }
 

@@ -41,10 +41,10 @@ namespace pEngine.Core.Graphics
 		[LoaderFunction]
 		private void Load(BatchesStore batches)
 		{
-			quad = batches.DefaultQuad;
+			FullQuad = batches.DefaultQuad;
 		}
 
-		private QuadVertexBatch quad;
+		protected QuadVertexBatch FullQuad;
 
 		#endregion
 
@@ -87,7 +87,7 @@ namespace pEngine.Core.Graphics
 			{
 				assetCache = new List<Asset>();
 
-				if (LastInvalidatedFrame >= Host.LastRenderedFrame || !FrameBuffered)
+				if (LastInvalidatedFrame >= Host.LastRenderedFrame || !FrameBuffered || BypassBuffer)
 				{
 					assetCache.AddRange(CalculateAssets());
 
@@ -97,8 +97,8 @@ namespace pEngine.Core.Graphics
 
 				if (FrameBuffered)
 				{
-
-					for (int i = 0; i < assetCache.Count; ++i)
+                    int dog = assetCache.Any(x => x.Shader is MaskShader) ? 1 : 0;
+					for (int i = 0; i < assetCache.Count - dog; ++i)
 					{
 						if (assetCache[i].TargetID < 0)
 						{
@@ -108,32 +108,35 @@ namespace pEngine.Core.Graphics
 						}
 					}
 
-					assetCache.Add(new Asset
-					{
-						Transformation = Common.Math.Matrix.CreateScale(Host.Window.BufferSize.Width, Host.Window.BufferSize.Height, 0) * ToRelativeFloat,
-						Shader = new FrameBufferShader
-						{
-							TextureAttachment = 0
-						},
-						Textures = new KeyValuePair<int, long>[]
-						{
-							new KeyValuePair<int, long>(0, VideoBuffer.TargetTexture.DependencyID)
-						},
-						Elements = new DrawElement[]
-						{
-							new DrawElement
-							{
-								ElementOffset = (int)quad.Indexes.Offset,
-								ElementSize = (int)quad.Indexes.Size,
-								Primitive = quad.Primitive,
-							}
-						},
-						AlphaBlendingDst = OpenGL.BlendingFactor.OneMinusSrcAlpha,
-						AlphaBlendingSrc = OpenGL.BlendingFactor.SrcAlpha,
-						ColorBlendingDst = OpenGL.BlendingFactor.OneMinusSrcAlpha,
-						ColorBlendingSrc = OpenGL.BlendingFactor.One,
-						TargetID = -1
-					});
+                    if (!BypassBuffer)
+                    {
+                        assetCache.Add(new Asset
+                        {
+                            Transformation = Common.Math.Matrix.CreateScale(Host.Window.BufferSize.Width, Host.Window.BufferSize.Height, 0) * ToRelativeFloat,
+                            Shader = new FrameBufferShader
+                            {
+                                TextureAttachment = 0
+                            },
+                            Textures = new KeyValuePair<int, long>[]
+                            {
+                                new KeyValuePair<int, long>(0, VideoBuffer.TargetTexture.DependencyID)
+                            },
+                            Elements = new DrawElement[]
+                            {
+                                new DrawElement
+                                {
+                                    ElementOffset = (int)FullQuad.Indexes.Offset,
+                                    ElementSize = (int)FullQuad.Indexes.Size,
+                                    Primitive = FullQuad.Primitive,
+                                }
+                            },
+                            AlphaBlendingDst = OpenGL.BlendingFactor.OneMinusSrcAlpha,
+                            AlphaBlendingSrc = OpenGL.BlendingFactor.SrcAlpha,
+                            ColorBlendingDst = OpenGL.BlendingFactor.OneMinusSrcAlpha,
+                            ColorBlendingSrc = OpenGL.BlendingFactor.One,
+                            TargetID = -1
+                        });
+                    }
 				}
 			}
 
@@ -239,6 +242,12 @@ namespace pEngine.Core.Graphics
 		/// frame buffer, and will be renderized the buffer.
 		/// </summary>
         public virtual bool FrameBuffered { get; set; }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether this <see cref="T:pEngine.Core.Graphics.Drawable"/> dont draw buffer.
+        /// </summary>
+        /// <value><c>true</c> if dont draw buffer; otherwise, <c>false</c>.</value>
+        protected virtual bool BypassBuffer { get; set; }
 
 		/// <summary>
 		/// Object video buffer (if the property FrameBuffered is false this property is null).

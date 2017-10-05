@@ -215,8 +215,13 @@ namespace pEngine.Core.Graphics.Renderer.Shading
 		/// <param name="program">Shader program.</param>
 		public void Apply(uint program)
 		{
-			int uniform = Gl.GetUniformLocation(program, Name);
-			Gl.Uniform1(uniform, Attachments.Length, Attachments);
+            int i = 0;
+            foreach (int attachment in Attachments)
+            {
+                string name = Name + $"[{i++}]";
+                int uniform = Gl.GetUniformLocation(program, name);
+				Gl.Uniform1(uniform, attachment);
+            }
 		}
 
 	}
