@@ -67,6 +67,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Graphics\Renderer\FrameBuffering\FrameBufferMemory.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Graphics\Renderer\FrameBuffering\GLFrameBuffer.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Graphics\Renderer\FrameBuffering\FrameBufferDescriptor.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Graphics\Buffering\VideoBufferSettings.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Graphics\Renderer\FrameRenderInfo.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Graphics\Renderer\Renderer.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Graphics\Shading\DefaultShaders\FillShader.cs" />

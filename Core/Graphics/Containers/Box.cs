@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Collections.Generic;
 
+using pEngine.Core.Graphics.Buffering;
 using pEngine.Core.Graphics.Renderer.Clipping;
 using pEngine.Core.Graphics.Renderer.Batches;
 using pEngine.Core.Graphics.Renderer;
@@ -34,27 +35,24 @@ namespace pEngine.Core.Graphics.Containers
 
 		#region Buffering
 
-		public override bool FrameBuffered
+		public override VideoBufferSettings VideoBuffer
 		{
-			get
+			get => new VideoBufferSettings
 			{
-				return base.FrameBuffered || (MaskType == MaskType.ShaderMask && LayerMasks.Count() > 0);
-			}
+				Enabled = base.VideoBuffer.Enabled || (MaskType == MaskType.ShaderMask && LayerMasks.Count() > 0),
+				Bypass = base.VideoBuffer.Bypass || (MaskType == MaskType.ShaderMask && LayerMasks.Count() > 0),
+				Draw = base.VideoBuffer.Draw && !(MaskType == MaskType.ShaderMask && LayerMasks.Count() > 0),
+				VideoBuffer = base.VideoBuffer.VideoBuffer
+			};
 			set
 			{
-				base.FrameBuffered = value || (MaskType == MaskType.ShaderMask && LayerMasks.Count() > 0);
-			}
-		}
-
-        protected override bool BypassBuffer
-		{
-			get
-			{
-				return base.BypassBuffer || (MaskType == MaskType.ShaderMask && LayerMasks.Count() > 0);
-			}
-			set
-			{
-				base.BypassBuffer = value || (MaskType == MaskType.ShaderMask && LayerMasks.Count() > 0);
+				base.VideoBuffer = new VideoBufferSettings
+				{
+					Enabled = value.Enabled || (MaskType == MaskType.ShaderMask && LayerMasks.Count() > 0),
+					Bypass = value.Bypass || (MaskType == MaskType.ShaderMask && LayerMasks.Count() > 0),
+					Draw = value.Draw && !(MaskType == MaskType.ShaderMask && LayerMasks.Count() > 0),
+					VideoBuffer = value.VideoBuffer
+				};
 			}
 		}
 
@@ -69,12 +67,11 @@ namespace pEngine.Core.Graphics.Containers
 		{
             var assets = new List<Asset>();
 
-			if (LastInvalidatedFrame >= Host.LastRenderedFrame || !FrameBuffered)
+			if (VideoBuffer.NeedsRedraw(Host.LastRenderedFrame))
 			{
 				assets.AddRange(base.CalculateAssets());
 
-				if (LastInvalidatedFrame >= Host.LastRenderedFrame && FrameBuffered)
-					Invalidate(InvalidationType.Assets, InvalidationDirection.Parent, this);
+				Invalidate(InvalidationType.Assets, InvalidationDirection.Parent, this);
 			}
 
 			if (Background)
@@ -148,8 +145,8 @@ namespace pEngine.Core.Graphics.Containers
                         },
                         Textures = new KeyValuePair<int, long>[]
                         {
-                            new KeyValuePair<int, long>(0, VideoBuffer.TargetTexture.DependencyID),
-                            new KeyValuePair<int, long>(1, LayerMasks.First().MaskNode.VideoBuffer.TargetTexture.DependencyID)
+                            new KeyValuePair<int, long>(0, ObjectTexture.DependencyID),
+                            new KeyValuePair<int, long>(1, LayerMasks.First().MaskNode.ObjectTexture.DependencyID)
                         },
 						AlphaBlendingDst = OpenGL.BlendingFactor.One,
 						AlphaBlendingSrc = OpenGL.BlendingFactor.One,
@@ -171,7 +168,7 @@ namespace pEngine.Core.Graphics.Containers
                             .Where(x => x.Value.Enabled && x.Value.MaskNode.IsLoaded)
                             .Select(x => new ClippingInformations
                             {
-                                MaskTexture = x.Value.MaskNode.VideoBuffer.TargetTexture.DependencyID,
+                                MaskTexture = x.Value.MaskNode.ObjectTexture.DependencyID,
                                 Operation = x.Value.Operation
                             }).ToArray();
 
@@ -188,7 +185,7 @@ namespace pEngine.Core.Graphics.Containers
 
                             lastAsset.LayerMasks = lastAsset.LayerMasks.Union(clippingMasks.Where(x => x.Value.Enabled && x.Value.MaskNode.IsLoaded).Select(x => new ClippingInformations
                             {
-                                MaskTexture = x.Value.MaskNode.VideoBuffer.TargetTexture.DependencyID,
+                                MaskTexture = x.Value.MaskNode.ObjectTexture.DependencyID,
                                 Operation = x.Value.Operation
                             })).ToArray();
 

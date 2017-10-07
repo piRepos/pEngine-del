@@ -85,59 +85,7 @@ namespace pEngine.Core.Graphics
 		{
 			if (assetCache == null)
 			{
-				assetCache = new List<Asset>();
-
-				if (LastInvalidatedFrame >= Host.LastRenderedFrame || !FrameBuffered || BypassBuffer)
-				{
-					assetCache.AddRange(CalculateAssets());
-
-					if (LastInvalidatedFrame >= Host.LastRenderedFrame && FrameBuffered)
-						Invalidate(InvalidationType.Assets, InvalidationDirection.Parent, this);
-				}
-
-				if (FrameBuffered)
-				{
-                    int dog = assetCache.Any(x => x.Shader is MaskShader) ? 1 : 0;
-					for (int i = 0; i < assetCache.Count - dog; ++i)
-					{
-						if (assetCache[i].TargetID < 0)
-						{
-							Asset curr = assetCache[i];
-							curr.TargetID = VideoBuffer.DependencyID;
-							assetCache[i] = curr;
-						}
-					}
-
-                    if (!BypassBuffer)
-                    {
-                        assetCache.Add(new Asset
-                        {
-                            Transformation = Common.Math.Matrix.CreateScale(Host.Window.BufferSize.Width, Host.Window.BufferSize.Height, 0) * ToRelativeFloat,
-                            Shader = new FrameBufferShader
-                            {
-                                TextureAttachment = 0
-                            },
-                            Textures = new KeyValuePair<int, long>[]
-                            {
-                                new KeyValuePair<int, long>(0, VideoBuffer.TargetTexture.DependencyID)
-                            },
-                            Elements = new DrawElement[]
-                            {
-                                new DrawElement
-                                {
-                                    ElementOffset = (int)FullQuad.Indexes.Offset,
-                                    ElementSize = (int)FullQuad.Indexes.Size,
-                                    Primitive = FullQuad.Primitive,
-                                }
-                            },
-                            AlphaBlendingDst = OpenGL.BlendingFactor.OneMinusSrcAlpha,
-                            AlphaBlendingSrc = OpenGL.BlendingFactor.SrcAlpha,
-                            ColorBlendingDst = OpenGL.BlendingFactor.OneMinusSrcAlpha,
-                            ColorBlendingSrc = OpenGL.BlendingFactor.One,
-                            TargetID = -1
-                        });
-                    }
-				}
+				assetCache = CalculateAssets();
 			}
 
 			return assetCache;
@@ -153,7 +101,6 @@ namespace pEngine.Core.Graphics
 		#region Update logic
 
 		private long invalidationId;
-		private bool wasBuffered;
 
 		/// <summary>
 		/// Update this object physics.
@@ -163,28 +110,12 @@ namespace pEngine.Core.Graphics
 		{
 			base.Update(clock);
 
-
 			if (State == LoadState.Loaded && Host.PhysicsLoop.FrameId > invalidationId)
 			{
 				assetCache = null;
 				invalidationId = long.MaxValue;
 			}
 
-			if (wasBuffered != FrameBuffered)
-			{
-				Invalidate(InvalidationType.Assets, InvalidationDirection.Parent, this);
-				wasBuffered = FrameBuffered;
-			}
-
-			if (VideoBuffer != null && VideoBuffer.State != Data.FrameDependency.DependencyState.Loaded)
-			{
-				LastInvalidatedFrame = Host.PhysicsLoop.FrameId;
-			}
-
-			if (FrameBuffered && VideoBuffer == null)
-			{
-				VideoBuffer = Host.VideoBuffers.GetVideoBuffer(Host.Window.BufferSize);
-			}
 		}
 
 		/// <summary>
@@ -195,18 +126,8 @@ namespace pEngine.Core.Graphics
 		/// <param name="sender">Object sender.</param>
 		public override void Invalidate(InvalidationType type, InvalidationDirection propagation, IGameObject sender)
 		{
-			if (State == LoadState.Loaded && type.HasFlag(InvalidationType.Buffer) && VideoBuffer != null)
-			{
-				VideoBuffer.Size = Host.Window.BufferSize;
-				VideoBuffer.InvalidateDependency();
-			}
-
-			if (State == LoadState.Loaded && type.HasFlag(InvalidationType.Color))
-				LastInvalidatedFrame = Host.PhysicsLoop.FrameId;
-
 			if (State == LoadState.Loaded && type.HasFlag(InvalidationType.Assets) && invalidationId == long.MaxValue)
 				invalidationId = Host.PhysicsLoop.FrameId;
-
 
 			base.Invalidate(type, propagation, sender);
 		}
@@ -232,37 +153,6 @@ namespace pEngine.Core.Graphics
 		{
 			return Load<Drawable>(game);
 		}
-
-		#endregion
-
-		#region Frame Buffering
-
-		/// <summary>
-		/// If true this object's pixels will stored in a
-		/// frame buffer, and will be renderized the buffer.
-		/// </summary>
-        public virtual bool FrameBuffered { get; set; }
-
-        /// <summary>
-        /// Gets or sets a value indicating whether this <see cref="T:pEngine.Core.Graphics.Drawable"/> dont draw buffer.
-        /// </summary>
-        /// <value><c>true</c> if dont draw buffer; otherwise, <c>false</c>.</value>
-        protected virtual bool BypassBuffer { get; set; }
-
-		/// <summary>
-		/// Object video buffer (if the property FrameBuffered is false this property is null).
-		/// </summary>
-		public VideoBuffer VideoBuffer { get; private set; }
-
-		/// <summary>
-		/// Object texture (if the property FrameBuffered is false this property is null).
-		/// </summary>
-		public ITexture ObjectTexture => VideoBuffer?.TargetTexture;
-
-		/// <summary>
-		/// Id of the last frame invalidation.
-		/// </summary>
-		protected long LastInvalidatedFrame { get; private set; }
 
 		#endregion
 

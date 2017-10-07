@@ -7,7 +7,7 @@ using pEngine.Common.DataModel;
 using pEngine.Core.Graphics.Renderer;
 using pEngine.Core.Graphics.Textures;
 using pEngine.Common.Timing.Base;
-using pEngine.Core.Graphics.Renderer.Clipping;
+using pEngine.Core.Graphics.Buffering;
 
 namespace pEngine.Core.Graphics.Containers
 {
@@ -32,28 +32,25 @@ namespace pEngine.Core.Graphics.Containers
 
 		#region Properties
 
-		public override bool FrameBuffered { get { return true; } }
-
-		#endregion
-
-		#region Assets management
-
-		public override IEnumerable<Asset> GetAssets()
+		public override VideoBufferSettings VideoBuffer
 		{
-			List<Asset> newList = new List<Asset>(base.GetAssets());
-
-			newList.Remove(newList.Last());
-
-			return newList;
-		}
-
-		#endregion
-
-		#region Updating
-
-		public override void Update(IFrameBasedClock clock)
-		{
-			base.Update(clock);
+			get => new VideoBufferSettings
+			{
+				Enabled = true,
+				Bypass = base.VideoBuffer.Bypass,
+				Draw = base.VideoBuffer.Draw,
+				VideoBuffer = base.VideoBuffer.VideoBuffer
+			};
+			set
+			{
+				base.VideoBuffer = new VideoBufferSettings
+				{
+					Enabled = true,
+					Bypass = value.Bypass,
+					Draw = value.Draw,
+					VideoBuffer = value.VideoBuffer
+				};
+			}
 		}
 
 		#endregion
