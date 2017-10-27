@@ -52,9 +52,14 @@ namespace pEngine.Core.Graphics.Renderer
 		public Rect? ScissorArea;
 
 		/// <summary>
-		/// Texture mask id list.
+		/// Target stencil mask layer.
 		/// </summary>
-		public ClippingInformations[] LayerMasks;
+		public uint? StencilLayer;
+
+        /// <summary>
+        /// The stencil masks.
+        /// </summary>
+        public (uint, MaskOperation)[] StencilTargets;
 
 		#endregion
 

@@ -164,13 +164,13 @@ namespace pEngine.Core.Graphics.Containers
                     {
                         Asset lastAsset = assets[assets.Count - 1];
 
-                        lastAsset.LayerMasks = clippingMasks
+                        /*lastAsset.LayerMasks = clippingMasks
                             .Where(x => x.Value.Enabled && x.Value.MaskNode.IsLoaded)
                             .Select(x => new ClippingInformations
                             {
                                 MaskTexture = x.Value.MaskNode.ObjectTexture.DependencyID,
                                 Operation = x.Value.Operation
-                            }).ToArray();
+                            }).ToArray();*/
 
                         assets[assets.Count - 1] = lastAsset;
                     }
@@ -180,14 +180,14 @@ namespace pEngine.Core.Graphics.Containers
                         {
                             Asset lastAsset = assets[i];
 
-                            if (lastAsset.LayerMasks == null)
+                            /*if (lastAsset.LayerMasks == null)
                                 lastAsset.LayerMasks = new ClippingInformations[0];
 
                             lastAsset.LayerMasks = lastAsset.LayerMasks.Union(clippingMasks.Where(x => x.Value.Enabled && x.Value.MaskNode.IsLoaded).Select(x => new ClippingInformations
                             {
                                 MaskTexture = x.Value.MaskNode.ObjectTexture.DependencyID,
                                 Operation = x.Value.Operation
-                            })).ToArray();
+                            })).ToArray();*/
 
                             assets[i] = lastAsset;
                         }

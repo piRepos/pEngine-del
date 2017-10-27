@@ -54,7 +54,6 @@
     <Compile Include="$(MSBuildThisFileDirectory)Graphics\Renderer\Batches\IVertexBatch.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Graphics\Renderer\Batches\QuadVertexBatch.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Graphics\Renderer\Batches\VertexBatch.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Graphics\Renderer\Clipping\ClippingInformations.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Graphics\Fonts\DynamicFont.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Graphics\Fonts\FTHelpers.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Graphics\Fonts\Glyph.cs" />

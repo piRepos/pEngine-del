@@ -215,8 +215,12 @@ namespace pEngine.Core.Graphics.Containers
 		/// <summary>
 		/// Sets buffering for this object enabled or disabled.
 		/// </summary>
-		public bool FrameBuffered => VideoBuffer.Enabled;
-
+        public bool FrameBuffered 
+        { 
+            get { return VideoBuffer.Enabled; } 
+            set { var v = VideoBuffer; v.Enabled = value; VideoBuffer = v; } 
+        }
+   
 		/// <summary>
 		/// Object texture (if the property FrameBuffered is false this property is null).
 		/// </summary>

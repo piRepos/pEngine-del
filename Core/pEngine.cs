@@ -508,7 +508,6 @@ namespace pEngine
                         try
                         {
                             Gl.Enable(EnableCap.Blend);
-							Gl.Enable(EnableCap.StencilTest);
 							Gl.Enable(EnableCap.ScissorTest);
                             Gl.Enable(EnableCap.DepthTest);
                         }
@@ -520,7 +519,6 @@ namespace pEngine
 						{
                             Gl.Disable(EnableCap.DepthTest);
 							Gl.Disable(EnableCap.ScissorTest);
-							Gl.Disable(EnableCap.StencilTest);
 						    Gl.Disable(EnableCap.Blend);
 						}
                         catch (Exception) { }

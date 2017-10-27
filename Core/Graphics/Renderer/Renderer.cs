@@ -112,18 +112,41 @@ namespace pEngine.Core.Graphics.Renderer
             TexturesSetting(a.Textures);
 
             ScissorSetting(a.ScissorArea);
-
+            
             // - Set blending function ---------------------------------------------------------------------------------------------
 
             Gl.BlendFuncSeparate(a.ColorBlendingSrc, a.ColorBlendingDst, a.AlphaBlendingSrc, a.AlphaBlendingDst);
             // ---------------------------------------------------------------------------------------------------------------------
 
-            foreach (DrawElement e in a.Elements)
+            if (a.StencilLayer != null)
+                StencilDraw(a.StencilLayer.Value);
+
+            for (int i = 0; a.StencilTargets == null || i < a.StencilTargets.Length; ++i)
             {
-                // - Draw asset ----------------------------------------------------------------------------------------------------
-                Gl.DrawElements(e.Primitive, e.ElementSize, DrawElementsType.UnsignedInt, (IntPtr)(e.ElementOffset * sizeof(uint)));
-                // -----------------------------------------------------------------------------------------------------------------
+                if (a.StencilTargets != null && a.StencilTargets.Length > 0)
+                {
+                    var stencil = a.StencilTargets[i];
+                    StencilBegin(stencil.Item1, stencil.Item2);
+                }
+
+                foreach (DrawElement e in a.Elements)
+                {
+                    // - Draw asset ----------------------------------------------------------------------------------------------------
+                    Gl.DrawElements(e.Primitive, e.ElementSize, DrawElementsType.UnsignedInt, (IntPtr)(e.ElementOffset * sizeof(uint)));
+                    // -----------------------------------------------------------------------------------------------------------------
+                }
+
+                if (a.StencilTargets != null && a.StencilTargets.Length > 0)
+                {
+                    StencilEnd();
+                }
+
+                if (a.StencilTargets == null)
+                    break;
             }
+
+            if (a.StencilLayer != null)
+                StencilDrawEnd();
         }
 
         #endregion
@@ -276,9 +299,56 @@ namespace pEngine.Core.Graphics.Renderer
 
         #region Stencil clipping
 
-        public void StencilClippingSetting()
+        public void StencilBegin(uint layer, MaskOperation operation)
         {
-            
+            if (operation == MaskOperation.None)
+                return;
+
+            Gl.Enable(EnableCap.StencilTest);
+
+            Gl.ColorMask(false, false, false, false);
+            Gl.DepthMask(false);
+
+            Gl.StencilFunc(StencilFunction.Always, (int)layer, layer);
+
+            switch (operation)
+            {
+                case MaskOperation.Add:
+                    Gl.StencilOp(StencilOp.Keep, StencilOp.Keep, StencilOp.Incr);
+                    break;
+                case MaskOperation.Sub:
+                    Gl.StencilOp(StencilOp.Keep, StencilOp.Keep, StencilOp.Decr);
+                    break;
+            }
+
+            Gl.StencilMask(0xFF);
+
+            //Gl.Clear(ClearBufferMask.StencilBufferBit);
+        }
+
+        public void StencilEnd()
+        {
+            Gl.StencilMask(0x00);
+
+            Gl.ColorMask(true, true, true, true);
+            Gl.DepthMask(true);
+
+            Gl.Disable(EnableCap.StencilTest);
+        }
+
+        public void StencilDraw(uint layer)
+        {
+            Gl.Enable(EnableCap.StencilTest);
+
+            Gl.StencilFunc(StencilFunction.Equal, (int)layer, layer);
+            Gl.StencilOp(StencilOp.Keep, StencilOp.Keep, StencilOp.Keep);
+        }
+
+        public void StencilDrawEnd()
+        {
+            Gl.StencilFunc(StencilFunction.Equal, 0, 0x00);
+
+            Gl.Disable(EnableCap.StencilTest);
         }
 
         #endregion

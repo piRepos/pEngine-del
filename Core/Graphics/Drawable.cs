@@ -50,10 +50,6 @@ namespace pEngine.Core.Graphics
 
 		#region Visibility
 
-		/// <summary>
-		/// Gets or sets the clipping settings.
-		/// </summary>
-		public ClippingInformations Clipping { get; set; }
 
 		/// <summary>
 		/// Gets or sets if this object is visible.

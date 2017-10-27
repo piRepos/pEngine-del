@@ -122,7 +122,7 @@ namespace pEngineVisualTest
 					new Paragraph(comfortaaRegular120)
 					{
 						Text = $@"pEngine",
-						//FrameBuffered = false,
+						FrameBuffered = false,
 						Color = Color4.White,
 						Position = new Vector2i(400, 500),
 						ScaleWithParent = true
@@ -132,7 +132,7 @@ namespace pEngineVisualTest
 			}.Load<LayerMask>(Game)));
 
 			clip.AddMask(mask, pEngine.Core.Graphics.Renderer.Clipping.MaskOperation.Add);
-            clip.MaskType = pEngine.Core.Graphics.Renderer.Clipping.MaskType.ShaderMask;
+            clip.MaskType = pEngine.Core.Graphics.Renderer.Clipping.MaskType.StencilMask;
             #endregion
         }
 
