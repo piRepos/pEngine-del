@@ -12,6 +12,8 @@
     <Folder Include="$(MSBuildThisFileDirectory)Windows\" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="$(MSBuildThisFileDirectory)Input\GlfwKeyboard.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Input\GlfwMouse.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Monitors\GlfwMonitor.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Windows\IWindow.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Monitors\IMonitor.cs" />

@@ -96,6 +96,12 @@
     <Compile Include="$(MSBuildThisFileDirectory)IGameObject.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Graphics\Renderer\Asset.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Graphics\Renderer\Tessellator\DrawablePoint.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Input\DeviceManager.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Input\Devices\IDevice.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Input\Devices\IJoypad.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Input\Devices\IKeyboard.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Input\Devices\IMouse.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Input\InputManager.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Network\Base\FileTransfer.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Network\Base\Protocol.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Network\Base\Socket.cs" />

@@ -4,6 +4,7 @@ using System.Threading;
 using System.Collections.Generic;
 
 using pEngine.Core;
+using pEngine.Core.Input;
 using pEngine.Core.Data;
 using pEngine.Core.Graphics.Renderer;
 using pEngine.Core.Graphics.Renderer.Batches;
@@ -75,7 +76,7 @@ namespace pEngine
 			assetBuffer = new TripleBuffer<FrameRenderInfo>();
 
 			// - Initialize threads
-			InputLoop = new GameLoop(Input, "InputThread");
+			InputLoop = new GameLoop(Events, "InputThread");
 			PhysicsLoop = new ThreadedGameLoop(Update, "PhysicsThread");
 			GraphicsLoop = new ThreadedGameLoop(Draw, "GraphicsThread");
 
@@ -85,6 +86,7 @@ namespace pEngine
             // - Modules
             Fonts = new FontStore(this);
             Renderer = new Renderer(this);
+			//Input = new InputManager(this);
 			Audio = new AudioManager(this);
             Shaders = new ShaderStore(this);
 			Batches = new BatchesStore(this);
@@ -92,9 +94,10 @@ namespace pEngine
             Resources = new ResourceLoader(this);
             VideoBuffers = new VideoBufferStore(this);
 
-			// - Register loader servicess
+			// - Register loader services
+			Loader.AddService(Input);
 			Loader.AddService(Audio);
-            Loader.AddService(Debug);
+			Loader.AddService(Debug);
             Loader.AddService(Fonts);
             Loader.AddService(Loader);
             Loader.AddService(Batches);
@@ -214,6 +217,11 @@ namespace pEngine
 		/// This module manages audio devices.
 		/// </summary>
 		public AudioManager Audio { get; }
+
+		/// <summary>
+		/// This module manages inputs devices.
+		/// </summary>
+		//public InputManager Input { get; }
 
 		#endregion
 
@@ -367,10 +375,12 @@ namespace pEngine
 		/// Updates the input.
 		/// </summary>
 		/// <param name="clock">Game loop clock.</param>
-		protected virtual void Input(IFrameBasedClock clock)
+		protected virtual void Events(IFrameBasedClock clock)
 		{
 			using (InputLoop.Performance.StartCollect("PoolMessages"))
-				Window.PollMesages(false);
+				Window.PollMesages(true);
+
+			//Input.EventDispatch(clock);
 
 			if (Window.ShouldClose)
 				Close();
