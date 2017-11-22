@@ -86,7 +86,7 @@ namespace pEngine
             // - Modules
             Fonts = new FontStore(this);
             Renderer = new Renderer(this);
-			//Input = new InputManager(this);
+			Input = new InputManager(this);
 			Audio = new AudioManager(this);
             Shaders = new ShaderStore(this);
 			Batches = new BatchesStore(this);
@@ -221,7 +221,7 @@ namespace pEngine
 		/// <summary>
 		/// This module manages inputs devices.
 		/// </summary>
-		//public InputManager Input { get; }
+		public InputManager Input { get; }
 
 		#endregion
 
@@ -280,6 +280,9 @@ namespace pEngine
 
 			// - Audio initialization
 			Audio.Initialize();
+
+            // - Input initialization
+            Input.Initialize();
 
 			// - Graphics library initialization
 			GraphicsLoop.Scheduler.Add(() =>
@@ -380,7 +383,7 @@ namespace pEngine
 			using (InputLoop.Performance.StartCollect("PoolMessages"))
 				Window.PollMesages(true);
 
-			//Input.EventDispatch(clock);
+			Input.EventDispatch(clock);
 
 			if (Window.ShouldClose)
 				Close();

@@ -20,5 +20,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Monitors\Resolution.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Windows\GlfwWindow.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Environment.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Input\GlfwJoypad.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Input\GlfwDeviceManager.cs" />
   </ItemGroup>
 </Project>

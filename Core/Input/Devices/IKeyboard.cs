@@ -74,7 +74,7 @@ namespace pEngine.Core.Input
 	[Flags]
 	public enum KeyModifier
 	{
-		None = 0;
+		None = 0,
 
 		/// <summary>
 		/// Shift modifier (left or right shift).

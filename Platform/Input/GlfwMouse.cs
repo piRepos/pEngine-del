@@ -12,6 +12,10 @@ namespace pEngine.Platform.Input
 {
     public class GlfwMouse : IMouse
     {
+        Glfw.CursorPosFunc cursorCallback;
+        Glfw.CursorPosFunc scrollCallback;
+        Glfw.MouseButtonFunc buttonCallback;
+
 		/// <summary>
 		/// Makes a new instance of <see cref="GlfwMouse"/> class.
 		/// </summary>
@@ -19,6 +23,21 @@ namespace pEngine.Platform.Input
 		public GlfwMouse(GlfwWindow window)
 		{
 			handler = window;
+
+            cursorCallback = (w, x, y) =>
+            {
+                OnMove?.Invoke(new Vector2((float)x, (float)y));
+            };
+
+            scrollCallback = (w, x, y) =>
+            {
+                OnScroll?.Invoke(new Vector2((float)x, (float)y));
+            };
+
+            buttonCallback = (w, button, action, modifiers) =>
+            {
+                OnButtonEvent?.Invoke((MouseButton)button, (KeyState)action, (KeyModifier)modifiers);
+            };
 		}
 
 		/// <summary>
@@ -26,20 +45,9 @@ namespace pEngine.Platform.Input
 		/// </summary>
 		public void Initialize()
 		{
-			Glfw.SetCursorPosCallback(handler.Handle, (window, x, y) =>
-			{
-				OnMove?.Invoke(new Vector2((float)x, (float)y));
-			});
-
-			Glfw.SetScrollCallback(handler.Handle, (window, x, y) =>
-			{
-				OnScroll?.Invoke(new Vector2((float)x, (float)y));
-			});
-
-			Glfw.SetMouseButtonCallback(handler.Handle, (window, button, action, modifiers) =>
-			{
-				OnButtonEvent?.Invoke((MouseButton)button, (KeyState)action, (KeyModifier)modifiers);
-			});
+            Glfw.SetCursorPosCallback(handler.Handle, cursorCallback);
+            Glfw.SetScrollCallback(handler.Handle, scrollCallback);
+			Glfw.SetMouseButtonCallback(handler.Handle, buttonCallback);
 		}
 
 		/// <summary>

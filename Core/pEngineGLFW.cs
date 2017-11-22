@@ -3,6 +3,7 @@
 using Glfw3;
 
 using pEngine.Platform.Windows;
+using pEngine.Platform.Input;
 
 using pEngine.Common.Timing.Base;
 
@@ -36,6 +37,9 @@ namespace pEngine
 
 			// - Window initialization
 			Window = new GlfwWindow();
+
+            // - Input devices setting
+            Input.Hardware = new GlfwDeviceManager(Window as GlfwWindow);
 		}
 
 
@@ -43,10 +47,10 @@ namespace pEngine
 		/// Updates the input.
 		/// </summary>
 		/// <param name="clock">Game loop clock.</param>
-		override protected void Input(IFrameBasedClock clock)
-		{
-			base.Input(clock);
-		}
+		protected override void Events(IFrameBasedClock clock)
+        {
+            base.Events(clock);
+        }
 
 		/// <summary>
 		/// Updates game tree.

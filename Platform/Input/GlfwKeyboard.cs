@@ -12,6 +12,10 @@ namespace pEngine.Platform.Input
 {
     public class GlfwKeyboard : IKeyboard
     {
+        Glfw.KeyFunc keyCallback;
+        Glfw.CharFunc charCallback;
+        Glfw.CharModsFunc charModsCallback;
+
 		/// <summary>
 		/// Makes a new instance of <see cref="GlfwKeyboard"/> class.
 		/// </summary>
@@ -19,6 +23,21 @@ namespace pEngine.Platform.Input
 		public GlfwKeyboard(GlfwWindow window)
 		{
 			handler = window;
+
+            keyCallback = (w, key, scancode, state, modifiers) =>
+            {
+                OnKeyEvent?.Invoke((KeyboardKey)key, scancode, (KeyState)state, (KeyModifier)modifiers);
+            };
+
+            charCallback = (w, c) =>
+            {
+                OnType?.Invoke((char)c);
+            };
+
+            charModsCallback = (w, c, modifiers) =>
+            {
+                OnTypeWithMods?.Invoke((char)c, (KeyModifier)modifiers);
+            };
 		}
 
 		/// <summary>
@@ -26,20 +45,9 @@ namespace pEngine.Platform.Input
 		/// </summary>
 		public void Initialize()
 		{
-			Glfw.SetKeyCallback(handler.Handle, (window, key, scancode, state, modifiers) =>
-			{
-				OnKeyEvent?.Invoke((KeyboardKey)key, scancode, (KeyState)state, (KeyModifier)modifiers);
-			});
-
-			Glfw.SetCharCallback(handler.Handle, (window, c) =>
-			{
-				OnType?.Invoke((char)c);
-			});
-
-			Glfw.SetCharModsCallback(handler.Handle, (window, c, modifiers) =>
-			{
-				OnTypeWithMods?.Invoke((char)c, (KeyModifier)modifiers);
-			});
+            Glfw.SetKeyCallback(handler.Handle, keyCallback);
+            Glfw.SetCharCallback(handler.Handle, charCallback);
+            Glfw.SetCharModsCallback(handler.Handle, charModsCallback);
 		}
 
 		/// <summary>

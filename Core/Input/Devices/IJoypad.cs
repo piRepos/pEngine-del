@@ -19,7 +19,7 @@ namespace pEngine.Core.Input
 		/// <summary>
 		/// Gets the state for the joypad axys.
 		/// </summary>
-		double[] Axis { get; }
+		double[] Axes { get; }
 
 		/// <summary>
 		/// Gets the state for each joypad button.
