@@ -6,7 +6,7 @@ using System.Runtime.InteropServices;
 
 using FreeImageAPI;
 
-using pEngine.Common.Math;
+using pEngine.Utils.Math;
 
 namespace pEngine.Utils.Memory
 {

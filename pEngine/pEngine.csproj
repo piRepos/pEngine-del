@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -24,6 +24,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -33,6 +34,7 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <PropertyGroup>
     <StartupObject />
@@ -62,6 +64,7 @@
     <Reference Include="System.Data" />
     <Reference Include="System.Net.Http" />
     <Reference Include="System.Xml" />
+    <Reference Include="System.Drawing" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Audio\AudioDevice.cs" />
@@ -108,7 +111,6 @@
     <Compile Include="Resources\Files\TrueTypeFont.cs" />
     <Compile Include="Resources\IResource.cs" />
     <Compile Include="Resources\Resource.cs" />
-    <Compile Include="Resources\ResourceManager.cs" />
     <Compile Include="Utils\Color4.cs" />
     <Compile Include="Utils\Extensions\ListExtensions.cs" />
     <Compile Include="Utils\Math\Angle.cs" />
@@ -140,6 +142,10 @@
     <Compile Include="Utils\Vector3i.cs" />
     <Compile Include="Utils\Vector4.cs" />
     <Compile Include="Utils\Vector4i.cs" />
+    <Compile Include="Utils\Invocation\InvokeOnDisposal.cs" />
+    <Compile Include="Resources\Dependencies\PartialResource.cs" />
+    <Compile Include="Resources\Dependencies\Dependency.cs" />
+    <Compile Include="Resources\PartialResource.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
@@ -161,6 +167,10 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="FodyWeavers.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Utils\Invocation\" />
+    <Folder Include="Resources\Dependencies\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="..\packages\Fody.2.2.1.0\build\net452\Fody.targets" Condition="Exists('..\packages\Fody.2.2.1.0\build\net452\Fody.targets')" />

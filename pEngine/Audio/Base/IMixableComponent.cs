@@ -3,13 +3,6 @@
 //		pEngine / 2D Graphic engine for rythm games.
 //
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.ComponentModel.DataAnnotations;
-
 using pEngine.Audio.DSP;
 
 namespace pEngine.Audio.Base

@@ -4,17 +4,20 @@
 //
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+
+using pEngine.Framework.Binding;
 
 namespace pEngine.Audio.DSP
 {
+    /// <summary>
+    /// Audio glitcher DSP.
+    /// </summary>
     public class Glitcher : DSP
     {
-
-        public Glitcher()
+        /// <summary>
+        /// Makes a new instance of <see cref="Glitcher"/> class.
+        /// </summary>
+        public Glitcher() : base()
         {
 
         }
@@ -24,16 +27,19 @@ namespace pEngine.Audio.DSP
         /// <summary>
         /// Beat divisor.
         /// </summary>
+        [Bindable]
         public uint Divisor { get; set; } = 4;
 
         /// <summary>
         /// Number of bars between each state change.
         /// </summary>
+        [Bindable]
         public uint Bars { get; set; } = 2;
 
         /// <summary>
         /// Song beats per minute.
         /// </summary>
+        [Bindable]
         public double BPM { get; set; } = 120;
 
         #endregion

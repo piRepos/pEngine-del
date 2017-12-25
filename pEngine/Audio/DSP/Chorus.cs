@@ -5,12 +5,10 @@
 
 #pragma warning disable 0414
 
-using System;
 using System.Runtime.InteropServices;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+
+using pEngine.Framework;
+using pEngine.Framework.Binding;
 
 using ManagedBass.Fx;
 using ManagedBass;
@@ -34,10 +32,12 @@ namespace pEngine.Audio.DSP
     /// The <see cref="Rate"/> is the rate of delay change in millisecs per sec, <see cref="MaxSweep"/>-<see cref="MinSweep"/> is the range or width of sweep in ms.
     /// </para>
     /// </remarks>
-    public class Chorus : IEffect
+    public class Chorus : pObject, IEffect
     {
 
-
+        /// <summary>
+        /// Makes a new instance of <see cref="Chorus"/> class.
+        /// </summary>
         public Chorus()
         {
             Params = new ChorusParameters();
@@ -47,7 +47,10 @@ namespace pEngine.Audio.DSP
             PinParams();
         }
 
-        public void Dispose()
+        /// <summary>
+        /// Release bass resources.
+        /// </summary>
+        public override void Dispose()
         {
             ParamsHandler.Free();
         }
@@ -67,6 +70,7 @@ namespace pEngine.Audio.DSP
         /// <summary>
         /// Dry (unaffected) signal mix (-2...+2). Default = 0.9
         /// </summary>
+        [Bindable]
         public double DryMix
         {
             get { return fDryMix; }
@@ -81,6 +85,7 @@ namespace pEngine.Audio.DSP
         /// <summary>
         /// Feedback (-1...+1). Default = 0.5.
         /// </summary>
+        [Bindable]
         public double Feedback
         {
             get { return fFeedback; }
@@ -95,6 +100,7 @@ namespace pEngine.Audio.DSP
         /// <summary>
         /// Maximum delay in ms (0&lt;...6000). Default = 400.
         /// </summary>
+        [Bindable]
         public double MaxSweep
         {
             get { return fMaxSweep; }
@@ -109,6 +115,7 @@ namespace pEngine.Audio.DSP
         /// <summary>
         /// Minimum delay in ms (0&lt;...6000). Default = 1.
         /// </summary>
+        [Bindable]
         public double MinSweep
         {
             get { return fMinSweep; }
@@ -123,6 +130,7 @@ namespace pEngine.Audio.DSP
         /// <summary>
         /// Rate in ms/s (0&lt;...1000). Default = 200.
         /// </summary>
+        [Bindable]
         public double Rate
         {
             get { return fRate; }
@@ -137,6 +145,7 @@ namespace pEngine.Audio.DSP
         /// <summary>
         /// Wet (affected) signal mix (-2...+2). Default = 0.35.
         /// </summary>
+        [Bindable]
         public double WetMix
         {
             get { return fWetMix; }
@@ -151,6 +160,7 @@ namespace pEngine.Audio.DSP
         /// <summary>
         /// A <see cref="FXChannelFlags" /> flag to define on which channels to apply the effect. Default: <see cref="FXChannelFlags.All"/>
         /// </summary>
+        [Bindable]
         public FXChannelFlags Channels
         {
             get { return lChannel; }
@@ -165,6 +175,7 @@ namespace pEngine.Audio.DSP
         /// <summary>
         /// Checks whether the effect is currently enabled and active.
         /// </summary>
+        [Bindable]
         public bool Bypass
         {
             set
@@ -186,6 +197,7 @@ namespace pEngine.Audio.DSP
         /// <summary>
         /// Priority of the Effect in DSP chain.
         /// </summary>
+        [Bindable]
         public int Priority
         {
             get { return priority; }
@@ -348,7 +360,7 @@ namespace pEngine.Audio.DSP
         /// </summary>
         /// <param name="Stream">Target stream.</param>
         /// <param name="Priority">Effect priority.</param>
-        public void Bind(int Channel, int Priority)
+        public void BindStream(int Channel, int Priority)
         {
             ChannelHandler = Channel;
             priority = Priority;
@@ -362,7 +374,7 @@ namespace pEngine.Audio.DSP
         /// Unbind this effect from the binded stream.
         /// </summary>
         /// <param name="Stream">Target stream.</param>
-        public void Unbind(int Channel)
+        public void UnbindStream(int Channel)
         {
             if (Channel != ChannelHandler)
                 return;

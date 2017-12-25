@@ -2,6 +2,7 @@
 using System.Runtime.InteropServices;
 
 using pEngine.Utils.Memory;
+using pEngine.Framework.Binding;
 
 using FreeImageAPI;
 
@@ -18,7 +19,14 @@ namespace pEngine.Resources.Files
 		public Image(string path)
 			: base(path)
 		{
-
+            switch (Extension.ToLower())
+            {
+                case "png":
+                case "jpg":
+                    break;
+                default:
+                    throw new InvalidOperationException("This file is not an image format.");
+            }
 		}
 
 		/// <summary>
@@ -29,11 +37,17 @@ namespace pEngine.Resources.Files
 		/// <summary>
 		/// Image format.
 		/// </summary>
+        [Bindable(Direction = BindingMode.ReadOnly)]
 		public ImageFormat Format { get; private set; }
 
+        /// <summary>
+        /// Used space in bytes.
+        /// </summary>
+        [Bindable(Direction = BindingMode.ReadOnly)]
+        public override uint UsedSpace => base.UsedSpace + 4 + ((uint)RawPixels.Pixels.Length * sizeof(byte));
 
 
-		internal override void OnLoad()
+		protected override void OnLoad()
 		{
 			if (RawPixels == PixelBuffer.Empty)
 			{
@@ -92,23 +106,6 @@ namespace pEngine.Resources.Files
 				Marshal.FreeHGlobal(Data);
 			}
 		}
-
-		internal override void OnComplete()
-		{
-			base.OnComplete();
-		}
-
-		internal override bool OnAbort(IResource res, Exception e)
-		{
-			return base.OnAbort(res, e);
-		}
-
-		public override void Dispose()
-		{
-			base.Dispose();
-		}
-
-		public override uint UsedSpace => throw new NotImplementedException();
 
 	}
 }

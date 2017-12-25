@@ -3,24 +3,25 @@
 //		pEngine / 2D Graphic engine for rythm games.
 //
 
-using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-using ManagedBass;
 using ManagedBass.Mix;
 
 using pEngine.Audio.Base;
 using pEngine.Audio.DSP;
+using pEngine.Framework;
+using pEngine.Framework.Binding;
 
 namespace pEngine.Audio.Mixing
 {
-    public class Mixer : IMixableComponent
+    /// <summary>
+    /// Manages channels and mix all sounds.
+    /// </summary>
+    public class Mixer : pObject, IMixableComponent
     {
-
+        /// <summary>
+        /// Makes a new instance of <see cref="Mixer"/> class.
+        /// </summary>
         public Mixer()
         {
             Effects = new List<IEffect>();
@@ -37,6 +38,7 @@ namespace pEngine.Audio.Mixing
         /// <summary>
         /// Volume of this object.
         /// </summary>
+        [Bindable]
         public double Volume
         {
             get { return VolumeInternal; }
@@ -54,6 +56,7 @@ namespace pEngine.Audio.Mixing
         /// <summary>
         /// Sound orientation.
         /// </summary>
+        [Bindable]
         public double Pan
         {
             get { return PanInternal; }
@@ -69,6 +72,7 @@ namespace pEngine.Audio.Mixing
         /// <summary>
         /// Mute this element.
         /// </summary>
+        [Bindable]
         public bool Mute
         {
             get { return MuteInternal; }
@@ -86,6 +90,7 @@ namespace pEngine.Audio.Mixing
         /// <summary>
         /// Real volume value.
         /// </summary>
+        [Bindable(Direction = BindingMode.ReadOnly)]
         public double RelativeVolume
         {
             get
@@ -101,6 +106,7 @@ namespace pEngine.Audio.Mixing
         /// <summary>
         /// Real Sound orientation.
         /// </summary>
+        [Bindable(Direction = BindingMode.ReadOnly)]
         public double RelativePan
         {
             get
@@ -239,7 +245,10 @@ namespace pEngine.Audio.Mixing
 
         #region Handler
 
-        public int StreamHandler { get { return 0; } }
+        /// <summary>
+        /// Stream handler.
+        /// </summary>
+        public int StreamHandler => 0;
 
         #endregion
     }

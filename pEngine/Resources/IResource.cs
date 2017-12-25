@@ -11,6 +11,24 @@ namespace pEngine.Resources
 	public delegate void ResourceEventHandler(IResource res);
 	public delegate void ResourceAbortEventHandler(IResource res, Exception e);
 
+    public enum ResourceState
+    {
+        /// <summary>
+        /// The resource is not loaded.
+        /// </summary>
+        NotLoaded = 0,
+
+        /// <summary>
+        /// The resource is loaded.
+        /// </summary>
+        Loaded = 1,
+
+        /// <summary>
+        /// The resource loading is aborted.
+        /// </summary>
+        Aborted = 2
+    }
+
 	/// <summary>
 	/// A loadable resource.
 	/// </summary>
@@ -19,7 +37,7 @@ namespace pEngine.Resources
         /// <summary>
         /// Triggered on dependencies and resource loaded.
         /// </summary>
-        event ResourceEventHandler Completed;
+        event ResourceEventHandler Loaded;
 
         /// <summary>
         /// Triggered on loading error.
@@ -29,21 +47,14 @@ namespace pEngine.Resources
         /// <summary>
         /// Triggered on resource disposing.
         /// </summary>
-        event ResourceEventHandler Deleted;
+        event ResourceEventHandler Disposed;
 
         #region State
 
         /// <summary>
         /// Gets a value indicating whether this resource is loaded.
         /// </summary>
-        /// <value><c>true</c> if this instance is loaded; otherwise, <c>false</c>.</value>
-        bool IsLoaded { get; }
-
-        /// <summary>
-        /// Gets a value indicating whether the load process is aborted due to error.
-        /// </summary>
-        /// <value><c>true</c> if this instance is aborted; otherwise, <c>false</c>.</value>
-        bool IsAborted { get; }
+        ResourceState State { get; }
 
         #endregion
 
@@ -51,7 +62,7 @@ namespace pEngine.Resources
 		/// This resource will wait that all resources in this
 		/// list are loaded, then this resource il start to load.
 		/// </summary>
-		IEnumerable<IResource> InternalDependencies { get; }
+		IEnumerable<IResource> Dependencies { get; }
 
 		/// <summary>
 		/// Used space in RAM memory.

@@ -4,17 +4,20 @@
 //
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+
+using pEngine.Framework.Binding;
 
 namespace pEngine.Audio.DSP
 {
+    /// <summary>
+    /// Implements a bar gate audio DSP.
+    /// </summary>
     public class BarGate : DSP
     {
-
-        public BarGate()
+        /// <summary>
+        /// Makes a new instance of <see cref="BarGate"/> class.
+        /// </summary>
+        public BarGate() : base()
         {
 
         }
@@ -24,42 +27,50 @@ namespace pEngine.Audio.DSP
         /// <summary>
         /// Beat divisor.
         /// </summary>
+        [Bindable]
         public uint Divisor { get; set; } = 4;
 
         /// <summary>
         /// Number of bars between each state change.
         /// </summary>
+        [Bindable]
         public uint Bars { get; set; } = 2;
 
         /// <summary>
         /// Song beats per minute.
         /// </summary>
+        [Bindable]
         public double BPM { get; set; } = 120;
 
         /// <summary>
         /// Volume On gate open.
         /// </summary>
+        [Bindable]
         public uint MaxVol { get; set; } = 100;
 
         /// <summary>
         /// Volume On gate close.
         /// </summary>
+        [Bindable]
         public uint MinVol { get; set; } = 0;
 
         /// <summary>
         /// Milliseconds of the high - low voume transition
         /// (Default 2 for smooth volume change)
         /// </summary>
+        [Bindable]
         public double EasingTime { get; set; } = 2;
 
         /// <summary>
         /// Song offset.
         /// </summary>
+        [Bindable]
         public double Offset { get; set; }
 
         /// <summary>
         /// Bypass this DSP.
         /// </summary>
+        [Bindable]
         public new bool Bypass { get; set; }
 
         #endregion

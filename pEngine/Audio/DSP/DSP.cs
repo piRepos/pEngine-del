@@ -4,10 +4,9 @@
 //
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+
+using pEngine.Framework;
+using pEngine.Framework.Binding;
 
 using ManagedBass;
 
@@ -16,10 +15,10 @@ namespace pEngine.Audio.DSP
     /// <summary>
     /// Base class for DSPs.
     /// </summary>
-    public abstract class DSP : IEffect
+    public abstract class DSP : pObject, IEffect
     {
 
-        public DSP()
+        public DSP() : base()
         {
 
         }
@@ -27,7 +26,7 @@ namespace pEngine.Audio.DSP
         /// <summary>
         /// Frees all resources used by this instance.
         /// </summary>
-        public void Dispose()
+        public override void Dispose()
         {
             Bass.ChannelRemoveDSP(Channel, Handle);
             IsAssigned = false;
@@ -47,6 +46,7 @@ namespace pEngine.Audio.DSP
         /// <summary>
         /// Gets or Sets the DSP priority.
         /// </summary>
+        [Bindable]
         public int Priority
         {
             get { return priority; }
@@ -60,6 +60,7 @@ namespace pEngine.Audio.DSP
         /// <summary>
         /// Gets whether the DSP is assigned.
         /// </summary>
+        [Bindable]
         public bool IsAssigned
         {
             get { return assigned; }
@@ -72,6 +73,7 @@ namespace pEngine.Audio.DSP
         /// <summary>
         /// Gets or Sets whether the DSP should be bypassed.
         /// </summary>
+        [Bindable]
         public bool Bypass
         {
             get { return bypass; }
@@ -84,6 +86,7 @@ namespace pEngine.Audio.DSP
         /// <summary>
         /// Gets the <see cref="Resolution"/> of the <see cref="Channel"/> on which the DSP is applied.
         /// </summary>
+        [Bindable(Direction = BindingMode.ReadOnly)]
         public Resolution Resolution { get; private set; }
 
         #endregion
@@ -92,7 +95,7 @@ namespace pEngine.Audio.DSP
 
         private int Handle;
 
-        public void Bind(int Stream, int Priority)
+        public void BindStream(int Stream, int Priority)
         {
             Channel = Stream;
             priority = Priority;
@@ -108,7 +111,7 @@ namespace pEngine.Audio.DSP
             else throw new InvalidOperationException("DSP Assignment Failed");
         }
 
-        public void Unbind(int Stream)
+        public void UnbindStream(int Stream)
         {
             if (Stream != Channel)
                 return;

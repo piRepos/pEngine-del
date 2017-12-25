@@ -4,10 +4,6 @@
 //
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace pEngine.Audio.DSP
 {
@@ -19,13 +15,13 @@ namespace pEngine.Audio.DSP
         /// </summary>
         /// <param name="Stream">Target stream.</param>
         /// <param name="Priority">Effect priority.</param>
-        void Bind(int Stream, int Priority);
+        void BindStream(int Stream, int Priority);
 
         /// <summary>
         /// Unbind this effect from the binded stream.
         /// </summary>
         /// <param name="Stream">Target stream.</param>
-        void Unbind(int Stream);
+        void UnbindStream(int Stream);
 
         /// <summary>
         /// Bypass this effect.

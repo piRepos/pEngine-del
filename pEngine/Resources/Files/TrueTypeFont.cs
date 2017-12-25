@@ -18,17 +18,17 @@ namespace pEngine.Resources.Files
 			}
 		}
 
-		internal override void OnLoad()
+		protected override void OnLoad()
 		{
 			base.OnLoad();
 		}
 
-		internal override void OnComplete()
+        protected override void OnComplete()
 		{
 			base.OnComplete();
 		}
 
-		internal override bool OnAbort(IResource res, Exception e)
+        protected override bool OnAbort(IResource res, Exception e)
 		{
 			return base.OnAbort(res, e);
 		}

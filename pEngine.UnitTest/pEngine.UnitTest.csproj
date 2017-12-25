@@ -53,6 +53,7 @@
   <ItemGroup>
     <Compile Include="Framework\BindingTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Resources\ResourceTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

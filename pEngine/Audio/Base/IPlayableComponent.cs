@@ -3,15 +3,6 @@
 //		pEngine / 2D Graphic engine for rythm games.
 //
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.ComponentModel.DataAnnotations;
-
-using ManagedBass;
-
 namespace pEngine.Audio.Base
 {
     public interface IPlayableComponent : IMixableComponent
@@ -30,7 +21,7 @@ namespace pEngine.Audio.Base
         /// <summary>
         /// Reproduction state of this sound.
         /// </summary>
-        PlaybackState State { get; }
+        PlaybackState PlaybackState { get; }
 
         /// <summary>
         /// Reproduction frequency. (affect pitch, 1 = normal frequency)

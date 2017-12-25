@@ -5,21 +5,24 @@
 
 #pragma warning disable 0414
 
-using System;
 using System.Runtime.InteropServices;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+
+using pEngine.Framework;
+using pEngine.Framework.Binding;
 
 using ManagedBass;
 using ManagedBass.Fx;
 
 namespace pEngine.Audio.DSP
 {
-    public class WahWah : IEffect
+    /// <summary>
+    /// Wahwah audio DSP effect.
+    /// </summary>
+    public class WahWah : pObject, IEffect
     {
-
+        /// <summary>
+        /// Makes a new instance of <see cref="WahWah"/> class.
+        /// </summary>
         public WahWah()
         {
             Params = new AutoWahParameters();
@@ -29,7 +32,10 @@ namespace pEngine.Audio.DSP
             PinParams();
         }
 
-        public void Dispose()
+        /// <summary>
+        /// Release all bass resources.
+        /// </summary>
+        public override void Dispose()
         {
             ParamsHandler.Free();
         }
@@ -49,6 +55,7 @@ namespace pEngine.Audio.DSP
         /// <summary>
         /// Dry (unaffected) signal mix (-2...+2). Default = 0.5.
         /// </summary>
+        [Bindable]
         public double DryMix
         {
             get { return fDryMix; }
@@ -66,6 +73,7 @@ namespace pEngine.Audio.DSP
         /// <summary>
         /// Feedback (-1...+1). Default = 0.5.
         /// </summary>
+        [Bindable]
         public double Feedback
         {
             get { return fFeedback; }
@@ -83,6 +91,7 @@ namespace pEngine.Audio.DSP
         /// <summary>
         /// Base frequency of sweep range (0&lt;...1000). Default = 50.
         /// </summary>
+        [Bindable]
         public double Frequency
         {
             get { return fFreq; }
@@ -100,6 +109,7 @@ namespace pEngine.Audio.DSP
         /// <summary>
         /// Sweep range in octaves (0&lt;...&lt;10). Default = 4.3.
         /// </summary>
+        [Bindable]
         public double Range
         {
             get { return fRange; }
@@ -117,6 +127,7 @@ namespace pEngine.Audio.DSP
         /// <summary>
         /// Rate of sweep in cycles per second (0&lt;...&lt;10). Default = 2.
         /// </summary>
+        [Bindable]
         public double Rate
         {
             get { return fRate; }
@@ -134,6 +145,7 @@ namespace pEngine.Audio.DSP
         /// <summary>
         /// Wet (affected) signal mix (-2...+2). Default = 1.5.
         /// </summary>
+        [Bindable]
         public double WetMix
         {
             get { return fWetMix; }
@@ -151,6 +163,7 @@ namespace pEngine.Audio.DSP
         /// <summary>
         /// A <see cref="FXChannelFlags" /> flag to define on which channels to apply the effect. Default: <see cref="FXChannelFlags.All"/>
         /// </summary>
+        [Bindable]
         public FXChannelFlags Channels
         {
             get { return lChannel; }
@@ -168,6 +181,7 @@ namespace pEngine.Audio.DSP
         /// <summary>
         /// Checks whether the effect is currently enabled and active.
         /// </summary>
+        [Bindable]
         public bool Bypass
         {
             set
@@ -189,6 +203,7 @@ namespace pEngine.Audio.DSP
         /// <summary>
         /// Priority of the Effect in DSP chain.
         /// </summary>
+        [Bindable]
         public int Priority
         {
             get { return priority; }
@@ -275,7 +290,7 @@ namespace pEngine.Audio.DSP
         /// </summary>
         /// <param name="Stream">Target stream.</param>
         /// <param name="Priority">Effect priority.</param>
-        public void Bind(int Channel, int Priority)
+        public void BindStream(int Channel, int Priority)
         {
             ChannelHandler = Channel;
             priority = Priority;
@@ -289,7 +304,7 @@ namespace pEngine.Audio.DSP
         /// Unbind this effect from the binded stream.
         /// </summary>
         /// <param name="Stream">Target stream.</param>
-        public void Unbind(int Channel)
+        public void UnbindStream(int Channel)
         {
             if (Channel != ChannelHandler)
                 return;

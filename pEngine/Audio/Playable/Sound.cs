@@ -16,6 +16,7 @@ using pEngine.Audio.DSP;
 using pEngine.Audio.Base;
 using pEngine.Resources.Files;
 using pEngine.Resources;
+using pEngine.Resources.Dependencies;
 
 namespace pEngine.Audio.Playable
 {
@@ -24,14 +25,15 @@ namespace pEngine.Audio.Playable
 
     public class Sound : Resource, IPlayableComponent
     {
+        [Dependency(Load = true)]
+        public Audio AudioFile { get; }
 
-        public Sound(Audio AudioResource, bool DisposeOnFinish = false)
+        public Sound(Audio audioResource, bool disposeOnFinish = false)
         {
             Effects = new List<IEffect>();
 
             // Dependency
-            Dependencies.Add(AudioResource);
-            AudioFile = AudioResource;
+            AudioFile = audioResource;
         }
 
         public override void Dispose()
@@ -165,8 +167,8 @@ namespace pEngine.Audio.Playable
         /// </summary>
         public void Start()
         {
-            if (!IsLoaded)
-                return;
+            if (State != ResourceState.Loaded)
+                throw new InvalidOperationException("Audio not loaded.");
 
             Bass.ChannelPlay(Channel);
         }
@@ -176,8 +178,8 @@ namespace pEngine.Audio.Playable
         /// </summary>
         public void Stop()
         {
-            if (!IsLoaded)
-                return;
+            if (State != ResourceState.Loaded)
+                throw new InvalidOperationException("Audio not loaded.");
 
             Bass.ChannelStop(Channel);
         }
@@ -185,12 +187,12 @@ namespace pEngine.Audio.Playable
         /// <summary>
         /// Reproduction state of this sound.
         /// </summary>
-        public Base.PlaybackState State
+        public Base.PlaybackState PlaybackState
         {
             get
             {
-                if (!IsLoaded)
-					return (Base.PlaybackState)PlaybackState.Stopped;
+                if (State != ResourceState.Loaded)
+					return Base.PlaybackState.Stopped;
 
 				return (Base.PlaybackState)Bass.ChannelIsActive(Channel);
             }
@@ -204,7 +206,7 @@ namespace pEngine.Audio.Playable
             Bass.ChannelSetAttribute(Channel, ChannelAttribute.Volume, Mute ? 0 : RelativeVolume);
             Bass.ChannelSetAttribute(Channel, ChannelAttribute.Pan, RelativePan);
 
-            if (State == Base.PlaybackState.Stalled)
+            if (PlaybackState == Base.PlaybackState.Stalled)
                 Dispose();
         }
 
@@ -220,14 +222,14 @@ namespace pEngine.Audio.Playable
         /// <param name="Target">Effect.</param>
         public void AddEffect(IEffect Target, int Priority = 0)
         {
-            if (!IsLoaded)
+            if (State != ResourceState.Loaded)
             {
-                Completed += (IResource R) =>
+                Loaded += (IResource R) =>
                 {
                     if (Effects.Contains(Target))
                         return;
 
-                    Target.Bind(SampleHandle, Priority);
+                    Target.BindStream(SampleHandle, Priority);
 
                     Effects.Add(Target);
                 };
@@ -237,7 +239,7 @@ namespace pEngine.Audio.Playable
                 if (Effects.Contains(Target))
                     return;
 
-                Target.Bind(SampleHandle, Priority);
+                Target.BindStream(SampleHandle, Priority);
 
                 Effects.Add(Target);
             }
@@ -252,7 +254,7 @@ namespace pEngine.Audio.Playable
             if (!Effects.Contains(Target))
                 return;
 
-            Target.Unbind(SampleHandle);
+            Target.UnbindStream(SampleHandle);
 
             Effects.Remove(Target);
         }
@@ -261,7 +263,6 @@ namespace pEngine.Audio.Playable
 
         #region Handle management
 
-        private Audio AudioFile;
         private int SampleHandle;
         private int Channel;
 
@@ -285,7 +286,7 @@ namespace pEngine.Audio.Playable
 
         public override uint UsedSpace { get; }
 
-		internal override void OnLoad()
+		protected override void OnLoad()
 		{
 			LoadSample();
 		}

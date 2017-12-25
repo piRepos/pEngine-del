@@ -75,7 +75,7 @@ namespace pEngine.Framework.Timing.Clocks
 			timeUntilNextCalculation -= ElapsedFrameTime;
 			timeSinceLastCalculation += ElapsedFrameTime;
 
-			AverageFrameTime = Common.Math.Interpolation.Damp(AverageFrameTime, ElapsedFrameTime, 0.01, System.Math.Abs(ElapsedFrameTime) / 1000);
+			AverageFrameTime = Utils.Math.Interpolation.Damp(AverageFrameTime, ElapsedFrameTime, 0.01, Math.Abs(ElapsedFrameTime) / 1000);
 
 			LastFrameTime = CurrentTime;
 			CurrentTime = SourceTime;

@@ -1,8 +1,9 @@
 ﻿using System;
+using System.IO;
 using System.Collections.Generic;
 using System.Text;
 
-using System.IO;
+using pEngine.Framework.Binding;
 
 namespace pEngine.Resources.Files
 {
@@ -37,32 +38,37 @@ namespace pEngine.Resources.Files
 			Path = "local://" + name;
 			Content = content;
 
-			IsLoaded = true;
+			State =  ResourceState.Loaded;
 		}
 
 		/// <summary>
 		/// File path.
 		/// </summary>
+        [Bindable(Direction = BindingMode.ReadOnly)]
 		public string Path { get; }
 
 		/// <summary>
 		/// File name without extension.
 		/// </summary>
+        [Bindable(Direction = BindingMode.ReadOnly)]
 		public string Name => System.IO.Path.GetFileName(Path).Split('.')[0];
 
 		/// <summary>
 		/// File extension without dot.
 		/// </summary>
+        [Bindable(Direction = BindingMode.ReadOnly)]
 		public string Extension => System.IO.Path.GetExtension(Path).Substring(1);
 
 		/// <summary>
 		/// File size.
 		/// </summary>
-		public override uint UsedSpace => (uint)Content.Length * sizeof(byte);
+        [Bindable(Direction = BindingMode.ReadOnly)]
+        public override uint UsedSpace => base.UsedSpace + ((uint)Content.Length * sizeof(byte)) + ((uint)Path.Length * sizeof(char));
 
-		/// <summary>
-		/// File size.
-		/// </summary>
+        /// <summary>
+        /// Used space in bytes.
+        /// </summary>
+        [Bindable(Direction = BindingMode.ReadOnly)]
 		public uint Size => (uint)Content.Length * sizeof(byte);
 
 		/// <summary>
@@ -70,7 +76,7 @@ namespace pEngine.Resources.Files
 		/// </summary>
 		public byte[] Content { get; private set; }
 
-		internal override void OnLoad()
+		protected override void OnLoad()
 		{
 			Content = System.IO.File.ReadAllBytes(Path);
 		}
