@@ -16,14 +16,22 @@ namespace pEngine.Physics
 		/// <summary>
 		/// Makes a new instance of <see cref="PhysicalObject"/> class.
 		/// </summary>
+		/// <param name="parent">Parent object.</param>
 		public PhysicalObject(PhysicalObject parent)
 			: base(parent)
 		{
 			PropertyChanged += PositionChange;
-			invalidationId = 0;
 			ScaleReference = Vector2i.Zero;
 		}
 
+		/// <summary>
+		/// Dispose all resources used from this class.
+		/// </summary>
+		/// <param name="disposing">Dispose managed resources.</param>
+		protected override void Dispose(bool disposing)
+		{
+			base.Dispose(disposing);
+		}
 
 		/// <summary>
 		/// Triggered after matrix recalculation.

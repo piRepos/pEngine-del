@@ -57,7 +57,12 @@ namespace pEngine.Graphics
 		[Cached(Channel = "Graphics")]
 		public virtual IEnumerable<Asset> GetAssets()
 		{
-			return null;
+			return CalculateAssets();
+		}
+
+		protected virtual List<Asset> CalculateAssets()
+		{
+			return new List<Asset>();
 		}
 
 		#endregion
