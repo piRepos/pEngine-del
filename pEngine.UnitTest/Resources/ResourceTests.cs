@@ -33,7 +33,7 @@ namespace pEngine.UnitTest.Resources
             }
         }
 
-        protected override bool OnAbort(IResource res, Exception e)
+        protected override bool OnAbort(PartialResource res, Exception e)
         {
             base.OnAbort(res, e);
 
@@ -62,7 +62,7 @@ namespace pEngine.UnitTest.Resources
     public class ResourceTests
     {
         [TestMethod]
-        public void LoadSync()
+        public void ResourcesResourceLoadSync()
         {
             BigResource res = new BigResource(false);
 
@@ -90,7 +90,7 @@ namespace pEngine.UnitTest.Resources
         }
 
         [TestMethod]
-        public void LoadAsync()
+        public void ResourcesResourceLoadAsync()
         {
             BigResource res = new BigResource(false);
 
@@ -122,7 +122,7 @@ namespace pEngine.UnitTest.Resources
         }
 
         [TestMethod]
-        public void DependencyLoadSync()
+        public void ResourcesResourceDependencyLoadSync()
         {
             BigResource res = new BigResource(false);
 
@@ -170,7 +170,7 @@ namespace pEngine.UnitTest.Resources
         }
 
         [TestMethod]
-        public void DependencyLoadAsync()
+        public void ResourcesResourceDependencyLoadAsync()
         {
             BigResource res = new BigResource(false);
 

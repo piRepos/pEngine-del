@@ -18,7 +18,21 @@ namespace pEngine.Framework
 
         private void disposeBinding()
         {
-            propagationVectors.Clear();
+			int i = 0;
+			while (propagationVectors.Count() > 0)
+			{
+				var v = propagationVectors.ElementAt(i);
+				int j = 0;
+				while (v.Value.Count > 0)
+				{
+					var bind = v.Value[j];
+					bind.Instance.TryGetTarget(out pObject target);
+					if (target != null)
+					{
+						target.Unbind(bind.Property.Name, this, v.Key);
+					}
+				}
+			}
         }
 
         #region Set bindings
@@ -96,13 +110,13 @@ namespace pEngine.Framework
 
             var sourceBindingInformations = new BindingInformations
             {
-                Instance = target,
-                Property = target.GetType().GetProperty(destinationProperty),
+				Instance = new WeakReference<pObject>(target),
+				Property = target.GetType().GetProperty(destinationProperty),
                 Direction = direction,
                 Adapter = adapterToDestination
             };
 
-            BindingMode invertedDirection = BindingMode.TwoWay;
+			BindingMode invertedDirection = BindingMode.TwoWay;
             switch (direction)
             {
                 case BindingMode.ReadOnly: invertedDirection = BindingMode.WriteOnly; break;
@@ -112,8 +126,8 @@ namespace pEngine.Framework
 
             var destBindingInformations = new BindingInformations
             {
-                Instance = this,
-                Property = GetType().GetProperty(source),
+				Instance = new WeakReference<pObject>(this),
+				Property = GetType().GetProperty(source),
                 Direction = invertedDirection,
                 Adapter = adapterToSource
             };
@@ -125,25 +139,54 @@ namespace pEngine.Framework
             target.checkBindings(this, new System.ComponentModel.PropertyChangedEventArgs(destinationProperty));
         }
 
-        /// <summary>
-        /// Remove a binding between a property of this class and a property of a
-        /// target class.
-        /// </summary>
-        /// <param name="source">Source property.</param>
-        /// <param name="target">Target <see cref="pObject"/> which have the target property.</param>
-        /// <param name="destinationProperty">Target property.</param>
-        public void Unbind(string source, pObject target, string destinationProperty)
-        {
-            var binding = propagationVectors[source].FindIndex(x => x.Instance == target && x.Property.Name == destinationProperty);
+		/// <summary>
+		/// Remove a binding between a property of this class and a property of a
+		/// target class.
+		/// </summary>
+		/// <param name="source">Source property.</param>
+		/// <param name="target">Target <see cref="pObject"/> which have the target property.</param>
+		/// <param name="destinationProperty">Target property.</param>
+		public void Unbind(string source, pObject target, string destinationProperty)
+		{
+			try
+			{
+				var binding = propagationVectors[source].FindIndex(x =>
+				{
+					x.Instance.TryGetTarget(out pObject t);
+					return t == target && x.Property.Name == destinationProperty;
+				});
 
-            if (binding < 0)
-                throw new InvalidOperationException("Invalid binding.");
+				if (binding < 0)
+					throw new InvalidOperationException("Invalid binding.");
 
-            var remote = target.propagationVectors[source].FindIndex(x => x.Instance == this && x.Property.Name == source);
+				// Check if the remote part is not disposed.
+				if (propagationVectors[source][binding].Instance.TryGetTarget(out pObject obj) && obj != null)
+				{
 
-            propagationVectors[source].RemoveAt(binding);
-            target.propagationVectors[source].RemoveAt(remote);
-        }
+					var remote = target.propagationVectors[destinationProperty].FindIndex(x =>
+					{
+						x.Instance.TryGetTarget(out pObject t);
+						return t == this && x.Property.Name == source;
+					});
+
+					if (remote >= 0)
+						target.propagationVectors[destinationProperty].RemoveAt(remote);
+
+					if (target.propagationVectors[destinationProperty].Count == 0)
+						target.propagationVectors.Remove(destinationProperty);
+				}
+
+				propagationVectors[source].RemoveAt(binding);
+
+				if (propagationVectors[source].Count == 0)
+					propagationVectors.Remove(source);
+			}
+			catch (KeyNotFoundException)
+			{
+				throw new InvalidOperationException("Property does not exist.");
+			}
+
+		}
 
         #endregion
 
@@ -151,7 +194,7 @@ namespace pEngine.Framework
 
         private struct BindingInformations
         {
-            public pObject Instance;
+            public WeakReference<pObject> Instance;
             public PropertyInfo Property;
             public BindingMode Direction;
             public Func<object, object> Adapter;
@@ -172,6 +215,14 @@ namespace pEngine.Framework
             info.Propagator = () =>
             {
                 var value = property.GetValue(this);
+				
+				// Gets the weak reference.
+				info.Instance.TryGetTarget(out pObject instance);
+
+				if (instance == null)
+				{
+					return;
+				}
 
                 switch (info.Direction)
                 {
@@ -179,9 +230,9 @@ namespace pEngine.Framework
                     case BindingMode.WriteOnly:
                     case BindingMode.TwoWay:
                         if (info.Adapter != null)
-                            info.Property.SetValue(info.Instance, info.Adapter.Invoke(value));
+                            info.Property.SetValue(instance, info.Adapter.Invoke(value));
                         else
-                            info.Property.SetValue(info.Instance, value);
+                            info.Property.SetValue(instance, value);
                         break;
                 }
             };

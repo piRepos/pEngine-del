@@ -14,6 +14,10 @@ namespace pEngine.Framework
     /// </summary>
     public partial class pObject : INotifyPropertyChanged, IDisposable
     {
+		/// <summary>
+		/// True if this object is disposed.
+		/// </summary>
+		public bool Disposed { get; private set; }
 
         /// <summary>
         /// Makes a new instance of <see cref="pObject"/> class.
@@ -21,19 +25,51 @@ namespace pEngine.Framework
         public pObject()
         {
             initializeBinding();
-        }
+			initializeValidations();
+			initializeCacheModule();
+		}
 
-        /// <summary>
-        /// Dispose all resources used from this class.
-        /// </summary>
-        public virtual void Dispose()
+		/// <summary>
+		/// Dispose all resources used from this class.
+		/// </summary>
+		~pObject()
+		{
+			Dispose(false);
+		}
+
+		/// <summary>
+		/// Dispose all resources used from this class.
+		/// </summary>
+		public void Dispose()
         {
-            disposeBinding();
+			Dispose(true);
+
+			GC.SuppressFinalize(this);
         }
 
-        /// <summary>
-        /// Triggered on a property change.
-        /// </summary>
-        public event PropertyChangedEventHandler PropertyChanged;
+		/// <summary>
+		/// Dispose all resources used from this class.
+		/// </summary>
+		/// <param name="disposing">Dispose managed resources.</param>
+		protected virtual void Dispose(bool disposing)
+		{
+			if (Disposed)
+				return;
+
+			if (disposing)
+			{
+				disposeBinding();
+				disposeCacheModule();
+			}
+
+			// Free any unmanaged objects here.
+			//
+			Disposed = true;
+		}
+
+		/// <summary>
+		/// Triggered on a property change.
+		/// </summary>
+		public event PropertyChangedEventHandler PropertyChanged;
     }
 }

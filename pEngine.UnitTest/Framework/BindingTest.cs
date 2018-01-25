@@ -46,8 +46,8 @@ namespace pEngine.UnitTest.Framework
     [TestClass]
     public class BindingTest
     {
-        [TestMethod]
-        public void TwoWayBinding()
+		[TestMethod]
+		public void FrameworkBindingTwoWayBinding()
         {
             Circle c1 = new Circle(90);
             Circle c2 = new Circle(0);
@@ -73,8 +73,8 @@ namespace pEngine.UnitTest.Framework
             Assert.AreEqual(c1.Radius, c2.Radius);
         }
 
-        [TestMethod]
-        public void OneWayBinding()
+		[TestMethod]
+		public void FrameworkBindingOneWayBinding()
         {
             Circle c1 = new Circle(90);
             Circle c2 = new Circle(0);
@@ -108,8 +108,8 @@ namespace pEngine.UnitTest.Framework
             Assert.AreEqual(c1.Radius, 70);
         }
 
-        [TestMethod]
-        public void BindRemove()
+		[TestMethod]
+		public void FrameworkBindingBindRemove()
         {
             Circle c1 = new Circle(90);
             Circle c2 = new Circle(0);
@@ -139,8 +139,8 @@ namespace pEngine.UnitTest.Framework
             }
         }
 
-        [TestMethod]
-        public void Adapter()
+		[TestMethod]
+		public void FrameworkBindingBindAdapter()
         {
             Circle c1 = new Circle(90);
 
@@ -169,5 +169,25 @@ namespace pEngine.UnitTest.Framework
 
             Assert.AreEqual(c1.Radius, 0);
         }
-    }
+
+		[TestMethod]
+		public void FrameworkBindingBindDispose()
+		{
+			Circle c1 = new Circle(90);
+
+			using (Circle c2 = new Circle(0))
+			{
+				Assert.AreEqual(c1.Radius, 90);
+				Assert.AreEqual(c2.Radius, 0);
+
+				// - Apply the binding
+				c1.Bind("Radius", c2, "Radius");
+
+				Assert.AreEqual(c1.Radius, c2.Radius);
+			}
+
+			c1.Radius = 180;
+
+		}
+	}
 }

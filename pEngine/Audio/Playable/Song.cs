@@ -39,16 +39,19 @@ namespace pEngine.Audio.Playable
             AudioFile = audioResource;
         }
 
-        public override void Dispose()
+        protected override void Dispose(bool disposing)
         {
-            Stop();
+			if (disposing)
+			{
+				Stop();
+
+				Stream = 0;
+				CleanStream = 0;
+			}
 
             if (CleanStream != 0) Bass.StreamFree(CleanStream);
 
-            Stream = 0;
-            CleanStream = 0;
-
-            base.Dispose();
+            base.Dispose(disposing);
         }
 
         #region Properties
@@ -380,7 +383,7 @@ namespace pEngine.Audio.Playable
         {
             if (State != ResourceState.Loaded)
             {
-                Loaded += (IResource R) =>
+                Loaded += (PartialResource R) =>
                 {
                     if (Effects.Contains(Target))
                         return;

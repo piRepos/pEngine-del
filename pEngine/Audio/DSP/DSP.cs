@@ -26,10 +26,16 @@ namespace pEngine.Audio.DSP
         /// <summary>
         /// Frees all resources used by this instance.
         /// </summary>
-        public override void Dispose()
+        protected override void Dispose(bool disposing)
         {
+			if (disposing)
+			{
+				IsAssigned = false;
+			}
+
             Bass.ChannelRemoveDSP(Channel, Handle);
-            IsAssigned = false;
+
+			base.Dispose(disposing);
         }
 
         #region Properties

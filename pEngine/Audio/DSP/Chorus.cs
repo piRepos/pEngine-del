@@ -50,9 +50,11 @@ namespace pEngine.Audio.DSP
         /// <summary>
         /// Release bass resources.
         /// </summary>
-        public override void Dispose()
+        protected override void Dispose(bool disposing)
         {
             ParamsHandler.Free();
+
+			base.Dispose(disposing);
         }
 
         #region Params

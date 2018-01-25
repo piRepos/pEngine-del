@@ -119,7 +119,7 @@ namespace pEngine.Resources
                 if (!dependency.Load)
                     continue;
 
-                var resource = dependency.Resource.GetValue(this) as IResource;
+                var resource = dependency.Resource.GetValue(this) as PartialResource;
 
                 if (resource is Resource)
                 {

@@ -28,14 +28,14 @@ namespace pEngine.Resources.Files
 			base.OnComplete();
 		}
 
-        protected override bool OnAbort(IResource res, Exception e)
+        protected override bool OnAbort(PartialResource res, Exception e)
 		{
 			return base.OnAbort(res, e);
 		}
 
-		public override void Dispose()
+		protected override void Dispose(bool disposing)
 		{
-			base.Dispose();
+			base.Dispose(disposing);
 		}
 	}
 }

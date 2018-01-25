@@ -6,7 +6,7 @@ using System.Drawing;
 
 namespace pEngine.Utils.Math
 {
-    public struct Rect : IScalable, IMovable, IEnumerable<Vector2i>, IEquatable<Rect>
+    public struct Rect : IScalable, IPhysicalObject, IEnumerable<Vector2i>, IEquatable<Rect>
     {
 		/// <summary>
 		/// Create a new <see cref="Rect"/> class.

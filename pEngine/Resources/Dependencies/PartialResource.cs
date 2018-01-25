@@ -10,7 +10,7 @@ using pEngine.Resources.Dependencies;
 
 namespace pEngine.Resources
 {
-    public abstract partial class PartialResource : pObject, IResource
+    public abstract partial class PartialResource : pObject
     {
         #region Dependencies
 
@@ -24,7 +24,7 @@ namespace pEngine.Resources
         /// This resource will wait that all resources in this
         /// list are loaded, then this resource il start to load.
         /// </summary>
-        public IEnumerable<IResource> Dependencies => InternalDependencies.Select(x => x.Resource.GetValue(this) as IResource);
+        public IEnumerable<PartialResource> Dependencies => InternalDependencies.Select(x => x.Resource.GetValue(this) as PartialResource);
 
         #endregion
 

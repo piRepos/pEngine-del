@@ -5,7 +5,7 @@ namespace pEngine.Utils.Math
 	/// <summary>
 	/// An object that can be moved.
 	/// </summary>
-	public interface IMovable : ISpaced
+	public interface IPhysicalObject : ISpaced
 	{
 		
 		/// <summary>

@@ -6,7 +6,7 @@ namespace pEngine.Utils.Math
 {
 	public delegate void ElementFitEventHandler<T>(T Element);
 
-	public class RectanglePacker<T> where T : IMovable, ISized
+	public class RectanglePacker<T> where T : IPhysicalObject, ISized
 	{
 		/// <summary>
 		/// Initializes a new instance of the <see cref="T:pEngine.Base.DataStructs.GenericAtlas`1"/> class.

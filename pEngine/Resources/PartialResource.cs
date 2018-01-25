@@ -19,7 +19,7 @@ namespace pEngine.Resources
     /// This is the base class for all resources which
     /// need to be loaded.
     /// </summary>
-    public abstract partial class PartialResource : pObject, IResource
+    public abstract partial class PartialResource : pObject
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="pEngine.Data.Resource"/> class.
@@ -37,9 +37,9 @@ namespace pEngine.Resources
         /// <see cref="Dispose"/> method leaves the <see cref="Resource"/> in an unusable state. After calling
         /// <see cref="Dispose"/>, you must release all references to the <see cref="Resource"/> so the garbage
         /// collector can reclaim the memory that the <see cref="Resource"/> was occupying.</remarks>
-        public override void Dispose()
+        protected override void Dispose(bool disposing)
         {
-            Disposed?.Invoke(this);
+			base.Dispose(disposing);
         }
 
         /// <summary>
@@ -61,11 +61,6 @@ namespace pEngine.Resources
         public event ResourceAbortEventHandler Aborted;
 
         /// <summary>
-        /// Triggered on resource disposing.
-        /// </summary>
-        public event ResourceEventHandler Disposed;
-
-        /// <summary>
         /// Gets a value indicating whether this resource is loaded.
         /// </summary>
         [Bindable(Direction = BindingMode.ReadOnly)]
@@ -74,7 +69,7 @@ namespace pEngine.Resources
         /// <summary>
         /// Abort resource loading.
         /// </summary>
-        protected virtual bool OnAbort(IResource res, Exception e)
+        protected virtual bool OnAbort(PartialResource res, Exception e)
         {
             Aborted?.Invoke(this, e);
 
@@ -96,5 +91,26 @@ namespace pEngine.Resources
 
         #endregion
     }
+
+	public delegate void ResourceEventHandler(PartialResource res);
+	public delegate void ResourceAbortEventHandler(PartialResource res, Exception e);
+
+	public enum ResourceState
+	{
+		/// <summary>
+		/// The resource is not loaded.
+		/// </summary>
+		NotLoaded = 0,
+
+		/// <summary>
+		/// The resource is loaded.
+		/// </summary>
+		Loaded = 1,
+
+		/// <summary>
+		/// The resource loading is aborted.
+		/// </summary>
+		Aborted = 2
+	}
 }
 

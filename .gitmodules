@@ -1,0 +1,12 @@
+[submodule "Tools/MethodBoundaryAspect"]
+	path = Tools/MethodBoundaryAspect
+	url = https://github.com/AndreaDemontis/MethodBoundaryAspect.Fody.git
+[submodule "Tools/MethodBoundaryAspect.Fody"]
+	path = Tools/MethodBoundaryAspect.Fody
+	url = https://github.com/AndreaDemontis/MethodBoundaryAspect.Fody.git
+[submodule "Tools/OpenGL"]
+	path = Tools/OpenGL
+	url = https://github.com/piRepos/OpenGL.Net.git
+[submodule "Tools/Glfw"]
+	path = Tools/Glfw
+	url = https://github.com/piRepos/Glfw.Net.git
