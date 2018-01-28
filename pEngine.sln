@@ -17,6 +17,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OpenGL.Net", "Tools\OpenGL\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Glfw", "Tools\Glfw\Glfw.csproj", "{5C569301-50C6-47C4-9850-6CB36D4DA267}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "pEngine.Example", "pEngine.Example\pEngine.Example.csproj", "{F3BF6478-867C-45CF-B78F-8EDB4921C7C6}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "pEngine.Assemblies", "pEngine.Assemblies\pEngine.Assemblies.csproj", "{18C440BD-04B1-417C-9BE6-0D4C5F940CCA}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -73,6 +77,22 @@ Global
 		{5C569301-50C6-47C4-9850-6CB36D4DA267}.Release|Any CPU.Build.0 = Release|Any CPU
 		{5C569301-50C6-47C4-9850-6CB36D4DA267}.Release|x86.ActiveCfg = Release|x86
 		{5C569301-50C6-47C4-9850-6CB36D4DA267}.Release|x86.Build.0 = Release|x86
+		{F3BF6478-867C-45CF-B78F-8EDB4921C7C6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F3BF6478-867C-45CF-B78F-8EDB4921C7C6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F3BF6478-867C-45CF-B78F-8EDB4921C7C6}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{F3BF6478-867C-45CF-B78F-8EDB4921C7C6}.Debug|x86.Build.0 = Debug|Any CPU
+		{F3BF6478-867C-45CF-B78F-8EDB4921C7C6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F3BF6478-867C-45CF-B78F-8EDB4921C7C6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F3BF6478-867C-45CF-B78F-8EDB4921C7C6}.Release|x86.ActiveCfg = Release|Any CPU
+		{F3BF6478-867C-45CF-B78F-8EDB4921C7C6}.Release|x86.Build.0 = Release|Any CPU
+		{18C440BD-04B1-417C-9BE6-0D4C5F940CCA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{18C440BD-04B1-417C-9BE6-0D4C5F940CCA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{18C440BD-04B1-417C-9BE6-0D4C5F940CCA}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{18C440BD-04B1-417C-9BE6-0D4C5F940CCA}.Debug|x86.Build.0 = Debug|Any CPU
+		{18C440BD-04B1-417C-9BE6-0D4C5F940CCA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{18C440BD-04B1-417C-9BE6-0D4C5F940CCA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{18C440BD-04B1-417C-9BE6-0D4C5F940CCA}.Release|x86.ActiveCfg = Release|Any CPU
+		{18C440BD-04B1-417C-9BE6-0D4C5F940CCA}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

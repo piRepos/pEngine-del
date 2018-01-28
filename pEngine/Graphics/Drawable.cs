@@ -14,8 +14,7 @@ namespace pEngine.Graphics
 		/// Makes a new instance of <see cref="Drawable"/> class.
 		/// </summary>
 		/// <param name="parent">Parent object.</param>
-		public Drawable(Drawable parent)
-			: base (parent)
+		public Drawable()
 		{
 
 		}
@@ -57,9 +56,15 @@ namespace pEngine.Graphics
 		[Cached(Channel = "Graphics")]
 		public virtual IEnumerable<Asset> GetAssets()
 		{
+			if (State == Resources.ResourceState.NotLoaded)
+				return new List<Asset>();
+			
 			return CalculateAssets();
 		}
 
+		/// <summary>
+		/// Overridable function that compute the assets for this <see cref="Drawable"/>.
+		/// </summary>
 		protected virtual List<Asset> CalculateAssets()
 		{
 			return new List<Asset>();

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 using pEngine.Resources;
 using pEngine.Framework.Timing;
-using pEngine.Framework.Timing.Base;
+using pEngine.Utils.Timing.Base;
 
 namespace pEngine.Framework
 {
@@ -20,7 +20,7 @@ namespace pEngine.Framework
 		/// <summary>
 		/// Makes a new instance of <see cref="GameObject"/> class.
 		/// </summary>
-		public GameObject(GameObject parent)
+		public GameObject()
 		{
 			initializeCache();
 
@@ -49,7 +49,7 @@ namespace pEngine.Framework
 		/// <summary>
 		/// Current object's parent.
 		/// </summary>
-		public GameObject Parent { get; }
+		public GameObject Parent { get; set; }
 
 		/// <summary>
 		/// Called on state update.
@@ -60,8 +60,8 @@ namespace pEngine.Framework
 		/// <summary>
 		/// Update the state of this element.
 		/// </summary>
-		/// <param name="DeltaTime">Game clock.</param>
-		public void Update(IFrameBasedClock clock)
+		/// <param name="clock">Game clock.</param>
+		public virtual void Update(IFrameBasedClock clock)
 		{
 			OnUpdate(clock);
 		}

@@ -23,46 +23,42 @@ namespace pEngine.Framework
 		}
 
 		/// <summary>
-		/// 
+		/// Start an invalidation call from this object on the specified channel.
 		/// </summary>
-		/// <param name="channel"></param>
-		/// <param name="direction"></param>
+		/// <param name="sender">Who call this invalidation.</param>
+		/// <param name="channel">Channel to invalidate.</param>
 		public void Invalidate(string channel, InvalidationDirection direction)
 		{
-			if (direction.HasFlag(InvalidationDirection.Parent))
-				Invalidate(this, channel, InvalidationDirection.Parent);
-
-			if (direction.HasFlag(InvalidationDirection.Children))
-				Invalidate(this, channel, InvalidationDirection.Children);
-		}
-
-		#region Overridable invalidation
-
-		/// <summary>
-		/// 
-		/// </summary>
-		/// <param name="sender"></param>
-		/// <param name="channel"></param>
-		/// <param name="direction"></param>
-		/// <returns></returns>
-		protected virtual bool OnInvalidation(GameObject sender, string channel, InvalidationDirection direction)
-		{
-			Cache.Invalidate(channel);
-			return false;
+			Invalidate(this, channel, direction);
 		}
 
 		/// <summary>
-		/// 
+		/// Start an invalidation call from this object on the specified channel.
 		/// </summary>
-		/// <param name="sender"></param>
-		/// <param name="channel"></param>
-		/// <param name="direction"></param>
-		protected virtual void Invalidate(GameObject sender, string channel, InvalidationDirection direction)
+		/// <param name="sender">Who call this invalidation.</param>
+		/// <param name="channel">Channel to invalidate.</param>
+		/// <param name="direction">Propagation direction.</param>
+		public virtual void Invalidate(GameObject sender, string channel, InvalidationDirection direction)
 		{
 			bool propagate = OnInvalidation(sender, channel, direction);
 
 			if (direction.HasFlag(InvalidationDirection.Parent) && Parent != null)
 				Parent.Invalidate(sender, channel, direction);
+		}
+
+		#region Overridable invalidation
+
+		/// <summary>
+		/// Called on object invalidation.
+		/// </summary>
+		/// <param name="sender">Who call this invalidation.</param>
+		/// <param name="channel">Channel invalidated.</param>
+		/// <param name="direction">Propagation direction.</param>
+		/// <returns>True if invalidation is full handled and propagation must stop.</returns>
+		protected virtual bool OnInvalidation(GameObject sender, string channel, InvalidationDirection direction)
+		{
+			Cache.Invalidate(channel);
+			return false;
 		}
 
 		#endregion

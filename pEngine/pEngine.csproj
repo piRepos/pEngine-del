@@ -40,9 +40,11 @@
     <StartupObject />
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="FreeImageNET, Version=3.15.1.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>Libraries\FreeImageNET.dll</HintPath>
+    <Reference Include="Anotar.Custom, Version=0.0.0.0, Culture=neutral, PublicKeyToken=9d5b24f0733c26f7, processorArchitecture=MSIL">
+      <HintPath>..\packages\Anotar.Custom.Fody.4.0.1\lib\net452\Anotar.Custom.dll</HintPath>
+    </Reference>
+    <Reference Include="FreeImageNET">
+      <HintPath>..\pEngine.Assemblies\FreeImageNET.dll</HintPath>
     </Reference>
     <Reference Include="ManagedBass, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\ManagedBass.2.0.4\lib\net45\ManagedBass.dll</HintPath>
@@ -95,13 +97,15 @@
     <Compile Include="Audio\Playable\Song.cs" />
     <Compile Include="Audio\Playable\Sound.cs" />
     <Compile Include="Audio\Playable\TimedSong.cs" />
-    <Compile Include="Framework\Caching\Cache.cs" />
+    <Compile Include="Diagnostic\Logs\Logger.cs" />
+    <Compile Include="Diagnostic\Logs\LoggerFactory.cs" />
+    <Compile Include="Diagnostic\Timing\PerformanceCollector.cs" />
+    <Compile Include="Framework\Caching\CachedAttribute.cs" />
     <Compile Include="Framework\Caching\DictionaryCache.cs" />
     <Compile Include="Framework\Caching\GameObject.cs" />
     <Compile Include="Framework\Caching\pObject.cs" />
     <Compile Include="Framework\GameObject.cs" />
     <Compile Include="Framework\GameHost.cs" />
-    <Compile Include="Framework\Modules\GameHost.cs" />
     <Compile Include="Framework\Binding\Bindable.cs" />
     <Compile Include="Framework\Binding\BindingMode.cs" />
     <Compile Include="Framework\Binding\pObject.cs" />
@@ -111,25 +115,55 @@
     <Compile Include="Framework\FrameDependency\IDependencyReference.cs" />
     <Compile Include="Framework\FrameDependency\IFrameDependencyManager.cs" />
     <Compile Include="Framework\FrameDependency\KeyFrameDependencyManager.cs" />
+    <Compile Include="Framework\Modules\Module.cs" />
+    <Compile Include="Framework\Modules\Service.cs" />
+    <Compile Include="Framework\Modules\ServiceEventAttribute.cs" />
+    <Compile Include="Framework\Modules\ServiceMethodAttribute.cs" />
+    <Compile Include="Framework\Modules\ServicePropertyAttribute.cs" />
     <Compile Include="Framework\pObject.cs" />
-    <Compile Include="Framework\Timing\Base\IAdjustableClock.cs" />
-    <Compile Include="Framework\Timing\Base\IBeatClock.cs" />
-    <Compile Include="Framework\Timing\Base\IClock.cs" />
-    <Compile Include="Framework\Timing\Base\IFrameBasedClock.cs" />
-    <Compile Include="Framework\Timing\Clocks\BeatClock.cs" />
-    <Compile Include="Framework\Timing\Clocks\FramedClock.cs" />
-    <Compile Include="Framework\Timing\Clocks\InterpolatedFramedClock.cs" />
-    <Compile Include="Framework\Timing\Clocks\ManualClock.cs" />
-    <Compile Include="Framework\Timing\Clocks\OffsetClock.cs" />
-    <Compile Include="Framework\Timing\Clocks\StopWatchClock.cs" />
-    <Compile Include="Framework\Timing\Clocks\ThrottledFramedClock.cs" />
-    <Compile Include="Framework\Timing\IUpdatable.cs" />
+    <Compile Include="Input\InputEngine.cs" />
+    <Compile Include="Platform\Forms\GlfwWindow.cs" />
+    <Compile Include="Platform\Forms\IWindow.cs" />
+    <Compile Include="Platform\Input\DeviceManager.cs" />
+    <Compile Include="Platform\Input\GlfwDeviceManager.cs" />
+    <Compile Include="Platform\Input\GlfwJoypad.cs" />
+    <Compile Include="Platform\Input\GlfwKeyboard.cs" />
+    <Compile Include="Platform\Input\GlfwMouse.cs" />
+    <Compile Include="Platform\Input\IDevice.cs" />
+    <Compile Include="Platform\Input\IJoypad.cs" />
+    <Compile Include="Platform\Input\IKeyboard.cs" />
+    <Compile Include="Platform\Input\IMouse.cs" />
+    <Compile Include="Platform\IPlatform.cs" />
+    <Compile Include="Platform\Monitors\GlfwMonitor.cs" />
+    <Compile Include="Platform\Monitors\IMonitor.cs" />
+    <Compile Include="Platform\Monitors\Resolution.cs" />
+    <Compile Include="Platform\GlfwWrapper.cs" />
+    <Compile Include="Utils\Threading\GameLoop.cs" />
+    <Compile Include="Utils\Threading\Progress.cs" />
+    <Compile Include="Utils\Threading\ThreadedGameLoop.cs" />
+    <Compile Include="Utils\Timing\Base\IAdjustableClock.cs" />
+    <Compile Include="Utils\Timing\Base\IBeatClock.cs" />
+    <Compile Include="Utils\Timing\Base\IClock.cs" />
+    <Compile Include="Utils\Timing\Base\IFrameBasedClock.cs" />
+    <Compile Include="Utils\Timing\Clocks\BeatClock.cs" />
+    <Compile Include="Utils\Timing\Clocks\FramedClock.cs" />
+    <Compile Include="Utils\Timing\Clocks\InterpolatedFramedClock.cs" />
+    <Compile Include="Utils\Timing\Clocks\ManualClock.cs" />
+    <Compile Include="Utils\Timing\Clocks\OffsetClock.cs" />
+    <Compile Include="Utils\Timing\Clocks\StopWatchClock.cs" />
+    <Compile Include="Utils\Timing\Clocks\ThrottledFramedClock.cs" />
+    <Compile Include="Utils\Timing\IUpdatable.cs" />
     <Compile Include="Framework\Validation\pObject.cs" />
     <Compile Include="Framework\Validation\Validate.cs" />
     <Compile Include="Framework\Validation\ValidateRange.cs" />
+    <Compile Include="Game.cs" />
+    <Compile Include="Graphics\Containers\Container.cs" />
+    <Compile Include="Graphics\Containers\Layer.cs" />
+    <Compile Include="Graphics\Containers\Scene.cs" />
     <Compile Include="Graphics\Drawable.cs" />
     <Compile Include="Graphics\Renderer\Asset.cs" />
     <Compile Include="Physics\PhysicalObject.cs" />
+    <Compile Include="Platform\Environment.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Resources\Files\File.cs" />
     <Compile Include="Resources\Files\Image.cs" />
@@ -173,31 +207,19 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
-    <None Include="Libraries\libbass.dylib" />
-    <None Include="Libraries\libEGL.dylib" />
-    <None Include="Libraries\libfreeimage.dylib" />
-    <None Include="Libraries\libglfw3.dylib" />
-    <None Include="Libraries\OpenGL.Net.dll.config" />
-    <None Include="Libraries\packages.config" />
-    <None Include="Libraries\pEngine.dll.config" />
     <None Include="packages.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="Libraries\bass.dll" />
-    <Content Include="Libraries\FreeImage.dll" />
-    <Content Include="Libraries\FreeImageNET.dll" />
-    <Content Include="Libraries\glfw3.dll" />
-    <Content Include="Libraries\MonoMac.dll" />
   </ItemGroup>
   <ItemGroup>
     <None Include="FodyWeavers.xml">
       <SubType>Designer</SubType>
     </None>
   </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
-    <Folder Include="Platform\" />
-  </ItemGroup>
-  <ItemGroup>
+    <ProjectReference Include="..\pEngine.Assemblies\pEngine.Assemblies.csproj">
+      <Project>{18c440bd-04b1-417c-9be6-0d4c5f940cca}</Project>
+      <Name>pEngine.Assemblies</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Tools\Glfw\Glfw.csproj">
       <Project>{5c569301-50c6-47c4-9850-6cb36d4da267}</Project>
       <Name>Glfw</Name>

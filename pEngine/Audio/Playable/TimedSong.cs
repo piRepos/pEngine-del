@@ -4,7 +4,7 @@ using pEngine.Resources;
 using pEngine.Audio.DSP;
 using pEngine.Resources.Files;
 
-using pEngine.Framework.Timing.Base;
+using pEngine.Utils.Timing.Base;
 
 namespace pEngine.Audio.Playable
 {

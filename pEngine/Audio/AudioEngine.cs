@@ -9,36 +9,40 @@ using System.Collections.Generic;
 
 using ManagedBass;
 
-using pEngine.Framework.Timing.Base;
+
+using pEngine.Utils.Timing.Base;
 using pEngine.Framework.Timing;
+using pEngine.Framework;
+using pEngine.Framework.Modules;
+using pEngine.Utils.Threading;
 using pEngine.Audio.Mixing;
 
 namespace pEngine.Audio
 {
     public delegate void AudioDevicesChangedEventHandler(List<AudioDevice> CurrentDevices);
 
-    public class AudioEngine : IDisposable, IUpdatable
+    public class AudioEngine : Module
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="AudioEngine"/> class.
         /// </summary>
-        public AudioEngine()
+        public AudioEngine(GameHost host, Scheduler scheduler)
+			: base(host, scheduler)
         {
-
 			Frequency = 44100;
-
-            Bass.FloatingPointDSP = true;
         }
 
         /// <summary>
         /// Initialize this instance.
         /// </summary>
-        public void Initialize()
+        public override void Initialize()
         {
             // Initialize device informations
             AudioDevice CurrentDevice = GetDevices().Find((X) => X.IsDefault);
 
-            SetAudioDevice(CurrentDevice);
+			Bass.FloatingPointDSP = true;
+
+			SetAudioDevice(CurrentDevice);
 
             MasterMixer = new Mixer();
         }
@@ -47,7 +51,7 @@ namespace pEngine.Audio
         /// Update the audio system.
         /// </summary>
         /// <param name="Delta">Delta time.</param>
-        public void Update(IFrameBasedClock Clock)
+        public override void Update(IFrameBasedClock Clock)
         {
             DeviceAutoCheckTimer += Clock.ElapsedFrameTime / 1000D;
             if (DeviceAutoCheckTimer > 3D)
@@ -66,9 +70,16 @@ namespace pEngine.Audio
         /// <see cref="Dispose"/> method leaves the <see cref="pEngine.Audio.AudioEngine"/> in an unusable state. After
         /// calling <see cref="Dispose"/>, you must release all references to the <see cref="pEngine.Audio.AudioEngine"/> so
         /// the garbage collector can reclaim the memory that the <see cref="pEngine.Audio.AudioEngine"/> was occupying.</remarks>
-        public void Dispose()
+        protected override void Dispose(bool disposing)
         {
             Bass.Free();
+
+			if (disposing)
+			{
+
+			}
+
+			base.Dispose(disposing);
         }
 
         #region Devices

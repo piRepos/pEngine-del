@@ -2,4 +2,5 @@
 <Weavers>
   <PropertyChanged />
   <MethodBoundaryAspect />
+  <Anotar.Custom/>
 </Weavers>

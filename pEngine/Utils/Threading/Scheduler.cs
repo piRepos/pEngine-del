@@ -44,6 +44,82 @@ namespace pEngine.Utils.Threading
 		protected virtual bool IsMainThread => Thread.CurrentThread.ManagedThreadId == mainThreadId;
 
 		/// <summary>
+		/// Raised on scheduler overflow.
+		/// </summary>
+		public event EventHandler SchedulerQueueOverflow;
+
+		#region Managing tasks
+
+		/// <summary>
+		/// Add a task to be scheduled.
+		/// </summary>
+		/// <param name="task">The work to be done.</param>
+		/// <param name="forceScheduled">If set to false, the task will be executed immediately if we are on the main thread.</param>
+		/// <returns>Whether we could run without scheduling</returns>
+		public virtual bool Add(Action task, bool forceScheduled = true)
+		{
+			if (!forceScheduled && IsMainThread)
+			{
+				//We are on the main thread already - don't need to schedule.
+				task.Invoke();
+				return true;
+			}
+
+			schedulerQueue.Enqueue(task);
+
+			return false;
+		}
+
+		/// <summary>
+		/// Add a task to be scheduled.
+		/// </summary>
+		/// <param name="task">The work to be done.</param>
+		/// <returns>Whether we could run without scheduling</returns>
+		public virtual bool Add(ScheduledDelegate task)
+		{
+			lock (timedTasks)
+			{
+				if (task.RepeatInterval == 0)
+					perUpdateTasks.Add(task);
+				else
+					timedTasks.AddInPlace(task);
+			}
+			return true;
+		}
+
+		/// <summary>
+		/// Add a task which will be run after a specified delay.
+		/// </summary>
+		/// <param name="task">The work to be done.</param>
+		/// <param name="timeUntilRun">Milliseconds until run.</param>
+		/// <param name="repeat">Whether this task should repeat.</param>
+		public ScheduledDelegate AddDelayed(Action task, double timeUntilRun, bool repeat = false)
+		{
+			ScheduledDelegate del = new ScheduledDelegate(task, timer.ElapsedMilliseconds + timeUntilRun, repeat ? timeUntilRun : -1);
+
+			return Add(del) ? del : null;
+		}
+
+		/// <summary>
+		/// Adds a task which will only be run once per frame, no matter how many times it was scheduled in the previous frame.
+		/// </summary>
+		/// <param name="task">The work to be done.</param>
+		/// <returns>Whether this is the first queue attempt of this work.</returns>
+		public bool AddOnce(Action task)
+		{
+			if (schedulerQueue.Contains(task))
+				return false;
+
+			schedulerQueue.Enqueue(task);
+
+			return true;
+		}
+
+		#endregion
+
+		#region Scheduler
+
+		/// <summary>
 		/// Run any pending work tasks.
 		/// </summary>
 		/// <returns>true if any tasks were run.</returns>
@@ -69,7 +145,7 @@ namespace pEngine.Utils.Threading
 						// This should never ever happen... but if it does, let's not overflow on queued tasks.
 						else
 						{
-							// TODO: Debug.Print("Timed tasks are overflowing. Can not keep up with periodic tasks.");
+							SchedulerQueueOverflow?.Invoke(this, EventArgs.Empty);
 							sd.WaitTime = timer.ElapsedMilliseconds + sd.RepeatInterval;
 						}
 
@@ -112,65 +188,7 @@ namespace pEngine.Utils.Threading
 			mainThreadId = Thread.CurrentThread.ManagedThreadId;
 		}
 
-		/// <summary>
-		/// Add a task to be scheduled.
-		/// </summary>
-		/// <param name="task">The work to be done.</param>
-		/// <param name="forceScheduled">If set to false, the task will be executed immediately if we are on the main thread.</param>
-		/// <returns>Whether we could run without scheduling</returns>
-		public virtual bool Add(Action task, bool forceScheduled = true)
-		{
-			if (!forceScheduled && IsMainThread)
-			{
-				//We are on the main thread already - don't need to schedule.
-				task.Invoke();
-				return true;
-			}
-
-			schedulerQueue.Enqueue(task);
-
-			return false;
-		}
-
-		public virtual bool Add(ScheduledDelegate task)
-		{
-			lock (timedTasks)
-			{
-				if (task.RepeatInterval == 0)
-					perUpdateTasks.Add(task);
-				else
-					timedTasks.AddInPlace(task);
-			}
-			return true;
-		}
-
-		/// <summary>
-		/// Add a task which will be run after a specified delay.
-		/// </summary>
-		/// <param name="task">The work to be done.</param>
-		/// <param name="timeUntilRun">Milliseconds until run.</param>
-		/// <param name="repeat">Whether this task should repeat.</param>
-		public ScheduledDelegate AddDelayed(Action task, double timeUntilRun, bool repeat = false)
-		{
-			ScheduledDelegate del = new ScheduledDelegate(task, timer.ElapsedMilliseconds + timeUntilRun, repeat ? timeUntilRun : -1);
-
-			return Add(del) ? del : null;
-		}
-
-		/// <summary>
-		/// Adds a task which will only be run once per frame, no matter how many times it was scheduled in the previous frame.
-		/// </summary>
-		/// <param name="task">The work to be done.</param>
-		/// <returns>Whether this is the first queue attempt of this work.</returns>
-		public bool AddOnce(Action task)
-		{
-			if (schedulerQueue.Contains(task))
-				return false;
-
-			schedulerQueue.Enqueue(task);
-
-			return true;
-		}
+		#endregion
 
 		#region IDisposable Support
 

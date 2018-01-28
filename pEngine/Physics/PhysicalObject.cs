@@ -4,7 +4,7 @@ using pEngine.Utils.Math;
 using pEngine.Resources;
 using pEngine.Framework;
 using pEngine.Framework.Caching;
-using pEngine.Framework.Timing.Base;
+using pEngine.Utils.Timing.Base;
 
 namespace pEngine.Physics
 {
@@ -17,8 +17,7 @@ namespace pEngine.Physics
 		/// Makes a new instance of <see cref="PhysicalObject"/> class.
 		/// </summary>
 		/// <param name="parent">Parent object.</param>
-		public PhysicalObject(PhysicalObject parent)
-			: base(parent)
+		public PhysicalObject()
 		{
 			PropertyChanged += PositionChange;
 			ScaleReference = Vector2i.Zero;
@@ -232,6 +231,8 @@ namespace pEngine.Physics
 			DrawMatrix *= ToRelativeFloat;
 
 			MatrixInverse = Matrix.Invert(Matrix);
+
+			TransformationChanged?.Invoke(this, EventArgs.Empty);
 		}
 
 		#endregion

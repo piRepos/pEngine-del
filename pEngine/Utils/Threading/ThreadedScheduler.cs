@@ -11,13 +11,16 @@ namespace pEngine.Utils.Threading
 	/// </summary>
 	public class ThreadedScheduler : Scheduler
 	{
-		private bool isDisposed;
-
+		/// <summary>
+		/// Makes a new instance of <see cref="ThreadedScheduler"/> class.
+		/// </summary>
+		/// <param name="threadName">Thread name.</param>
+		/// <param name="runInterval">Time between each loop.</param>
 		public ThreadedScheduler(string threadName = null, int runInterval = 50)
 		{
-			var workerThread = new Thread(() =>
+			WorkerThread = new Thread(() =>
 			{
-				while (!isDisposed)
+				while (Running && !isDisposed)
 				{
 					Update();
 					Thread.Sleep(runInterval);
@@ -27,9 +30,48 @@ namespace pEngine.Utils.Threading
 				IsBackground = true,
 				Name = threadName
 			};
-
-			workerThread.Start();
 		}
+
+		protected override bool IsMainThread => false;
+
+		/// <summary>
+		/// Scheduler thread.
+		/// </summary>
+		public Thread WorkerThread { get; }
+
+		/// <summary>
+		/// True if this thread is running.
+		/// </summary>
+		public bool Running { get; private set; }
+		
+		/// <summary>
+		/// Start this threaded scheduler.
+		/// </summary>
+		public void Run()
+		{
+			Running = true;
+			WorkerThread.Start();
+		}
+
+		/// <summary>
+		/// Stop this thread.
+		/// </summary>
+		/// <param name="join">Wait for the thread exit.</param>
+		/// <param name="force">Force the thread exit.</param>
+		public void Stop(bool join = false, bool force = false)
+		{
+			Running = false;
+
+			if (force)
+				WorkerThread.Abort();
+
+			if (join)
+				WorkerThread.Join();
+		}
+
+		#region Dispose implementation
+
+		private bool isDisposed;
 
 		protected override void Dispose(bool disposing)
 		{
@@ -37,6 +79,7 @@ namespace pEngine.Utils.Threading
 			base.Dispose(disposing);
 		}
 
-		protected override bool IsMainThread => false;
+		#endregion
+
 	}
 }
