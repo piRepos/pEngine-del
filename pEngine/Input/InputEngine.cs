@@ -39,6 +39,7 @@ namespace pEngine.Input
 		public InputEngine(GameHost host, Scheduler scheduler) 
 			: base(host, scheduler)
 		{
+            InputStates = new Dictionary<IDevice, InputState>();
 		}
 
 		/// <summary>
@@ -63,7 +64,11 @@ namespace pEngine.Input
 		{
 			base.Initialize();
 
+            InputStates.Add(HardwareKeyboard, new InputState());
+            InputStates.Add(HardwareMouse, new InputState());
 
+            HardwareKeyboard.OnKeyEvent += HardwareKeyboard_OnKeyEvent;
+            HardwareMouse.OnButtonEvent += HardwareMouse_OnButtonEvent;
 		}
 
 		/// <summary>
@@ -73,14 +78,51 @@ namespace pEngine.Input
 		public override void Update(IFrameBasedClock clock)
 		{
 			base.Update(clock);
+
+            // - Remove unused joypads
+            var removed = InputStates.Keys.Except(HardwareJoypads);
+            foreach (IJoypad pad in removed)
+                InputStates.Remove(pad);
+
+            // - Update joypad states
+            foreach (IJoypad pad in HardwareJoypads)
+            {
+                if (!InputStates.ContainsKey(pad))
+                    InputStates.Add(pad, new InputState());
+
+                for (uint i = 0; i < pad.Buttons.Count(); ++i)
+                    InputStates[pad].SetKeyState(i, pad.Buttons[i]);
+
+                for (uint i = 0; i < pad.Axes.Count(); ++i)
+                    InputStates[pad].SetPositionState(i, (float)pad.Axes[i]);
+            }
 		}
 
-		#region Service
+        #region Gets state
 
-		/// <summary>
-		/// Settings for this module.
-		/// </summary>
-		public override Service GetSettings(Scheduler mainScheduler)
+        /// <summary>
+        /// Gets the input states.
+        /// </summary>
+        private Dictionary<IDevice, InputState> InputStates { get; }
+
+        void HardwareKeyboard_OnKeyEvent(KeyboardKey key, int scancode, KeyState action, KeyModifier modifiers)
+        {
+            InputStates[HardwareKeyboard].SetKeyState((uint)key, action);
+        }
+
+        void HardwareMouse_OnButtonEvent(MouseButton button, KeyState action, KeyModifier modifiers)
+        {
+            InputStates[HardwareMouse].SetKeyState((uint)button, action);
+        }
+
+        #endregion
+
+        #region Service
+
+        /// <summary>
+        /// Settings for this module.
+        /// </summary>
+        public override Service GetSettings(Scheduler mainScheduler)
 		{
 			InputService s = new InputService(this, mainScheduler);
 			s.Initialize();

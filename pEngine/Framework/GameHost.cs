@@ -89,6 +89,11 @@ namespace pEngine.Framework
 		protected virtual void HandleInput(IFrameBasedClock clock)
 		{
 			Window.PollMesages(true);
+
+            // - Update hardware input
+            Input.Update(clock);
+
+
 		}
 
 		#endregion

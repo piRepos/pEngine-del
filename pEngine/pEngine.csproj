@@ -204,6 +204,7 @@
     <Compile Include="Utils\Vector3i.cs" />
     <Compile Include="Utils\Vector4.cs" />
     <Compile Include="Utils\Vector4i.cs" />
+    <Compile Include="Input\InputState.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

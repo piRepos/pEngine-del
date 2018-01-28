@@ -60,9 +60,13 @@ namespace pEngine.Platform
 			switch (os.Platform)
 			{
 				case PlatformID.Win32NT: // - Windows
-					if (!forcePlatformNative)
-						Platform = new GlfwWrapper();
+                    if (!forcePlatformNative)
+                        Platform = new GlfwWrapper();
 					break;
+                case PlatformID.Unix: // - OSX / Linux
+                    if (!forcePlatformNative)
+                        Platform = new GlfwWrapper();
+                    break;
 			}
 
 			// - Initialize the current platform
