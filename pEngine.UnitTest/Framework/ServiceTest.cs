@@ -17,12 +17,12 @@ namespace pEngine.UnitTest.Framework
 		/// <summary>
 		/// Makes a new instance of <see cref="TestModule"/> class.
 		/// </summary>
-		public TestModule(GameHost host, Scheduler scheduler)
+		public TestModule(GameHost host, GameLoop scheduler)
 			: base(host, scheduler)
 		{
 		}
 
-		public override Service GetSettings(Scheduler mainScheduler)
+		public override Service GetSettings(GameLoop mainScheduler)
 		{
 			TestService t = new TestService(this, mainScheduler);
 			t.Initialize();
@@ -64,7 +64,7 @@ namespace pEngine.UnitTest.Framework
 		/// Makes a new instance of <see cref="TestService"/> class.
 		/// </summary>
 		/// <param name="module">Owner module.</param>
-		public TestService(TestModule module, Scheduler mainScheduler)
+		public TestService(TestModule module, GameLoop mainScheduler)
 			: base(module, mainScheduler)
 		{
 
@@ -99,8 +99,8 @@ namespace pEngine.UnitTest.Framework
 	{
 		public ServiceTest()
 		{
-			Scheduler = new ThreadedScheduler();
-			PrimaryScheduler = new ThreadedScheduler();
+			Scheduler = new ThreadedGameLoop(null, "TestThread1");
+			PrimaryScheduler = new ThreadedGameLoop(null, "TestThread2");
 			Module = new TestModule(null, Scheduler);
 			Settings = Module.GetSettings(PrimaryScheduler) as TestService;
 		}
@@ -136,12 +136,12 @@ namespace pEngine.UnitTest.Framework
 		/// <summary>
 		/// Scheduler.
 		/// </summary>
-		public ThreadedScheduler Scheduler { get; }
+		public ThreadedGameLoop Scheduler { get; }
 
 		/// <summary>
 		/// Scheduler.
 		/// </summary>
-		public ThreadedScheduler PrimaryScheduler { get; }
+		public ThreadedGameLoop PrimaryScheduler { get; }
 
 		#region Attributi di test aggiuntivi
 		//
@@ -172,10 +172,10 @@ namespace pEngine.UnitTest.Framework
 		[TestCleanup()]
 		public void MyTestCleanup()
 		{
-			Scheduler.Dispose();
-			Scheduler.WorkerThread.Join();
-			PrimaryScheduler.Dispose();
-			PrimaryScheduler.WorkerThread.Join();
+			Scheduler.Stop();
+			Scheduler.CurrentThread.Join();
+			PrimaryScheduler.Stop();
+			PrimaryScheduler.CurrentThread.Join();
 		}
 		
 		#endregion
@@ -187,7 +187,7 @@ namespace pEngine.UnitTest.Framework
 
 			Settings.PropertyInteger = 2;
 
-			Scheduler.Add(() =>
+			Scheduler.Scheduler.Add(() =>
 			{
 				Assert.AreEqual(Module.TestPropertyInteger, 2);
 				sem.Set();
@@ -198,7 +198,7 @@ namespace pEngine.UnitTest.Framework
 
 			Module.TestPropertyInteger = 10;
 
-			PrimaryScheduler.Add(() =>
+			PrimaryScheduler.Scheduler.Add(() =>
 			{
 				Assert.AreEqual(Settings.PropertyInteger, 10);
 				sem.Set();

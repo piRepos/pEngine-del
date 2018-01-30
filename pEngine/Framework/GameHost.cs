@@ -11,6 +11,8 @@ using pEngine.Platform.Forms;
 using pEngine.Utils.Threading;
 using pEngine.Utils.Timing.Base;
 
+using pEngine.Input;
+
 namespace pEngine.Framework
 {
 	public partial class GameHost : pObject
@@ -26,6 +28,9 @@ namespace pEngine.Framework
 			// - Make game loops
 			InputGameLoop = new GameLoop(HandleInput, "InputThread");
 			PhysicsGameLoop = new ThreadedGameLoop(HandlePhysics, "PhysicsThread");
+
+			// - Modules
+			Input = new InputEngine(this, InputGameLoop);
 		}
 
 		/// <summary>
@@ -43,11 +48,6 @@ namespace pEngine.Framework
 		/// </summary>
 		public IWindow Window => Platform.ApplicationWindow;
 
-		/// <summary>
-		/// Hardware input manager.
-		/// </summary>
-		public DeviceManager Input => Platform.Input;
-
 		#region Game management
 
 		/// <summary>
@@ -63,6 +63,7 @@ namespace pEngine.Framework
 			Window.Show();
 
 			// - Initialize input apis
+			Platform.Input.Initialize();
 			Input.Initialize();
 
 			// - Start gameloops
@@ -83,6 +84,11 @@ namespace pEngine.Framework
 		public GameLoop InputGameLoop { get; }
 
 		/// <summary>
+		/// 
+		/// </summary>
+		public InputEngine Input { get; }
+
+		/// <summary>
 		/// Handle an input frame.
 		/// </summary>
 		/// <param name="clock">Timed clock.</param>
@@ -91,9 +97,10 @@ namespace pEngine.Framework
 			Window.PollMesages(true);
 
             // - Update hardware input
-            Input.Update(clock);
+            Platform.Input.Update(clock);
 
-
+			// - 
+			Input.Update(clock);
 		}
 
 		#endregion
@@ -105,14 +112,23 @@ namespace pEngine.Framework
 		/// </summary>
 		public GameLoop PhysicsGameLoop { get; }
 
+		InputService In;
+
 		/// <summary>
 		/// Handle a physics calculation frame.
 		/// </summary>
 		/// <param name="clock">Timed clock.</param>
 		protected virtual void HandlePhysics(IFrameBasedClock clock)
 		{
+			if (In == null)
+			{
+				In = Input.GetSettings(PhysicsGameLoop) as InputService;
+			}
 
+			if (In.Joypads.Count > 0 && In.Joypads[0].Buttons.Count() > 0 && In.Joypads[0].Buttons[0] == KeyState.Pressed)
+				return;
 		}
+
 
 		#endregion
 

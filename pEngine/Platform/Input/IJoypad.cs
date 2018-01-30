@@ -26,4 +26,30 @@ namespace pEngine.Platform.Input
 		/// </summary>
 		KeyState[] Buttons { get; }
     }
+
+	public class JoypadKeyEventArgs : EventArgs
+	{
+		/// <summary>
+		/// Target key.
+		/// </summary>
+		public int Key { get; set; }
+
+		/// <summary>
+		/// Key current state.
+		/// </summary>
+		public KeyState Action { get; set; }
+	}
+
+	public class JoypadAxeEventArgs : EventArgs
+	{
+		/// <summary>
+		/// Target key.
+		/// </summary>
+		public int Axe { get; set; }
+
+		/// <summary>
+		/// Key current state.
+		/// </summary>
+		public double Value { get; set; }
+	}
 }

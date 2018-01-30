@@ -24,47 +24,68 @@ namespace pEngine.Platform.Input
 		bool ScrollButton { get; }
 
 		/// <summary>
-		/// Gets the state of a specified mouse button.
+		/// Gets the state of a specified keyboard button.
+		/// </summary>
+		/// <param name="button">Button to check.</param>
+		/// <returns>The button state.</returns>
+		KeyState GetButtonState(MouseButton key);
+
+		/// <summary>
+		/// Gets the state of a specified keyboard button.
 		/// </summary>
 		/// <param name="button">Button to check.</param>
 		/// <returns>True if this button is pressed, false otherwise.</returns>
-		bool GetButtonState(MouseButton button);
+		bool IsPressed(MouseButton key);
 
 		/// <summary>
 		/// Triggered on mouse move.
 		/// </summary>
-		event MouseMoveEventHandler OnMove;
+		event EventHandler<MousePositiontEventArgs> OnMove;
 
 		/// <summary>
 		/// Triggered on mouse scroll movement.
 		/// </summary>
-		event MouseScrollEventHandler OnScroll;
+		event EventHandler<MouseOffsetEventArgs> OnScroll;
 
 		/// <summary>
 		/// Triggered on mouse button event.
 		/// </summary>
-		event MouseButtonEventHandler OnButtonEvent;
+		event EventHandler<MouseKeyEventArgs> OnButtonEvent;
     }
 
-	/// <summary>
-	/// Handles mouse position changes.
-	/// </summary>
-	/// <param name="pos">Current mouse position.</param>
-	public delegate void MouseMoveEventHandler(Vector2 pos);
+	public class MouseOffsetEventArgs : EventArgs
+	{
+		/// <summary>
+		/// Offset value.
+		/// </summary>
+		public Vector2 Offset { get; set; }
+	}
 
-	/// <summary>
-	/// Handles scroll or touchpad gesture for scroll offset.
-	/// </summary>
-	/// <param name="offset">Offset from 0 reference.</param>
-	public delegate void MouseScrollEventHandler(Vector2 offset);
+	public class MousePositiontEventArgs : EventArgs
+	{
+		/// <summary>
+		/// Position value.
+		/// </summary>
+		public Vector2 Position { get; set; }
+	}
 
-	/// <summary>
-	/// Handles mouse buttons press events.
-	/// </summary>
-	/// <param name="button">Target button.</param>
-	/// <param name="action">Action on this button.</param>
-	/// <param name="modifiers">Keyboard modifiers enabled during this action.</param>
-	public delegate void MouseButtonEventHandler(MouseButton button, KeyState action, KeyModifier modifiers);
+	public class MouseKeyEventArgs : EventArgs
+	{
+		/// <summary>
+		/// Target key.
+		/// </summary>
+		public MouseButton Key { get; set; }
+
+		/// <summary>
+		/// Key current state.
+		/// </summary>
+		public KeyState Action { get; set; }
+
+		/// <summary>
+		/// Active modifier keys during this event.
+		/// </summary>
+		public KeyModifier Modifiers { get; set; }
+	}
 
 	public enum MouseButton
 	{

@@ -1,55 +1,24 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 
-using Glfw3;
+using pEngine.Platform.Input;
 
 using pEngine.Utils.Timing.Base;
-using pEngine.Platform.Forms;
 
-namespace pEngine.Platform.Input
+namespace pEngine.Input.Virtual
 {
-    public class GlfwKeyboard : IKeyboard
-    {
-        Glfw.KeyFunc keyCallback;
-        Glfw.CharFunc charCallback;
-        Glfw.CharModsFunc charModsCallback;
-
+	public class VirtualKeyboard : IKeyboard
+	{
 		/// <summary>
 		/// Makes a new instance of <see cref="GlfwKeyboard"/> class.
 		/// </summary>
-		/// <param name="window">Current context.</param>
-		public GlfwKeyboard(GlfwWindow window)
+		/// <param name="state">Current input state.</param>
+		internal VirtualKeyboard(InputState state)
 		{
-			handler = window;
-
-            keyCallback = (w, key, scancode, state, modifiers) =>
-            {
-                OnKeyEvent?.Invoke(this, new KeyboardKeyEventArgs
-				{
-					Key = (KeyboardKey)key,
-					Scancode = scancode,
-					Action = (KeyState)state,
-					Modifiers = (KeyModifier)modifiers
-				});
-            };
-
-            charCallback = (w, c) =>
-            {
-                OnType?.Invoke(this, new KeyboardTypeEventArgs
-				{
-					Point = (char)c
-				});
-            };
-
-            charModsCallback = (w, c, modifiers) =>
-            {
-                OnTypeWithMods?.Invoke(this, new KeyboardModTypeEventArgs
-				{
-					Point = (char)c,
-					Modifiers = (KeyModifier)modifiers
-				});
-            };
+			currentState = state;
 		}
 
 		/// <summary>
@@ -57,15 +26,27 @@ namespace pEngine.Platform.Input
 		/// </summary>
 		public void Initialize()
 		{
-            Glfw.SetKeyCallback(handler.Handle, keyCallback);
-            Glfw.SetCharCallback(handler.Handle, charCallback);
-            Glfw.SetCharModsCallback(handler.Handle, charModsCallback);
+
 		}
 
 		/// <summary>
-		/// Private window handler.
+		/// Current input state.
 		/// </summary>
-		private GlfwWindow handler { get; }
+		private InputState currentState { get; set; }
+
+		/// <summary>
+		/// Current input thread time.
+		/// </summary>
+		public double InputTime => currentState.Time;
+
+		/// <summary>
+		/// Sets the new current state.
+		/// </summary>
+		/// <param name="currentState">Input current state.</param>
+		internal void UpdateCurrentState(InputState currentState)
+		{
+			this.currentState = currentState;
+		}
 
 		#region Modifiers
 
@@ -132,9 +113,21 @@ namespace pEngine.Platform.Input
 		/// Update the state of this element
 		/// </summary>
 		/// <param name="DeltaTime">Game clock.</param>
-		public void Update(IFrameBasedClock Clock)
+		public void Update(IFrameBasedClock clock)
 		{
-			
+			while(currentState != null && currentState.Events.Count > 0)
+			{
+				IInputEvent e = currentState.Events.Dequeue();
+
+				if (e is InputEvent<KeyboardKeyEventArgs> keyEvent && keyEvent.Name == "OnKeyEvent")
+					OnKeyEvent?.Invoke(this, keyEvent.Info);
+
+				if (e is InputEvent<KeyboardModTypeEventArgs> modEvent && modEvent.Name == "OnModType")
+					OnTypeWithMods?.Invoke(this, modEvent.Info);
+
+				if (e is InputEvent<KeyboardTypeEventArgs> tyEvent && tyEvent.Name == "OnType")
+					OnType?.Invoke(this, tyEvent.Info);
+			}
 		}
 
 		/// <summary>
@@ -144,7 +137,7 @@ namespace pEngine.Platform.Input
 		/// <returns>The button state.</returns>
 		public KeyState GetButtonState(KeyboardKey key)
 		{
-			return Glfw.GetKey(handler.Handle, (int)key) ? KeyState.Pressed : KeyState.Released;
+			return currentState?.GetKeyState((uint)key) ?? KeyState.Unknow;
 		}
 
 		/// <summary>
@@ -154,8 +147,8 @@ namespace pEngine.Platform.Input
 		/// <returns>True if this button is pressed, false otherwise.</returns>
 		public bool IsPressed(KeyboardKey key)
 		{
-			return Glfw.GetKey(handler.Handle, (int)key);
+			var state = (currentState?.GetKeyState((uint)key) ?? KeyState.Unknow);
+			return state == KeyState.Pressed || state == KeyState.Holding;
 		}
-
 	}
 }

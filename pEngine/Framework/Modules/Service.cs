@@ -5,20 +5,22 @@ using System.Linq.Expressions;
 using System.Reflection;
 
 using pEngine.Utils.Threading;
+using pEngine.Utils.Timing.Base;
+using pEngine.Utils.Timing;
 
 namespace pEngine.Framework.Modules
 {
-	public class Service : pObject
+	public class Service : pObject, IUpdatable
 	{
 		/// <summary>
 		/// Makes a new instance of <see cref="Service"/> class.
 		/// </summary>
 		/// <param name="module">Owner module.</param>
-		/// <param name="mainScheduler">Scheduler for this service.</param>
-		public Service(Module module, Scheduler mainScheduler)
+		/// <param name="mainScheduler">Gameloop for this service.</param>
+		public Service(Module module, GameLoop mainLoop)
 		{
 			Module = module;
-			RunningScheduler = mainScheduler;
+			RunningLoop = mainLoop;
 			Activators = new Dictionary<string, Func<object[], object>>();
 		}
 
@@ -30,12 +32,21 @@ namespace pEngine.Framework.Modules
 		/// <summary>
 		/// Scheduler for this service.
 		/// </summary>
-		public Scheduler RunningScheduler { get; }
+		public GameLoop RunningLoop { get; }
 
 		/// <summary>
 		/// API activators.
 		/// </summary>
 		private Dictionary<string, Func<object[], object>> Activators;
+
+		/// <summary>
+		/// Update the state of this element.
+		/// </summary>
+		/// <param name="clock">Game clock.</param>
+		public virtual void Update(IFrameBasedClock clock)
+		{
+
+		}
 
 		#region Initialization
 
@@ -62,19 +73,19 @@ namespace pEngine.Framework.Modules
 				if (attr == null)
 					continue;
 
-				var extProp = moduleType.GetProperty(attr.ReferencesTo);
-				if (prop.CanWrite)
+				var extProp = moduleType.GetProperty(attr.ReferencesTo, propsSettings);
+				if (extProp.CanWrite)
 				{
 					Activators.Add(prop.Name, (par) =>
 					{
-						Module.Scheduler.Add(() =>
+						Module.ModuleLoop.Scheduler.Add(() =>
 						{
 							extProp.SetValue(Module, prop.GetValue(this));
 						});
 						return null;
 					});
 				}
-				if (prop.CanRead)
+				if (extProp.CanRead)
 				{
 					prop.SetValue(this, extProp.GetValue(Module));
 
@@ -82,9 +93,9 @@ namespace pEngine.Framework.Modules
 					{
 						if (p.PropertyName == attr.ReferencesTo)
 						{
-							if (RunningScheduler != null)
+							if (RunningLoop != null)
 							{
-								RunningScheduler.Add(() =>
+								RunningLoop.Scheduler.Add(() =>
 								{
 									prop.SetValue(this, extProp.GetValue(Module));
 								});
@@ -113,9 +124,9 @@ namespace pEngine.Framework.Modules
 				{
 					Action<object[]> call = (par) =>
 					{
-						if (RunningScheduler != null)
+						if (RunningLoop != null)
 						{
-							RunningScheduler.Add(() =>
+							RunningLoop.Scheduler.Add(() =>
 							{
 								((Delegate)prop.GetValue(this)).DynamicInvoke(par);
 							});

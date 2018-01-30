@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Linq;
 using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
@@ -32,7 +31,7 @@ namespace pEngine.Framework.Modules
 				Method = type.GetMethod(ReferencesTo);
 			}
 
-			obj.Module.Scheduler.Add(() =>
+			obj.Module.ModuleLoop.Scheduler.Add(() =>
 			{
 				if (arg.Arguments.Last() is Action<object>)
 				{

@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 using pEngine.Resources;
-using pEngine.Framework.Timing;
+using pEngine.Utils.Timing;
 using pEngine.Utils.Timing.Base;
 
 namespace pEngine.Framework

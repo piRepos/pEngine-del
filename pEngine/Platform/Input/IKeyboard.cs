@@ -30,46 +30,70 @@ namespace pEngine.Platform.Input
 		/// Gets the state of a specified keyboard button.
 		/// </summary>
 		/// <param name="button">Button to check.</param>
+		/// <returns>The button state.</returns>
+		KeyState GetButtonState(KeyboardKey key);
+
+		/// <summary>
+		/// Gets the state of a specified keyboard button.
+		/// </summary>
+		/// <param name="button">Button to check.</param>
 		/// <returns>True if this button is pressed, false otherwise.</returns>
-		bool GetButtonState(KeyboardKey key);
+		bool IsPressed(KeyboardKey key);
 
 		/// <summary>
 		/// Triggered on keyboard key event.
 		/// </summary>
-		event KeyboardKeyEventHandler OnKeyEvent;
+		event EventHandler<KeyboardKeyEventArgs> OnKeyEvent;
 
 		/// <summary>
 		/// Triggered on typing.
 		/// </summary>
-		event KeyboardTypeEventHandler OnType;
+		event EventHandler<KeyboardTypeEventArgs> OnType;
 
 		/// <summary>
 		/// Triggered on typing.
 		/// </summary>
-		event KeyboardModTypeEventHandler OnTypeWithMods;
+		event EventHandler<KeyboardModTypeEventArgs> OnTypeWithMods;
 	}
 
-	/// <summary>
-	/// Handles key system events.
-	/// </summary>
-	/// <param name="key">Target key.</param>
-	/// <param name="scancode">Scancode of this key.</param>
-	/// <param name="action">Key current state.</param>
-	/// <param name="modifiers">Active modifier keys during this event.</param>
-	public delegate void KeyboardKeyEventHandler(KeyboardKey key, int scancode, KeyState action, KeyModifier modifiers);
+	public class KeyboardKeyEventArgs : EventArgs
+	{
+		/// <summary>
+		/// Target key.
+		/// </summary>
+		public KeyboardKey Key { get; set; }
 
-	/// <summary>
-	/// Handles keyboard typing getting the plain text.
-	/// </summary>
-	/// <param name="point">Current character.</param>
-	public delegate void KeyboardTypeEventHandler(char point);
+		/// <summary>
+		/// Scancode of this key.
+		/// </summary>
+		public int Scancode { get; set; }
 
-	/// <summary>
-	/// Handles keyboard typing getting the plain text with modifiers.
-	/// </summary>
-	/// <param name="point">Current character.</param>
-	/// <param name="modifiers">Used modifiers.</param>
-	public delegate void KeyboardModTypeEventHandler(char point, KeyModifier modifiers);
+		/// <summary>
+		/// Key current state.
+		/// </summary>
+		public KeyState Action { get; set; }
+
+		/// <summary>
+		/// Active modifier keys during this event.
+		/// </summary>
+		public KeyModifier Modifiers { get; set; }
+	}
+
+	public class KeyboardTypeEventArgs : EventArgs
+	{
+		/// <summary>
+		/// Target key.
+		/// </summary>
+		public char Point { get; set; }
+	}
+
+	public class KeyboardModTypeEventArgs : KeyboardTypeEventArgs
+	{
+		/// <summary>
+		/// Active modifier keys during this event.
+		/// </summary>
+		public KeyModifier Modifiers { get; set; }
+	}
 
 	[Flags]
 	public enum KeyModifier

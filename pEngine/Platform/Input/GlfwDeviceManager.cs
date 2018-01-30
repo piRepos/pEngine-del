@@ -49,7 +49,7 @@ namespace pEngine.Platform.Input
         /// <summary>
         /// Private window handler.
         /// </summary>
-        private GlfwWindow handler { get; }
+        private GlfwWindow handler { get; } 
 
         #region Device management
 
@@ -89,12 +89,19 @@ namespace pEngine.Platform.Input
                 pad.Initialize();
 
                 devices.Add(pad);
+
+				JoypadConnectionEvent(pad, true);
             }
 
             if (state == Glfw.ConnectionEvent.Disconnected)
             {
+				var toRemove = devices.Where(g => (g is GlfwJoypad pad) ? pad.Index == (int)x : false);
+					
+				foreach (GlfwJoypad j in toRemove)
+					JoypadConnectionEvent(j, false);
+
                 devices.RemoveAll(g => (g is GlfwJoypad pad) ? pad.Index == (int)x : false);
-            }
+			}
         }
 
         #endregion

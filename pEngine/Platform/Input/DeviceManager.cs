@@ -5,7 +5,7 @@ using System.Text;
 
 using pEngine.Utils.Timing.Base;
 
-using pEngine.Framework.Timing;
+using pEngine.Utils.Timing;
 
 namespace pEngine.Platform.Input
 {
@@ -53,10 +53,24 @@ namespace pEngine.Platform.Input
 		public IEnumerable<IJoypad> Joypads => Devices.Where(x => x is IJoypad).Select(x => x as IJoypad);
 
 		/// <summary>
+		/// Triggered on a joypad connection or disconnection.
+		/// </summary>
+		public event EventHandler<JoypadConnectionEventArgs> JoypadConnection;
+
+		/// <summary>
 		/// Gets the list of connetted joypad.
 		/// </summary>
 		/// <returns>A list of joypads.</returns>
 		protected abstract IJoypad[] GetConnectedJoypads();
+
+		protected void JoypadConnectionEvent(IJoypad j, bool connected)
+		{
+			JoypadConnection?.Invoke(this, new JoypadConnectionEventArgs
+			{
+				Connected = connected,
+				Joypad = j
+			});
+		}
 
 		#endregion
 
@@ -75,7 +89,18 @@ namespace pEngine.Platform.Input
 		}
 
 		#endregion
+	}
 
+	public class JoypadConnectionEventArgs : EventArgs
+	{
+		/// <summary>
+		/// Target joypad.
+		/// </summary>
+		public IJoypad Joypad { get; set; }
 
+		/// <summary>
+		/// If true this is a connection event otherwise i'ts a disconnection event.
+		/// </summary>
+		public bool Connected { get; set; }
 	}
 }

@@ -20,7 +20,7 @@ namespace pEngine.Utils.Threading
 		/// <summary>
 		/// Start this gameloop.
 		/// </summary>
-		public new virtual void Run()
+		public override void Run()
 		{
 			CurrentThread.Start();
 		}

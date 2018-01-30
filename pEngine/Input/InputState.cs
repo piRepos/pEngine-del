@@ -5,26 +5,37 @@ using pEngine.Platform.Input;
 
 namespace pEngine.Input
 {
-    public class InputState
+    internal class InputState
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="InputState"/> class.
         /// </summary>
         public InputState()
         {
-            keyState = new Dictionary<uint, KeyState>();
-            positionState = new Dictionary<uint, float>();
+			KeyState = new Dictionary<uint, KeyState>();
+			PositionState = new Dictionary<uint, float>();
+			Events = new Queue<IInputEvent>();
         }
 
         /// <summary>
         /// Gets the keys state.
         /// </summary>
-        private Dictionary<uint, KeyState> keyState { get; }
+        public Dictionary<uint, KeyState> KeyState { get; }
 
         /// <summary>
         /// Gets the position state.
         /// </summary>
-        private Dictionary<uint, float> positionState { get; }
+        public Dictionary<uint, float> PositionState { get; }
+
+		/// <summary>
+		/// Event queue.
+		/// </summary>
+		public Queue<IInputEvent> Events { get; }
+
+		/// <summary>
+		/// Current time in the input thread.
+		/// </summary>
+		public double Time { get; set; }
 
         /// <summary>
         /// Sets the state of the key.
@@ -33,7 +44,7 @@ namespace pEngine.Input
         /// <param name="state">True if is pressed.</param>
         public void SetKeyState(uint key, KeyState state)
         {
-            keyState[key] = state;
+			KeyState[key] = state;
         }
 
         /// <summary>
@@ -45,11 +56,11 @@ namespace pEngine.Input
         {
             try
             {
-                return keyState[key];
+                return KeyState[key];
             }
             catch (KeyNotFoundException)
             {
-                return KeyState.Unknow;
+                return Platform.Input.KeyState.Unknow;
             }
         }
 
@@ -60,7 +71,7 @@ namespace pEngine.Input
         /// <param name="state">State.</param>
         public void SetPositionState(uint posKey, float state)
         {
-            positionState[posKey] = state;
+			PositionState[posKey] = state;
         }
 
         /// <summary>
@@ -72,7 +83,7 @@ namespace pEngine.Input
         {
             try
             {
-                return positionState[posKey];
+                return PositionState[posKey];
             }
             catch (KeyNotFoundException)
             {
@@ -80,4 +91,19 @@ namespace pEngine.Input
             }
         }
     }
+
+	public interface IInputEvent { }
+
+	public struct InputEvent<T> : IInputEvent where T : EventArgs
+	{
+		/// <summary>
+		/// Event name.
+		/// </summary>
+		public string Name { get; set; }
+
+		/// <summary>
+		/// Input control state.
+		/// </summary>
+		public T Info { get; set; }
+	}
 }

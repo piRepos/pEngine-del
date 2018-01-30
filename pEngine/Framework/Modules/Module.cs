@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 using pEngine.Utils.Threading;
-using pEngine.Framework.Timing;
+using pEngine.Utils.Timing;
 using pEngine.Utils.Timing.Base;
 
 namespace pEngine.Framework.Modules
@@ -17,12 +17,27 @@ namespace pEngine.Framework.Modules
 		/// </summary>
 		/// <param name="host">Game host owner.</param>
 		/// <param name="scheduler">Running thread scheduler.</param>
-		public Module(GameHost host, Scheduler scheduler)
+		public Module(GameHost host, GameLoop moduleLoop)
 		{
 			Host = host;
-			Scheduler = scheduler;
+			ModuleLoop = moduleLoop;
+			Services = new List<Service>();
 		}
-		
+
+		/// <summary>
+		/// Dispose all resources used from this class.
+		/// </summary>
+		/// <param name="disposing">Dispose managed resources.</param>
+		protected override void Dispose(bool disposing)
+		{
+			if (disposing)
+			{
+				Services.Clear();
+			}
+
+			base.Dispose(disposing);
+		}
+
 		/// <summary>
 		/// Module owner.
 		/// </summary>
@@ -31,17 +46,7 @@ namespace pEngine.Framework.Modules
 		/// <summary>
 		/// Thread schduler for this module.
 		/// </summary>
-		public Scheduler Scheduler { get; }
-
-		/// <summary>
-		/// Settings for this module.
-		/// </summary>
-		public virtual Service GetSettings(Scheduler mainScheduler)
-		{
-			Service s = new Service(this, mainScheduler);
-			s.Initialize();
-			return s;
-		}
+		public GameLoop ModuleLoop { get; }
 
 		/// <summary>
 		/// Initialize this module.
@@ -57,7 +62,25 @@ namespace pEngine.Framework.Modules
 		/// <param name="clock">Game clock.</param>
 		public virtual void Update(IFrameBasedClock clock)
 		{
-
+			foreach (Service s in Services)
+				s.Update(clock);
 		}
+
+		#region Services
+
+		protected List<Service> Services { get; }
+
+		/// <summary>
+		/// Settings for this module.
+		/// </summary>
+		public virtual Service GetSettings(GameLoop mainLoop)
+		{
+			Service s = new Service(this, mainLoop);
+			s.Initialize();
+			Services.Add(s);
+			return s;
+		}
+
+		#endregion
 	}
 }

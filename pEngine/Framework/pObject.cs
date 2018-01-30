@@ -7,6 +7,8 @@ using System.Threading.Tasks;
 
 using PropertyChanged;
 
+#pragma warning disable CS0067
+
 namespace pEngine.Framework
 {
     /// <summary>

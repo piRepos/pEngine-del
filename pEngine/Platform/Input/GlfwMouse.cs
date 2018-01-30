@@ -25,17 +25,28 @@ namespace pEngine.Platform.Input
 
             cursorCallback = (w, x, y) =>
             {
-                OnMove?.Invoke(new Vector2((float)x, (float)y));
+                OnMove?.Invoke(this, new MousePositiontEventArgs
+				{
+					Position = new Vector2((float)x, (float)y)
+				});
             };
 
             scrollCallback = (w, x, y) =>
             {
-                OnScroll?.Invoke(new Vector2((float)x, (float)y));
+                OnScroll?.Invoke(this, new MouseOffsetEventArgs
+				{
+					Offset = new Vector2((float)x, (float)y)
+				});
             };
 
             buttonCallback = (w, button, action, modifiers) =>
             {
-                OnButtonEvent?.Invoke((MouseButton)button, (KeyState)action, (KeyModifier)modifiers);
+                OnButtonEvent?.Invoke(this, new MouseKeyEventArgs
+				{
+					Key = (MouseButton)button,
+					Action = (KeyState)action,
+					Modifiers = (KeyModifier)modifiers
+				});
             };
 		}
 
@@ -59,17 +70,17 @@ namespace pEngine.Platform.Input
 		/// <summary>
 		/// Mouse left button state (true if pressed).
 		/// </summary>
-		public bool LeftButton => GetButtonState(MouseButton.ScrollButton);
+		public bool LeftButton => IsPressed(MouseButton.ScrollButton);
 
 		/// <summary>
 		/// Mouse right button state (true if pressed).
 		/// </summary>
-		public bool RightButton => GetButtonState(MouseButton.RightButton);
+		public bool RightButton => IsPressed(MouseButton.RightButton);
 
 		/// <summary>
 		/// Mouse center button state (true if pressed).
 		/// </summary>
-		public bool ScrollButton => GetButtonState(MouseButton.ScrollButton);
+		public bool ScrollButton => IsPressed(MouseButton.ScrollButton);
 
 		#endregion
 
@@ -94,17 +105,17 @@ namespace pEngine.Platform.Input
 		/// <summary>
 		/// Triggered on mouse move.
 		/// </summary>
-		public event MouseMoveEventHandler OnMove;
+		public event EventHandler<MousePositiontEventArgs> OnMove;
 
 		/// <summary>
 		/// Triggered on mouse scroll movement.
 		/// </summary>
-		public event MouseScrollEventHandler OnScroll;
+		public event EventHandler<MouseOffsetEventArgs> OnScroll;
 
 		/// <summary>
 		/// Triggered on mouse button event.
 		/// </summary>
-		public event MouseButtonEventHandler OnButtonEvent;
+		public event EventHandler<MouseKeyEventArgs> OnButtonEvent;
 
 		#endregion
 
@@ -121,10 +132,20 @@ namespace pEngine.Platform.Input
 		/// Gets the state of a specified mouse button.
 		/// </summary>
 		/// <param name="button">Button to check.</param>
-		/// <returns>True if this button is pressed, false otherwise.</returns>
-		public bool GetButtonState(MouseButton button)
+		/// <returns>The button state.</returns>
+		public KeyState GetButtonState(MouseButton button)
 		{
-			return Glfw.GetMouseButton(handler.Handle, (Glfw.MouseButton)button);
+			return Glfw.GetMouseButton(handler.Handle, (Glfw.MouseButton)button) ? KeyState.Pressed : KeyState.Released;
+		}
+
+		/// <summary>
+		/// Gets the state of a specified keyboard button.
+		/// </summary>
+		/// <param name="button">Button to check.</param>
+		/// <returns>True if this button is pressed, false otherwise.</returns>
+		public bool IsPressed(MouseButton key)
+		{
+			return Glfw.GetMouseButton(handler.Handle, (Glfw.MouseButton)key);
 		}
 	}
 }

@@ -11,7 +11,6 @@ using ManagedBass;
 
 
 using pEngine.Utils.Timing.Base;
-using pEngine.Framework.Timing;
 using pEngine.Framework;
 using pEngine.Framework.Modules;
 using pEngine.Utils.Threading;
@@ -26,7 +25,7 @@ namespace pEngine.Audio
         /// <summary>
         /// Initializes a new instance of the <see cref="AudioEngine"/> class.
         /// </summary>
-        public AudioEngine(GameHost host, Scheduler scheduler)
+        public AudioEngine(GameHost host, GameLoop scheduler)
 			: base(host, scheduler)
         {
 			Frequency = 44100;

@@ -5,7 +5,7 @@
 
 using pEngine.Utils.Timing.Base;
 
-namespace pEngine.Framework.Timing
+namespace pEngine.Utils.Timing
 {
     public interface IUpdatable
     {

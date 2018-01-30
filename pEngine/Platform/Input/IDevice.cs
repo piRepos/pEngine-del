@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-using pEngine.Framework.Timing;
+using pEngine.Utils.Timing;
 
 namespace pEngine.Platform.Input
 {
