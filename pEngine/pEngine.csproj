@@ -121,7 +121,11 @@
     <Compile Include="Framework\Modules\ServiceMethodAttribute.cs" />
     <Compile Include="Framework\Modules\ServicePropertyAttribute.cs" />
     <Compile Include="Framework\pObject.cs" />
+    <Compile Include="Input\Bindings\IKeyCombination.cs" />
+    <Compile Include="Input\Bindings\JoypadKeyCombination.cs" />
+    <Compile Include="Input\Bindings\KeyboardKeyCombination.cs" />
     <Compile Include="Input\Bindings\Binding.cs" />
+    <Compile Include="Input\Bindings\MouseKeyCombination.cs" />
     <Compile Include="Input\InputEngine.cs" />
     <Compile Include="Input\Virtual\VirtualJoypad.cs" />
     <Compile Include="Input\Virtual\VirtualKeyboard.cs" />

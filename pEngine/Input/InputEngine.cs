@@ -1,9 +1,8 @@
 ﻿using System;
+using System.Collections.ObjectModel;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 using pEngine.Framework;
 using pEngine.Framework.Modules;
@@ -85,6 +84,8 @@ namespace pEngine.Input
 		/// </summary>
 		public new InputEngine Module => base.Module as InputEngine;
 
+		#region Devices
+
 		/// <summary>
 		/// Gets the keyboard manager.
 		/// </summary>
@@ -105,6 +106,45 @@ namespace pEngine.Input
 		/// </summary>
 		[ServiceEvent("JoypadConnection")]
 		public event EventHandler<JoypadConnectionEventArgs> JoypadConnection;
+
+		#endregion
+
+		#region Bindings
+
+		/// <summary>
+		/// Key bindings.
+		/// </summary>
+		[ServiceProperty("bindings")]
+		public IEnumerable<Binding> Bindings { get; protected set; }
+
+		/// <summary>
+		/// Current active binding.
+		/// </summary>
+		[ServiceProperty("CurrentBinding")]
+		public IEnumerable<Binding> CurrentBinding { get; protected set; }
+
+		/// <summary>
+		/// Insert a binding in the input engine.
+		/// </summary>
+		/// <param name="b">Binding to add.</param>
+		[ServiceMethod(ReferencesTo = "AddBinding")]
+		public void AddBinding(Binding b) { }
+
+		/// <summary>
+		/// Remove the specified binding.
+		/// </summary>
+		/// <param name="b">Binding to remove.</param>
+		[ServiceMethod(ReferencesTo = "RemoveBinding")]
+		public void RemoveBinding(Binding b) { }
+
+		/// <summary>
+		/// Set the specified binding as current binding.
+		/// </summary>
+		/// <param name="b">Binding to set.</param>
+		[ServiceMethod(ReferencesTo = "SetAsCurrentBnding")]
+		public void SetAsCurrentBnding(Binding b) { }
+
+		#endregion
 
 		#region Sharing data
 
@@ -141,32 +181,8 @@ namespace pEngine.Input
 			: base(host, moduleLoop)
 		{
             InputStates = new DeviceStates();
+			bindings = new List<Binding>();
 		}
-
-		/// <summary>
-		/// Gets the keyboard manager.
-		/// </summary>
-		public IKeyboard HardwareKeyboard => Host.Platform.Input.Keyboard;
-
-		/// <summary>
-		/// Gets the mouse manager.
-		/// </summary>
-		public IMouse HardwareMouse => Host.Platform.Input.Mouse;
-
-		/// <summary>
-		/// Gets the joypads.
-		/// </summary>
-		public IEnumerable<IJoypad> HardwareJoypads => Host.Platform.Input.Joypads;
-
-		/// <summary>
-		/// 
-		/// </summary>
-		public List<Binding> Bindings { get; set; }
-
-		/// <summary>
-		/// Triggered on a joypad connection or disconnection.
-		/// </summary>
-		public event EventHandler<JoypadConnectionEventArgs> JoypadConnection;
 
 		/// <summary>
 		/// Initialize this module.
@@ -196,79 +212,86 @@ namespace pEngine.Input
 
 		}
 
+		#region Bindings
+
+		private List<Binding> bindings { get; }
+
 		/// <summary>
-		/// Update the state of this element.
+		/// Current active binding.
 		/// </summary>
-		/// <param name="clock">Game clock.</param>
-		public override void Update(IFrameBasedClock clock)
+		public Binding CurrentBinding { get; private set; }
+
+		/// <summary>
+		/// Key bindings.
+		/// </summary>
+		public IEnumerable<Binding> Bindings => bindings;
+
+		/// <summary>
+		/// Insert a binding in the input engine.
+		/// </summary>
+		/// <param name="b">Binding to add.</param>
+		public void AddBinding(Binding b)
 		{
-			base.Update(clock);
+			b.Initialize(this);
 
-			InputStates[HardwareKeyboard].Time = clock.CurrentTime;
-			InputStates[HardwareMouse].Time = clock.CurrentTime;
 
-			// - Remove unused joypads
-			var removed = InputStates.Keys.Where(x => x is IJoypad).Except(HardwareJoypads);
-            foreach (IJoypad pad in removed)
-                InputStates.Remove(pad);
 
-            // - Update joypad states
-            foreach (IJoypad pad in HardwareJoypads)
-            {
-				if (!InputStates.ContainsKey(pad))
-					InputStates.Add(pad, new InputState());
-
-				for (uint i = 0; i < pad.Buttons.Count(); ++i)
-				{
-					if (pad.Buttons[i] != InputStates[pad].GetKeyState(i))
-					{
-						InputStates[pad].Events.Enqueue(new InputEvent<JoypadKeyEventArgs>
-						{
-							Name = "OnButtonPress",
-							Info = new JoypadKeyEventArgs
-							{
-								Key = (int)i,
-								Action = pad.Buttons[i]
-							}
-						});
-					}
-
-					InputStates[pad].SetKeyState(i, pad.Buttons[i]);
-				}
-
-				for (uint i = 0; i < pad.Axes.Count(); ++i)
-				{
-					if (pad.Axes[i] != InputStates[pad].GetPositionState(i))
-					{
-						InputStates[pad].Events.Enqueue(new InputEvent<JoypadAxeEventArgs>
-						{
-							Name = "OnAxeMovement",
-							Info = new JoypadAxeEventArgs
-							{
-								Axe = (int)i,
-								Value = pad.Axes[i]
-							}
-						});
-					}
-
-					InputStates[pad].SetPositionState(i, (float)pad.Axes[i]);
-				}
-
-				InputStates[pad].Time = clock.CurrentTime;
-
-			}
-
-			if (InputStates[HardwareKeyboard].GetKeyState((uint)KeyboardKey.A) == KeyState.Pressed)
-				return;
-			
+			bindings.Add(b);
 		}
 
-        #region Gets state
+		/// <summary>
+		/// Set the specified binding as current binding.
+		/// </summary>
+		/// <param name="b">Binding to set.</param>
+		public void SetAsCurrentBnding(Binding b)
+		{
+			if (!Bindings.Contains(b))
+				throw new InvalidOperationException("This binding was not added.");
 
-        /// <summary>
-        /// Gets the input states.
-        /// </summary>
-        private DeviceStates InputStates { get; }
+			CurrentBinding = b;
+		}
+
+		/// <summary>
+		/// Remove the specified binding.
+		/// </summary>
+		/// <param name="b">Binding to remove.</param>
+		public void RemoveBinding(Binding b)
+		{
+			bindings.Remove(b);
+		}
+
+		#endregion
+
+		#region Devices
+
+		/// <summary>
+		/// Gets the keyboard manager.
+		/// </summary>
+		public IKeyboard HardwareKeyboard => Host.Platform.Input.Keyboard;
+
+		/// <summary>
+		/// Gets the mouse manager.
+		/// </summary>
+		public IMouse HardwareMouse => Host.Platform.Input.Mouse;
+
+		/// <summary>
+		/// Gets the joypads.
+		/// </summary>
+		public IEnumerable<IJoypad> HardwareJoypads => Host.Platform.Input.Joypads;
+
+		/// <summary>
+		/// Triggered on a joypad connection or disconnection.
+		/// </summary>
+		public event EventHandler<JoypadConnectionEventArgs> JoypadConnection;
+
+		#endregion
+
+		#region Gets state
+
+		/// <summary>
+		/// Gets the input states.
+		/// </summary>
+		private DeviceStates InputStates { get; }
 
 		private void HardwareMouse_OnButtonEvent(object sender, MouseKeyEventArgs e)
 		{
@@ -344,5 +367,71 @@ namespace pEngine.Input
 		}
 
 		#endregion
+
+		/// <summary>
+		/// Update the state of this element.
+		/// </summary>
+		/// <param name="clock">Game clock.</param>
+		public override void Update(IFrameBasedClock clock)
+		{
+			base.Update(clock);
+
+			InputStates[HardwareKeyboard].Time = clock.CurrentTime;
+			InputStates[HardwareMouse].Time = clock.CurrentTime;
+
+			// - Remove unused joypads
+			var removed = InputStates.Keys.Where(x => x is IJoypad).Except(HardwareJoypads);
+            foreach (IJoypad pad in removed)
+                InputStates.Remove(pad);
+
+            // - Update joypad states
+            foreach (IJoypad pad in HardwareJoypads)
+            {
+				if (!InputStates.ContainsKey(pad))
+					InputStates.Add(pad, new InputState());
+
+				for (uint i = 0; i < pad.Buttons.Count(); ++i)
+				{
+					if (pad.Buttons[i] != InputStates[pad].GetKeyState(i))
+					{
+						InputStates[pad].Events.Enqueue(new InputEvent<JoypadKeyEventArgs>
+						{
+							Name = "OnButtonPress",
+							Info = new JoypadKeyEventArgs
+							{
+								Key = (int)i,
+								Action = pad.Buttons[i]
+							}
+						});
+					}
+
+					InputStates[pad].SetKeyState(i, pad.Buttons[i]);
+				}
+
+				for (uint i = 0; i < pad.Axes.Count(); ++i)
+				{
+					if (pad.Axes[i] != InputStates[pad].GetPositionState(i))
+					{
+						InputStates[pad].Events.Enqueue(new InputEvent<JoypadAxeEventArgs>
+						{
+							Name = "OnAxeMovement",
+							Info = new JoypadAxeEventArgs
+							{
+								Axe = (int)i,
+								Value = pad.Axes[i]
+							}
+						});
+					}
+
+					InputStates[pad].SetPositionState(i, (float)pad.Axes[i]);
+				}
+
+				InputStates[pad].Time = clock.CurrentTime;
+
+			}
+
+			// - Update binding
+			CurrentBinding?.Update(clock);
+		}
 	}
 }
