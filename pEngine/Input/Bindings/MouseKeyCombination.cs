@@ -8,12 +8,12 @@ using pEngine.Platform.Input;
 
 namespace pEngine.Input.Bindings
 {
-	public struct MouseKeyCombination : IKeyCombination<MouseButton>
+	public struct MouseKeyCombination : IKeyCombination<MouseButton>, IEquatable<MouseKeyCombination>
 	{
 		/// <summary>
 		/// Empty key combination.
 		/// </summary>
-		public static MouseKeyCombination Empty = new MouseKeyCombination();
+		public static MouseKeyCombination Empty => new MouseKeyCombination();
 
 		/// <summary>
 		/// Makes a new instance of <see cref="MouseKeyCombination"/> class.
@@ -35,9 +35,18 @@ namespace pEngine.Input.Bindings
 		/// </summary>
 		public int KeysHash { get; }
 
+		#region .NET implementations
+
+		public bool Equals(MouseKeyCombination other)
+		{
+			return Keys.Equals(other.Keys);
+		}
+
 		public override int GetHashCode()
 		{
 			return KeysHash;
 		}
+
+		#endregion
 	}
 }

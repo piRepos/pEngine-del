@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 
+using pEngine.Input;
+
 using pEngine.Platform.Input;
 using pEngine.Platform.Forms;
 using pEngine.Platform.Monitors;

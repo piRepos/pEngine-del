@@ -16,7 +16,7 @@ namespace pEngine.UnitTest.Resources
         /// <summary>
         /// Check if this resource is loaded.
         /// </summary>
-        public bool ImLoaded { get; set; } = false;
+        public bool ImLoaded { get; set; }
 
         /// <summary>
         /// Generate an exception during the loading.
@@ -62,7 +62,7 @@ namespace pEngine.UnitTest.Resources
     public class ResourceTests
     {
         [TestMethod]
-        public void ResourcesResourceLoadSync()
+        public static void ResourcesResourceLoadSync()
         {
             BigResource res = new BigResource(false);
 
@@ -90,7 +90,7 @@ namespace pEngine.UnitTest.Resources
         }
 
         [TestMethod]
-        public void ResourcesResourceLoadAsync()
+		public static void ResourcesResourceLoadAsync()
         {
             BigResource res = new BigResource(false);
 
@@ -122,7 +122,7 @@ namespace pEngine.UnitTest.Resources
         }
 
         [TestMethod]
-        public void ResourcesResourceDependencyLoadSync()
+		public static void ResourcesResourceDependencyLoadSync()
         {
             BigResource res = new BigResource(false);
 
@@ -170,7 +170,7 @@ namespace pEngine.UnitTest.Resources
         }
 
         [TestMethod]
-        public void ResourcesResourceDependencyLoadAsync()
+		public static void ResourcesResourceDependencyLoadAsync()
         {
             BigResource res = new BigResource(false);
 

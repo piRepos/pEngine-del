@@ -4,7 +4,7 @@ using System.Text;
 
 using pEngine.Utils.Math;
 
-namespace pEngine.Platform.Input
+namespace pEngine.Input
 {
     public interface IMouse : IDevice, ISpacedf
     {

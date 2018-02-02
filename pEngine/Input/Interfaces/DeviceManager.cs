@@ -7,7 +7,7 @@ using pEngine.Utils.Timing.Base;
 
 using pEngine.Utils.Timing;
 
-namespace pEngine.Platform.Input
+namespace pEngine.Input
 {
     public abstract class DeviceManager : IUpdatable
     {

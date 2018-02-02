@@ -33,6 +33,20 @@ namespace pEngine.Input.Bindings
 		protected InputEngine Input { get; private set; }
 
 		/// <summary>
+		/// Triggered on binding state change.
+		/// </summary>
+		public event EventHandler<ActionEventArgs> OnAction;
+
+		/// <summary>
+		/// Send an event for this action state.
+		/// </summary>
+		/// <param name="action">The current action state.</param>
+		protected void TriggerAction(ActionEventArgs action)
+		{
+			OnAction?.Invoke(this, action);
+		}
+
+		/// <summary>
 		/// Initialize this key binding.
 		/// </summary>
 		internal void Initialize(InputEngine input)
@@ -60,6 +74,7 @@ namespace pEngine.Input.Bindings
 			: base(name)
 		{
 			Actions = new Dictionary<T, IEnumerable<IKeyCombination>>();
+			actionStates = new Dictionary<T, KeyState>();
 
 			if (!typeof(T).IsEnum)
 				throw new ArgumentException("The type T must be an enum.");
@@ -69,6 +84,7 @@ namespace pEngine.Input.Bindings
 			foreach (T v in values)
 			{
 				Actions.Add(v, new IKeyCombination[0]);
+				actionStates.Add(v, KeyState.Released);
 			}
 		}
 
@@ -120,14 +136,14 @@ namespace pEngine.Input.Bindings
 				{
 					case KeyboardKeyCombination kComb:
 						foreach (var key in kComb.Keys)
-							currState = StateComposite(currState, Input.HardwareKeyboard.GetButtonState(key));
+							currState = StateComposite(currState, Input.Keyboard.GetButtonState(key));
 						break;
 					case MouseKeyCombination mComb:
 						foreach (var key in mComb.Keys)
-							currState = StateComposite(currState, Input.HardwareMouse.GetButtonState(key));
+							currState = StateComposite(currState, Input.Mouse.GetButtonState(key));
 						break;
 					case JoypadKeyCombination jComb:
-						IJoypad curr = Input.HardwareJoypads.Where(x => x.Index == jComb.JoypadID).FirstOrDefault();
+						IJoypad curr = Input.Joypads.Where(x => x.Index == jComb.JoypadID).FirstOrDefault();
 						foreach (var key in jComb.Keys)
 							currState = StateComposite(currState, curr.Buttons[key]);
 						break;
@@ -139,6 +155,26 @@ namespace pEngine.Input.Bindings
 
 		#endregion
 
+		#region Events management
+
+		private Dictionary<T, KeyState> actionStates;
+
+		private void ComputeActionEvent(T action)
+		{
+			KeyState currState = GetActionState(action);
+			if (actionStates[action] != currState)
+			{
+				actionStates[action] = currState;
+				TriggerAction(new ActionEventArgs<T>
+				{
+					RawBindingAction = (int)(object)action,
+					Action = currState
+				});
+			}
+		}
+
+		#endregion
+
 		/// <summary>
 		/// Update the state of this element
 		/// </summary>
@@ -146,6 +182,11 @@ namespace pEngine.Input.Bindings
 		public override void Update(IFrameBasedClock clock)
 		{
 			base.Update(clock);
+
+			foreach (var action in Actions)
+			{
+				ComputeActionEvent(action.Key);
+			}
 		}
 
 		/// <summary>
@@ -162,8 +203,24 @@ namespace pEngine.Input.Bindings
 
 	}
 
-	public class ActionEventArgs<T> : EventArgs
+	public class ActionEventArgs : EventArgs
 	{
-		
+		/// <summary>
+		/// Action integer.
+		/// </summary>
+		public int RawBindingAction { get; set; }
+
+		/// <summary>
+		/// Action state.
+		/// </summary>
+		public KeyState Action { get; set; }
+	}
+
+	public class ActionEventArgs<T> : ActionEventArgs where T : struct, IConvertible
+	{
+		/// <summary>
+		/// Binding action.
+		/// </summary>
+		public T BindingAction => (T)(object)RawBindingAction;
 	}
 }

@@ -112,6 +112,12 @@ namespace pEngine.Input
 		#region Bindings
 
 		/// <summary>
+		/// Triggered on binding state change.
+		/// </summary>
+		[ServiceEvent("OnAction")]
+		public event EventHandler<ActionEventArgs> OnAction;
+
+		/// <summary>
 		/// Key bindings.
 		/// </summary>
 		[ServiceProperty("bindings")]
@@ -121,7 +127,7 @@ namespace pEngine.Input
 		/// Current active binding.
 		/// </summary>
 		[ServiceProperty("CurrentBinding")]
-		public IEnumerable<Binding> CurrentBinding { get; protected set; }
+		public Binding CurrentBinding { get; protected set; }
 
 		/// <summary>
 		/// Insert a binding in the input engine.
@@ -182,6 +188,10 @@ namespace pEngine.Input
 		{
             InputStates = new DeviceStates();
 			bindings = new List<Binding>();
+
+			Keyboard = new VirtualKeyboard(null);
+			Mouse = new VirtualMouse(null);
+			Joypads = new List<VirtualJoypad>();
 		}
 
 		/// <summary>
@@ -195,6 +205,11 @@ namespace pEngine.Input
 			{
 				if (!InputStates.ContainsKey(e.Joypad))
 					InputStates.Add(e.Joypad, new InputState());
+
+				if (e.Connected)
+					Joypads.Add(new VirtualJoypad(InputStates?[e.Joypad], e.Joypad.Index, e.Joypad.Name));
+				else
+					Joypads.RemoveAt(Joypads.FindIndex(x => x.Index == e.Joypad.Index));
 
 				JoypadConnection?.Invoke(obj, e);
 			};
@@ -210,6 +225,8 @@ namespace pEngine.Input
 			HardwareMouse.OnScroll += HardwareMouse_OnScroll;
 			HardwareMouse.OnMove += HardwareMouse_OnMove;
 
+			foreach (var j in HardwareJoypads)
+				Joypads.Add(new VirtualJoypad(null, j.Index, j.Name));
 		}
 
 		#region Bindings
@@ -227,16 +244,23 @@ namespace pEngine.Input
 		public IEnumerable<Binding> Bindings => bindings;
 
 		/// <summary>
+		/// Triggered on binding state change.
+		/// </summary>
+		public event EventHandler<ActionEventArgs> OnAction;
+
+		/// <summary>
 		/// Insert a binding in the input engine.
 		/// </summary>
 		/// <param name="b">Binding to add.</param>
 		public void AddBinding(Binding b)
 		{
 			b.Initialize(this);
-
-
-
 			bindings.Add(b);
+		}
+
+		private void BindingActionEvent(object sender, ActionEventArgs e)
+		{
+			OnAction?.Invoke(this, e);
 		}
 
 		/// <summary>
@@ -248,7 +272,11 @@ namespace pEngine.Input
 			if (!Bindings.Contains(b))
 				throw new InvalidOperationException("This binding was not added.");
 
+			if (CurrentBinding != null)
+				CurrentBinding.OnAction -= BindingActionEvent;
+
 			CurrentBinding = b;
+			CurrentBinding.OnAction += BindingActionEvent;
 		}
 
 		/// <summary>
@@ -283,6 +311,25 @@ namespace pEngine.Input
 		/// Triggered on a joypad connection or disconnection.
 		/// </summary>
 		public event EventHandler<JoypadConnectionEventArgs> JoypadConnection;
+
+		#endregion
+
+		#region Virtual devices
+
+		/// <summary>
+		/// Gets the keyboard manager.
+		/// </summary>
+		public VirtualKeyboard Keyboard { get; }
+
+		/// <summary>
+		/// Gets the mouse manager.
+		/// </summary>
+		public VirtualMouse Mouse { get; }
+
+		/// <summary>
+		/// Gets the joypads.
+		/// </summary>
+		public List<VirtualJoypad> Joypads { get; }
 
 		#endregion
 
@@ -428,6 +475,18 @@ namespace pEngine.Input
 
 				InputStates[pad].Time = clock.CurrentTime;
 
+			}
+
+			Mouse.UpdateCurrentState(InputStates?[HardwareMouse]);
+			Keyboard.UpdateCurrentState(InputStates?[HardwareKeyboard]);
+
+			Mouse.Update(clock);
+			Keyboard.Update(clock);
+
+			foreach (var j in Joypads)
+			{
+				j.UpdateCurrentState(InputStates?[HardwareJoypads.Where(x => x.Index == j.Index).FirstOrDefault()]);
+				j.Update(clock);
 			}
 
 			// - Update binding

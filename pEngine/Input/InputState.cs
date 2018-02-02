@@ -60,7 +60,7 @@ namespace pEngine.Input
             }
             catch (KeyNotFoundException)
             {
-                return Platform.Input.KeyState.Unknow;
+                return Input.KeyState.Unknow;
             }
         }
 

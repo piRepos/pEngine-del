@@ -112,23 +112,13 @@ namespace pEngine.Framework
 		/// </summary>
 		public GameLoop PhysicsGameLoop { get; }
 
-		InputService In;
-
 		/// <summary>
 		/// Handle a physics calculation frame.
 		/// </summary>
 		/// <param name="clock">Timed clock.</param>
 		protected virtual void HandlePhysics(IFrameBasedClock clock)
 		{
-			if (In == null)
-			{
-				In = Input.GetSettings(PhysicsGameLoop) as InputService;
-			}
-
-			if (In.Joypads.Count > 0 && In.Joypads[0].Buttons.Count() > 0 && In.Joypads[0].Buttons[0] == KeyState.Pressed)
-				return;
 		}
-
 
 		#endregion
 

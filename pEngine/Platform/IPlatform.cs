@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
+using pEngine.Input;
+
 using pEngine.Platform.Input;
 using pEngine.Platform.Forms;
 using pEngine.Platform.Monitors;

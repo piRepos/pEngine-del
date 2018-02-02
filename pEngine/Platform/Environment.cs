@@ -23,7 +23,7 @@ namespace pEngine.Platform
 		/// <summary>
 		/// Used for check multiple instances.
 		/// </summary>
-		public static string SharedGuid = @"010314b1-b641-4702-9fa0-7b968673405b";
+		private const string SharedGuid = @"010314b1-b641-4702-9fa0-7b968673405b";
 
 		/// <summary>
 		/// Command line arguments.
@@ -45,7 +45,16 @@ namespace pEngine.Platform
 		/// <summary>
 		/// Initialize the environment.
 		/// </summary>
-		public static void Initialize(bool forcePlatformNative = false)
+		public static void Initialize()
+		{
+			Initialize(false);
+		}
+
+		/// <summary>
+		/// Initialize the environment.
+		/// </summary>
+		/// <param name="forcePlatformNative">Force pEngine to use platform native APIs (can be not supported)</param>
+		public static void Initialize(bool forcePlatformNative)
 		{
 			if (Initialized)
 				return;
@@ -67,6 +76,8 @@ namespace pEngine.Platform
                     if (!forcePlatformNative)
                         Platform = new GlfwWrapper();
                     break;
+				default:
+					throw new NotSupportedException("This platform is not supported.");
 			}
 
 			// - Initialize the current platform

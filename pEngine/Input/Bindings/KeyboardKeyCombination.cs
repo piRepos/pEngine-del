@@ -8,12 +8,12 @@ using pEngine.Platform.Input;
 
 namespace pEngine.Input.Bindings
 {
-	public struct KeyboardKeyCombination : IKeyCombination<KeyboardKey>
+	public struct KeyboardKeyCombination : IKeyCombination<KeyboardKey>, IEquatable<KeyboardKeyCombination>
 	{
 		/// <summary>
 		/// Empty key combination.
 		/// </summary>
-		public static KeyboardKeyCombination Empty = new KeyboardKeyCombination();
+		public static KeyboardKeyCombination Empty => new KeyboardKeyCombination();
 
 		/// <summary>
 		/// Makes a new instance of <see cref="KeyboardKeyCombination"/> class.
@@ -35,9 +35,18 @@ namespace pEngine.Input.Bindings
 		/// </summary>
 		public int KeysHash { get; }
 
+		#region .NET implementations
+
+		public bool Equals(KeyboardKeyCombination other)
+		{
+			return Keys.Equals(other.Keys);
+		}
+
 		public override int GetHashCode()
 		{
 			return KeysHash;
 		}
+
+		#endregion
 	}
 }

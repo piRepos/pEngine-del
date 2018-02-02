@@ -4,7 +4,7 @@ using System.Text;
 
 using pEngine.Utils.Timing;
 
-namespace pEngine.Platform.Input
+namespace pEngine.Input
 {
 	/// <summary>
 	/// A phisical device interface.

@@ -4,6 +4,8 @@ using System.Text;
 
 using Glfw3;
 
+using pEngine.Input;
+
 using pEngine.Utils.Timing.Base;
 using pEngine.Platform.Forms;
 
@@ -11,9 +13,9 @@ namespace pEngine.Platform.Input
 {
     public class GlfwKeyboard : IKeyboard
     {
-        Glfw.KeyFunc keyCallback;
-        Glfw.CharFunc charCallback;
-        Glfw.CharModsFunc charModsCallback;
+        readonly Glfw.KeyFunc keyCallback;
+		readonly Glfw.CharFunc charCallback;
+		readonly Glfw.CharModsFunc charModsCallback;
 
 		/// <summary>
 		/// Makes a new instance of <see cref="GlfwKeyboard"/> class.
