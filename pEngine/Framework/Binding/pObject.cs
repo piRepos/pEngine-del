@@ -44,6 +44,18 @@ namespace pEngine.Framework
 		/// <param name="source">Source property.</param>
 		/// <param name="target">Target <see cref="pObject"/> which have the target property.</param>
 		/// <param name="destinationProperty">Target property to bind.</param>
+		public void Bind(string source, pObject target, string destinationProperty)
+		{
+			Bind(source, target, destinationProperty, BindingMode.TwoWay, null, null);
+		}
+
+		/// <summary>
+		/// Set a binding between a property of this class and a property of a
+		/// target class.
+		/// </summary>
+		/// <param name="source">Source property.</param>
+		/// <param name="target">Target <see cref="pObject"/> which have the target property.</param>
+		/// <param name="destinationProperty">Target property to bind.</param>
 		/// <param name="direction">Binding direction.</param>
 		public void Bind(string source, pObject target, string destinationProperty, BindingMode direction)
 		{

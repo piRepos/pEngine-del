@@ -59,10 +59,10 @@ namespace pEngine.UnitTest.Resources
 
 
     [TestClass]
-    public static class ResourceTests
+    public class ResourceTests
     {
         [TestMethod]
-        public static void ResourcesResourceLoadSync()
+        public void ResourcesResourceLoadSync()
         {
             BigResource res = new BigResource(false);
 
@@ -90,7 +90,7 @@ namespace pEngine.UnitTest.Resources
         }
 
         [TestMethod]
-		public static void ResourcesResourceLoadAsync()
+		public void ResourcesResourceLoadAsync()
         {
             BigResource res = new BigResource(false);
 
@@ -122,7 +122,7 @@ namespace pEngine.UnitTest.Resources
         }
 
         [TestMethod]
-		public static void ResourcesResourceDependencyLoadSync()
+		public void ResourcesResourceDependencyLoadSync()
         {
             BigResource res = new BigResource(false);
 
@@ -170,7 +170,7 @@ namespace pEngine.UnitTest.Resources
         }
 
         [TestMethod]
-		public static void ResourcesResourceDependencyLoadAsync()
+		public void ResourcesResourceDependencyLoadAsync()
         {
             BigResource res = new BigResource(false);
 

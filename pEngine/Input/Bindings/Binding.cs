@@ -148,6 +148,7 @@ namespace pEngine.Input.Bindings
 							currState = StateComposite(currState, curr.Buttons[key]);
 						break;
 					default:
+						currState = KeyState.Released;
 						break;
 				}
 			}

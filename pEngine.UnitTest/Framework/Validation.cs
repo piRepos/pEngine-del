@@ -13,11 +13,11 @@ namespace pEngine.UnitTest.Framework
 	}
 
 	[TestClass]
-	public static class Validation
+	public class Validation
 	{
 
 		[TestMethod]
-		public static void FrameworkValidationValidatePredicate()
+		public void FrameworkValidationValidatePredicate()
 		{
 			Test obj = new Test();
 
