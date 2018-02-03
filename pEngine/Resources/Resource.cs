@@ -21,7 +21,7 @@ namespace pEngine.Resources
         /// <summary>
         /// Initializes a new instance of the <see cref="Resource"/> class.
         /// </summary>
-        public Resource() : base()
+        public Resource()
         {
         }
 

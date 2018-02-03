@@ -44,10 +44,10 @@ namespace pEngine.UnitTest.Framework
 
 
     [TestClass]
-    public class BindingTest
+    public static class BindingTest
     {
 		[TestMethod]
-		public void FrameworkBindingTwoWayBinding()
+		public static void FrameworkBindingTwoWayBinding()
         {
             Circle c1 = new Circle(90);
             Circle c2 = new Circle(0);
@@ -74,7 +74,7 @@ namespace pEngine.UnitTest.Framework
         }
 
 		[TestMethod]
-		public void FrameworkBindingOneWayBinding()
+		public static void FrameworkBindingOneWayBinding()
         {
             Circle c1 = new Circle(90);
             Circle c2 = new Circle(0);
@@ -109,7 +109,7 @@ namespace pEngine.UnitTest.Framework
         }
 
 		[TestMethod]
-		public void FrameworkBindingBindRemove()
+		public static void FrameworkBindingBindRemove()
         {
             Circle c1 = new Circle(90);
             Circle c2 = new Circle(0);
@@ -140,7 +140,7 @@ namespace pEngine.UnitTest.Framework
         }
 
 		[TestMethod]
-		public void FrameworkBindingBindAdapter()
+		public static void FrameworkBindingBindAdapter()
         {
             Circle c1 = new Circle(90);
 
@@ -171,7 +171,7 @@ namespace pEngine.UnitTest.Framework
         }
 
 		[TestMethod]
-		public void FrameworkBindingBindDispose()
+		public static void FrameworkBindingBindDispose()
 		{
 			Circle c1 = new Circle(90);
 

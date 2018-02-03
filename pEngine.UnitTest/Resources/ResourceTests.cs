@@ -59,7 +59,7 @@ namespace pEngine.UnitTest.Resources
 
 
     [TestClass]
-    public class ResourceTests
+    public static class ResourceTests
     {
         [TestMethod]
         public static void ResourcesResourceLoadSync()

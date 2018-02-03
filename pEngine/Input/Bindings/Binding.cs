@@ -157,7 +157,7 @@ namespace pEngine.Input.Bindings
 
 		#region Events management
 
-		private Dictionary<T, KeyState> actionStates;
+		private readonly Dictionary<T, KeyState> actionStates;
 
 		private void ComputeActionEvent(T action)
 		{
