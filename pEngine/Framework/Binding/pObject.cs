@@ -35,109 +35,145 @@ namespace pEngine.Framework
 			}
         }
 
-        #region Set bindings
+		#region Set bindings
 
-        /// <summary>
-        /// Set a binding between a property of this class and a property of a
-        /// target class.
-        /// </summary>
-        /// <param name="source">Source property.</param>
-        /// <param name="target">Target <see cref="pObject"/> which have the target property.</param>
-        /// <param name="destinationProperty">Target property to bind.</param>
-        public void Bind(string source, pObject target, string destinationProperty, BindingMode direction = BindingMode.TwoWay, Func<object, object> adapterToDestination = null, Func<object, object> adapterToSource = null)
-        {
-            var sourceType = GetType();
-            var sourceProperty = sourceType.GetProperty(source);
-            var destinationType = GetType();
-            var destProperty = sourceType.GetProperty(destinationProperty);
+		/// <summary>
+		/// Set a binding between a property of this class and a property of a
+		/// target class.
+		/// </summary>
+		/// <param name="source">Source property.</param>
+		/// <param name="target">Target <see cref="pObject"/> which have the target property.</param>
+		/// <param name="destinationProperty">Target property to bind.</param>
+		/// <param name="direction">Binding direction.</param>
+		public void Bind(string source, pObject target, string destinationProperty, BindingMode direction)
+		{
+			Bind(source, target, destinationProperty, direction, null, null);
+		}
 
-            Bindable sourceAttribute = null;
-            Bindable destAttribute = null;
+		/// <summary>
+		/// Set a binding between a property of this class and a property of a
+		/// target class.
+		/// </summary>
+		/// <param name="source">Source property.</param>
+		/// <param name="target">Target <see cref="pObject"/> which have the target property.</param>
+		/// <param name="destinationProperty">Target property to bind.</param>
+		/// <param name="adapterToDestination">Function that convert the value to the destination variable type.</param>
+		/// <param name="adapterToSource">Function that convert the value to the source variable type.</param>
+		public void Bind(string source, pObject target, string destinationProperty, Func<object, object> adapterToDestination, Func<object, object> adapterToSource)
+		{
+			Bind(source, target, destinationProperty, BindingMode.TwoWay, adapterToDestination, adapterToSource);
+		}
 
-            if (source == destinationProperty && target == this)
-                throw new Exception("Cannot bind a property to itself.");
+		/// <summary>
+		/// Set a binding between a property of this class and a property of a
+		/// target class.
+		/// </summary>
+		/// <param name="source">Source property.</param>
+		/// <param name="target">Target <see cref="pObject"/> which have the target property.</param>
+		/// <param name="destinationProperty">Target property to bind.</param>
+		/// <param name="direction">Binding direction.</param>
+		/// <param name="adapterToDestination">Function that convert the value to the destination variable type.</param>
+		/// <param name="adapterToSource">Function that convert the value to the source variable type.</param>
+		public void Bind(string source, pObject target, string destinationProperty, BindingMode direction, Func<object, object> adapterToDestination, Func<object, object> adapterToSource)
+		{
+			var sourceType = GetType();
+			var sourceProperty = sourceType.GetProperty(source);
+			var destinationType = GetType();
+			var destProperty = sourceType.GetProperty(destinationProperty);
 
-            if (sourceProperty.PropertyType != destProperty.PropertyType)
-            {
-                switch (direction)
-                {
-                    case BindingMode.TwoWay:
-                        if (adapterToDestination == null || adapterToSource == null)
-                            throw new InvalidOperationException("Binding between two different types without adapter.");
-                        break;
-                    case BindingMode.ReadOnly:
-                        if (adapterToDestination == null)
-                            throw new InvalidOperationException("Binding between two different types without adapter.");
-                        break;
-                    case BindingMode.WriteOnly:
-                        if (adapterToSource == null)
-                            throw new InvalidOperationException("Binding between two different types without adapter.");
-                        break;
-                }
-            }
+			Bindable sourceAttribute = null;
+			Bindable destAttribute = null;
 
-            try
-            {
-                sourceAttribute = sourceProperty.GetCustomAttribute(typeof(Bindable)) as Bindable;
-                destAttribute = destProperty.GetCustomAttribute(typeof(Bindable)) as Bindable;
-            }
-            catch (NullReferenceException)
-            {
-                throw new InvalidOperationException("One of this properties has no bindable attribute");
-            }
+			if (source == destinationProperty && target == this)
+				throw new Exception("Cannot bind a property to itself.");
 
-            if (sourceAttribute == null || destAttribute == null)
-                throw new InvalidOperationException("One of this properties has no bindable attribute");
+			if (sourceProperty.PropertyType != destProperty.PropertyType)
+			{
+				switch (direction)
+				{
+					case BindingMode.TwoWay:
+						if (adapterToDestination == null || adapterToSource == null)
+							throw new InvalidOperationException("Binding between two different types without adapter.");
+						break;
+					case BindingMode.ReadOnly:
+						if (adapterToDestination == null)
+							throw new InvalidOperationException("Binding between two different types without adapter.");
+						break;
+					case BindingMode.WriteOnly:
+						if (adapterToSource == null)
+							throw new InvalidOperationException("Binding between two different types without adapter.");
+						break;
+					default:
+						throw new InvalidOperationException("Binding mode not supported.");
+				}
+			}
 
-            switch (direction)
-            {
-                case BindingMode.TwoWay:
-                    if (sourceAttribute.Direction != BindingMode.TwoWay
-                    ||  destAttribute.Direction != BindingMode.TwoWay)
-                        throw new InvalidOperationException("TwoWay binding is not allowed for this binding.");
-                    break;
-                case BindingMode.ReadOnly:
-                    if ((sourceAttribute.Direction != BindingMode.WriteOnly && sourceAttribute.Direction != BindingMode.TwoWay)
-                    || (destAttribute.Direction != BindingMode.TwoWay && destAttribute.Direction != BindingMode.ReadOnly))
-                        throw new InvalidOperationException("ReadOnly binding is not allowed for this binding.");
-                    break;
-                case BindingMode.WriteOnly:
-                    if ((sourceAttribute.Direction != BindingMode.ReadOnly && sourceAttribute.Direction != BindingMode.TwoWay)
-                    || (destAttribute.Direction != BindingMode.TwoWay && destAttribute.Direction != BindingMode.WriteOnly))
-                        throw new InvalidOperationException("WriteOnly binding is not allowed for this binding.");
-                    break;
-            }
+			try
+			{
+				sourceAttribute = sourceProperty.GetCustomAttribute(typeof(Bindable)) as Bindable;
+				destAttribute = destProperty.GetCustomAttribute(typeof(Bindable)) as Bindable;
+			}
+			catch (NullReferenceException)
+			{
+				throw new InvalidOperationException("One of this properties has no bindable attribute");
+			}
 
-            var sourceBindingInformations = new BindingInformations
-            {
+			if (sourceAttribute == null || destAttribute == null)
+				throw new InvalidOperationException("One of this properties has no bindable attribute");
+
+			switch (direction)
+			{
+				case BindingMode.TwoWay:
+					if (sourceAttribute.Direction != BindingMode.TwoWay
+					|| destAttribute.Direction != BindingMode.TwoWay)
+						throw new InvalidOperationException("TwoWay binding is not allowed for this binding.");
+					break;
+				case BindingMode.ReadOnly:
+					if ((sourceAttribute.Direction != BindingMode.WriteOnly && sourceAttribute.Direction != BindingMode.TwoWay)
+					|| (destAttribute.Direction != BindingMode.TwoWay && destAttribute.Direction != BindingMode.ReadOnly))
+						throw new InvalidOperationException("ReadOnly binding is not allowed for this binding.");
+					break;
+				case BindingMode.WriteOnly:
+					if ((sourceAttribute.Direction != BindingMode.ReadOnly && sourceAttribute.Direction != BindingMode.TwoWay)
+					|| (destAttribute.Direction != BindingMode.TwoWay && destAttribute.Direction != BindingMode.WriteOnly))
+						throw new InvalidOperationException("WriteOnly binding is not allowed for this binding.");
+					break;
+				default:
+					throw new InvalidOperationException("Binding mode not supported.");
+			}
+
+			var sourceBindingInformations = new BindingInformations
+			{
 				Instance = new WeakReference<pObject>(target),
 				Property = target.GetType().GetProperty(destinationProperty),
-                Direction = direction,
-                Adapter = adapterToDestination
-            };
+				Direction = direction,
+				Adapter = adapterToDestination
+			};
 
 			BindingMode invertedDirection = BindingMode.TwoWay;
-            switch (direction)
-            {
-                case BindingMode.ReadOnly: invertedDirection = BindingMode.WriteOnly; break;
-                case BindingMode.WriteOnly: invertedDirection = BindingMode.ReadOnly; break;
-                case BindingMode.TwoWay: invertedDirection = BindingMode.TwoWay; break;
-            }
+			switch (direction)
+			{
+				case BindingMode.ReadOnly: invertedDirection = BindingMode.WriteOnly; break;
+				case BindingMode.WriteOnly: invertedDirection = BindingMode.ReadOnly; break;
+				case BindingMode.TwoWay: invertedDirection = BindingMode.TwoWay; break;
+				default:
+					throw new InvalidOperationException("Binding mode not supported.");
+			}
 
-            var destBindingInformations = new BindingInformations
-            {
+			var destBindingInformations = new BindingInformations
+			{
 				Instance = new WeakReference<pObject>(this),
 				Property = GetType().GetProperty(source),
-                Direction = invertedDirection,
-                Adapter = adapterToSource
-            };
+				Direction = invertedDirection,
+				Adapter = adapterToSource
+			};
 
-            SetPropagationVector(source, sourceBindingInformations);
-            target.SetPropagationVector(destinationProperty, destBindingInformations);
+			SetPropagationVector(source, sourceBindingInformations);
+			target.SetPropagationVector(destinationProperty, destBindingInformations);
 
-            checkBindings(this, new System.ComponentModel.PropertyChangedEventArgs(source));
-            target.checkBindings(this, new System.ComponentModel.PropertyChangedEventArgs(destinationProperty));
-        }
+			checkBindings(this, new System.ComponentModel.PropertyChangedEventArgs(source));
+			target.checkBindings(this, new System.ComponentModel.PropertyChangedEventArgs(destinationProperty));
+		}
 
 		/// <summary>
 		/// Remove a binding between a property of this class and a property of a
@@ -234,7 +270,9 @@ namespace pEngine.Framework
                         else
                             info.Property.SetValue(instance, value);
                         break;
-                }
+					default:
+						throw new InvalidOperationException("Binding mode not supported.");
+				}
             };
 
             propagationVectors[prop].Add(info);

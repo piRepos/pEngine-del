@@ -147,6 +147,8 @@ namespace pEngine.Input.Bindings
 						foreach (var key in jComb.Keys)
 							currState = StateComposite(currState, curr.Buttons[key]);
 						break;
+					default:
+						break;
 				}
 			}
 

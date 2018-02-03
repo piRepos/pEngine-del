@@ -17,11 +17,8 @@ namespace pEngine.Platform.Forms
         /// <summary>
         /// Makes a new GLFW window.
         /// </summary>
-        /// <param name="StartResolution">Window size.</param>
-		public GlfwWindow(GlfwWindow shared = null)
+		public GlfwWindow()
         {
-            SharedContext = shared;
-
 			Size = new Vector2i(700);
 
             Title = "";
