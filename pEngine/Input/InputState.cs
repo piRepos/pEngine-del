@@ -7,20 +7,30 @@ namespace pEngine.Input
 {
     internal class InputState
     {
-        /// <summary>
-        /// Initializes a new instance of the <see cref="InputState"/> class.
-        /// </summary>
-        public InputState()
-        {
+		/// <summary>
+		/// Initializes a new instance of the <see cref="InputState"/> class.
+		/// </summary>
+		public InputState()
+		{
 			KeyState = new Dictionary<uint, KeyState>();
 			PositionState = new Dictionary<uint, float>();
 			Events = new Queue<IInputEvent>();
-        }
+		}
 
-        /// <summary>
-        /// Gets the keys state.
-        /// </summary>
-        public Dictionary<uint, KeyState> KeyState { get; }
+		/// <summary>
+		/// Initializes a new instance of the <see cref="InputState"/> class.
+		/// </summary>
+		public InputState(InputState source)
+		{
+			KeyState = new Dictionary<uint, KeyState>(source.KeyState);
+			PositionState = new Dictionary<uint, float>(source.PositionState);
+			Events = new Queue<IInputEvent>(source.Events);
+		}
+
+		/// <summary>
+		/// Gets the keys state.
+		/// </summary>
+		public Dictionary<uint, KeyState> KeyState { get; }
 
         /// <summary>
         /// Gets the position state.
@@ -54,14 +64,10 @@ namespace pEngine.Input
         /// <param name="key">Key to check.</param>
         public KeyState GetKeyState(uint key)
         {
-            try
-            {
-                return KeyState[key];
-            }
-            catch (KeyNotFoundException)
-            {
-                return Input.KeyState.Unknow;
-            }
+			if (!KeyState.ContainsKey(key))
+				return Input.KeyState.Unknow;
+			
+            return KeyState[key];
         }
 
         /// <summary>
@@ -81,14 +87,10 @@ namespace pEngine.Input
         /// <param name="posKey">Position key identifier.</param>
         public float GetPositionState(uint posKey)
         {
-            try
-            {
-                return PositionState[posKey];
-            }
-            catch (KeyNotFoundException)
-            {
-                return 0;
-            }
+			if (!PositionState.ContainsKey(posKey))
+				return 0;
+
+            return PositionState[posKey];
         }
     }
 

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 using pEngine.Platform.Input;
 
-using pEngine.Utils.Timing.Base;
+using pEngine.Timing.Base;
 
 namespace pEngine.Input.Virtual
 {

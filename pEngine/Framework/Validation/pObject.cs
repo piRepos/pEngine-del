@@ -47,14 +47,12 @@ namespace pEngine.Framework
 
 		private void checkValidation(object sender, System.ComponentModel.PropertyChangedEventArgs e)
 		{
-			try
+			if (predicateVector.ContainsKey(e.PropertyName))
 			{
 				var error = predicateVector[e.PropertyName].Invoke();
 				if (error != null)
 					throw error;
 			}
-			catch (KeyNotFoundException)
-			{ }
 		}
 
 		#endregion

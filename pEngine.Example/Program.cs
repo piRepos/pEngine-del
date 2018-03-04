@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 using pEngine.Framework;
+using pEngine.Games;
 using pEngine.Platform;
 
 namespace pEngine.Example

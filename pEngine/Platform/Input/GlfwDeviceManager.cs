@@ -7,7 +7,7 @@ using Glfw3;
 
 using pEngine.Input;
 
-using pEngine.Utils.Timing.Base;
+using pEngine.Timing.Base;
 using pEngine.Platform.Forms;
 
 namespace pEngine.Platform.Input

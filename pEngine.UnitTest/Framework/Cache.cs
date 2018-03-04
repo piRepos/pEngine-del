@@ -15,6 +15,8 @@ namespace pEngine.UnitTest.Framework
 		[Cached(Channel = "InvalidationChannel")]
 		int SlowAndCPUBoundFunction()
 		{
+			int Doggo = 2;
+			Doggo += 23;
 			return index++;
 		}
 

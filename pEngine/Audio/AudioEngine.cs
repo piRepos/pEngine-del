@@ -10,11 +10,11 @@ using System.Collections.Generic;
 using ManagedBass;
 
 
-using pEngine.Utils.Timing.Base;
+using pEngine.Timing.Base;
 using pEngine.Framework;
 using pEngine.Framework.Modules;
-using pEngine.Utils.Threading;
 using pEngine.Audio.Mixing;
+using pEngine.Timing;
 
 namespace pEngine.Audio
 {

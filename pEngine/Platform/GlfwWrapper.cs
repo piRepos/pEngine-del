@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 
 using pEngine.Input;
+using pEngine.Context;
 
 using pEngine.Platform.Input;
 using pEngine.Platform.Forms;
@@ -18,8 +19,6 @@ namespace pEngine.Platform
 		/// </summary>
 		public GlfwWrapper()
 		{
-			ApplicationWindow = new GlfwWindow();
-			Input = new GlfwDeviceManager(ApplicationWindow as GlfwWindow);
 		}
 
 		/// <summary>
@@ -43,14 +42,34 @@ namespace pEngine.Platform
 		public IEnumerable<IMonitor> AvaiableMonitors => GlfwMonitor.AvaiableMonitors();
 
 		/// <summary>
-		/// Gets the window for this application.
-		/// </summary>
-		public IWindow ApplicationWindow { get; }
-
-		/// <summary>
 		/// Input hardware manager.
 		/// </summary>
-		public DeviceManager Input { get; }
+		/// <param name="context">Main window.</param>
+		public DeviceManager GetInput(IWindow context)
+		{
+			if (context is GlfwWindow glfwContext)
+				return new GlfwDeviceManager(glfwContext);
+			else throw new ArgumentException("Can't mix a glfw input context with other window types.");
+		}
+
+		/// <summary>
+		/// Gets a window for this application.
+		/// </summary>
+		public IPlatformWindow GetWindow()
+		{
+			return new GlfwWindow(null);
+		}
+
+		/// <summary>
+		/// Gets a window for this application.
+		/// </summary>
+		/// <param name="shared">Parent window.</param>
+		public IPlatformWindow GetWindow(IWindow shared)
+		{
+			if (shared is GlfwWindow glfwShared)
+				return new GlfwWindow(glfwShared);
+			else throw new ArgumentException("Can't mix a glfw windows with other window types.");
+		}
 
 		/// <summary>
 		/// Initialize this platform API.

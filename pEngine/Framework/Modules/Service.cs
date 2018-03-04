@@ -5,8 +5,8 @@ using System.Linq.Expressions;
 using System.Reflection;
 
 using pEngine.Utils.Threading;
-using pEngine.Utils.Timing.Base;
-using pEngine.Utils.Timing;
+using pEngine.Timing.Base;
+using pEngine.Timing;
 
 namespace pEngine.Framework.Modules
 {

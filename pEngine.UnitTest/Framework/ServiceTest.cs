@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 using pEngine.Framework;
+using pEngine.Timing;
 using pEngine.Framework.Modules;
 using pEngine.Utils.Threading;
 

@@ -1,40 +1,52 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Security;
 using System.Runtime.InteropServices;
 using System.Threading;
 
 using Glfw3;
 
-using pEngine.Platform.Monitors;
+using pEngine.Context;
+using pEngine.Framework;
 
-using pEngine.Utils.Math;
+using pEngine.Platform.Monitors;
 
 namespace pEngine.Platform.Forms
 {
-    public class GlfwWindow : IWindow
-    {
+    public class GlfwWindow : pObject, IPlatformWindow
+	{
 
         /// <summary>
         /// Makes a new GLFW window.
         /// </summary>
-		public GlfwWindow()
+		/// <param name="shared">Parent window.</param>
+		public GlfwWindow(GlfwWindow shared)
         {
+			SharedContext = shared;
 			Size = new Vector2i(700);
-
             Title = "";
         }
 
-        public void Dispose()
-        {
-            Close();
-        }
+		/// <summary>
+		/// Dispose all resources used from this class.
+		/// </summary>
+		/// <param name="disposing">Dispose managed resources.</param>
+		protected override void Dispose(bool disposing)
+		{
+			if (disposing)
+			{
+				Close();
+			}
 
-        #region Initialization
+			base.Dispose(disposing);
+		}
 
-        /// <summary>
-        /// True if window is created.
-        /// </summary>
-        public bool Initialized { get; private set; }
+		#region Initialization
+
+		/// <summary>
+		/// True if window is created.
+		/// </summary>
+		public bool Initialized { get; private set; }
 
         /// <summary>
         /// Window handler.
@@ -49,7 +61,7 @@ namespace pEngine.Platform.Forms
         /// <summary>
         /// Triggered o window restore / creation.
         /// </summary>
-        public event Action OnRestore;
+        public event EventHandler OnRestore;
 
         private void Initialize()
         {
@@ -71,15 +83,16 @@ namespace pEngine.Platform.Forms
             Glfw.WindowHint(Glfw.Hint.Visible, false);
             Glfw.WindowHint((Glfw.Hint)Glfw.WindowAttrib.Resizable, true);
 
-			Glfw.Monitor Monitor = Fullscreen ?	Glfw.GetPrimaryMonitor() : Glfw.Monitor.None;
+			GlfwMonitor primaryMonitor = (Monitor ?? Environment.Platform.MainMonitor) as GlfwMonitor;
+
+			Glfw.Monitor monitor = Fullscreen ?	primaryMonitor.Handle : Glfw.Monitor.None;
             Glfw.Window Shared = SharedContext?.Handle ?? Glfw.Window.None;
 
-			Handle = Glfw.CreateWindow(Size.Width, Size.Height, Title, Monitor, Shared);
+			Handle = Glfw.CreateWindow(Size.Width, Size.Height, Title, monitor, Shared);
 
             Glfw.MakeContextCurrent(Handle);
 
 			// - Screen center
-			IMonitor primaryMonitor = Environment.Platform.MainMonitor;
 			Position = (primaryMonitor.CurrentResolution.ResolutionSize - Size) / 2;
 
             Initialized = true;
@@ -162,7 +175,7 @@ namespace pEngine.Platform.Forms
             Make();
             Show();
 
-			OnRestore?.Invoke();
+			OnRestore?.Invoke(this, EventArgs.Empty);
 		}
 
         /// <summary>
@@ -216,29 +229,36 @@ namespace pEngine.Platform.Forms
 
         private void InitializePositionEvents()
         {
-            MovFun = (Glfw.Window P, int X, int Y) => OnMove?.Invoke();
-			SizFun = (Glfw.Window P, int W, int H) => OnResize?.Invoke();
+			MovFun = (Glfw.Window P, int X, int Y) =>
+			{
+				foreach (IMonitor monitor in Environment.Platform.AvaiableMonitors)
+				{
+					if (Position > monitor.Position && Position < monitor.Position + monitor.CurrentResolution.ResolutionSize)
+						Monitor = monitor;
+				}
 
-            Glfw.SetWindowPosCallback(Handle, MovFun);
+				OnMove?.Invoke(this, new WindowMoveEventArgs { Position = new Vector2i(X, Y) });
+			};
+
+			SizFun = (Glfw.Window P, int W, int H) =>
+			{
+				foreach (IMonitor monitor in Environment.Platform.AvaiableMonitors)
+				{
+					if (Position > monitor.Position && Position < monitor.Position + monitor.CurrentResolution.ResolutionSize)
+						Monitor = monitor;
+				}
+
+				OnResize?.Invoke(this, new WindowResizeEventArgs { Size = new Vector2i(W, H) });
+			};
+
+			Glfw.SetWindowPosCallback(Handle, MovFun);
 			Glfw.SetWindowSizeCallback(Handle, SizFun);
         }
 
         /// <summary>
         /// Get monitor window position.
         /// </summary>
-        public IMonitor Monitor
-		{
-			get
-			{
-				foreach (IMonitor monitor in Environment.Platform.AvaiableMonitors)
-				{
-					if (Position > monitor.Position && Position < monitor.Position + monitor.CurrentResolution.ResolutionSize)
-						return monitor;
-				}
-
-				return null;
-			}
-		}
+        public IMonitor Monitor { private set; get; }
 
         /// <summary>
         /// Gets or sets window position.
@@ -276,12 +296,12 @@ namespace pEngine.Platform.Forms
         /// <summary>
         /// Triggered on window resize.
         /// </summary>
-        public event Action OnResize;
+        public event EventHandler<WindowResizeEventArgs> OnResize;
 
         /// <summary>
         /// Triggered when window is moved.
         /// </summary>
-        public event Action OnMove;
+        public event EventHandler<WindowMoveEventArgs> OnMove;
 
         /// <summary>
         /// Buffer scaling.
@@ -362,7 +382,7 @@ namespace pEngine.Platform.Forms
         /// <summary>
         /// Triggered on iconify switch.
         /// </summary>
-        public event Action OnIconify;
+        public event EventHandler<WindowIconifyEventArgs> OnIconify;
 
         /// <summary>
         /// True when window is in icon state.
@@ -372,7 +392,7 @@ namespace pEngine.Platform.Forms
         private void Iconify(Glfw.Window handle, bool iconified)
         {
             IsIconified = iconified;
-            OnIconify?.Invoke();
+            OnIconify?.Invoke(this, new WindowIconifyEventArgs { Reduced = iconified });
         }
 
         private void InitializeIconificationEvent(Glfw.Window handle)
@@ -390,11 +410,11 @@ namespace pEngine.Platform.Forms
         /// <summary>
         /// Triggered on file drop.
         /// </summary>
-        public event WindowFileDrop OnDrop;
+        public event EventHandler<WindowFileDropEventArgs> OnDrop;
 
         private void Drop(Glfw.Window window, int num, string[] files)
         {
-            OnDrop?.Invoke(this, files);
+            OnDrop?.Invoke(this, new WindowFileDropEventArgs { FilesPath = new List<string>(files) });
         }
 
         private void InitializeDragDrop()

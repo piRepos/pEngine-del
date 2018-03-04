@@ -3,9 +3,9 @@ using System.Linq;
 using System.Collections.Generic;
 using System.Text;
 
-using pEngine.Utils.Timing.Base;
+using pEngine.Timing.Base;
 
-using pEngine.Utils.Timing;
+using pEngine.Timing;
 
 namespace pEngine.Input
 {

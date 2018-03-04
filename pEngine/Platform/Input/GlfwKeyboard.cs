@@ -6,7 +6,7 @@ using Glfw3;
 
 using pEngine.Input;
 
-using pEngine.Utils.Timing.Base;
+using pEngine.Timing.Base;
 using pEngine.Platform.Forms;
 
 namespace pEngine.Platform.Input
@@ -24,6 +24,8 @@ namespace pEngine.Platform.Input
 		public GlfwKeyboard(GlfwWindow window)
 		{
 			handler = window;
+
+			handler.OnRestore += Handler_OnRestore;
 
             keyCallback = (w, key, scancode, state, modifiers) =>
             {
@@ -52,6 +54,11 @@ namespace pEngine.Platform.Input
 					Modifiers = (KeyModifier)modifiers
 				});
             };
+		}
+
+		private void Handler_OnRestore(object sender, EventArgs e)
+		{
+			Initialize();
 		}
 
 		/// <summary>

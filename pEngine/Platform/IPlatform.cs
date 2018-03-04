@@ -4,9 +4,7 @@ using System.Linq;
 using System.Text;
 
 using pEngine.Input;
-
-using pEngine.Platform.Input;
-using pEngine.Platform.Forms;
+using pEngine.Context;
 using pEngine.Platform.Monitors;
 
 namespace pEngine.Platform
@@ -37,14 +35,20 @@ namespace pEngine.Platform
 		IEnumerable<IMonitor> AvaiableMonitors { get; }
 
 		/// <summary>
-		/// Gets the window for this application
-		/// </summary>
-		IWindow ApplicationWindow { get; }
-
-		/// <summary>
 		/// Input hardware manager.
 		/// </summary>
-		DeviceManager Input { get; }
+		/// <param name="context">Main window.</param>
+		DeviceManager GetInput(IWindow context);
+
+		/// <summary>
+		/// Gets a window for this application.
+		/// </summary>
+		IPlatformWindow GetWindow();
+
+		/// <summary>
+		/// Gets a window for this application.
+		/// </summary>
+		IPlatformWindow GetWindow(IWindow shared);
 
 		/// <summary>
 		/// Initialize this platform API.

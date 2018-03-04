@@ -97,14 +97,19 @@
     <Compile Include="Audio\Playable\Song.cs" />
     <Compile Include="Audio\Playable\Sound.cs" />
     <Compile Include="Audio\Playable\TimedSong.cs" />
+    <Compile Include="Context\IContext.cs" />
+    <Compile Include="Context\IPlatformWindow.cs" />
+    <Compile Include="Context\VirtualWindow.cs" />
+    <Compile Include="Context\WindowsProvider.cs" />
     <Compile Include="Diagnostic\Logs\Logger.cs" />
     <Compile Include="Diagnostic\Logs\LoggerFactory.cs" />
     <Compile Include="Diagnostic\Timing\PerformanceCollector.cs" />
     <Compile Include="Framework\Caching\CachedAttribute.cs" />
     <Compile Include="Framework\Caching\DictionaryCache.cs" />
-    <Compile Include="Framework\Caching\GameObject.cs" />
+    <Compile Include="Games\GameTree.cs" />
+    <Compile Include="Games\Invalidation\GameObject.cs" />
     <Compile Include="Framework\Caching\pObject.cs" />
-    <Compile Include="Framework\GameObject.cs" />
+    <Compile Include="Games\GameObject.cs" />
     <Compile Include="Framework\GameHost.cs" />
     <Compile Include="Framework\Binding\Bindable.cs" />
     <Compile Include="Framework\Binding\BindingMode.cs" />
@@ -121,6 +126,9 @@
     <Compile Include="Framework\Modules\ServiceMethodAttribute.cs" />
     <Compile Include="Framework\Modules\ServicePropertyAttribute.cs" />
     <Compile Include="Framework\pObject.cs" />
+    <Compile Include="Games\Services\GameObject.cs" />
+    <Compile Include="Games\Services\ServiceAttribute.cs" />
+    <Compile Include="Games\Services\ServiceNotFoundException.cs" />
     <Compile Include="Input\Bindings\IKeyCombination.cs" />
     <Compile Include="Input\Bindings\JoypadKeyCombination.cs" />
     <Compile Include="Input\Bindings\KeyboardKeyCombination.cs" />
@@ -131,7 +139,7 @@
     <Compile Include="Input\Virtual\VirtualKeyboard.cs" />
     <Compile Include="Input\Virtual\VirtualMouse.cs" />
     <Compile Include="Platform\Forms\GlfwWindow.cs" />
-    <Compile Include="Platform\Forms\IWindow.cs" />
+    <Compile Include="Context\IWindow.cs" />
     <Compile Include="Input\Interfaces\DeviceManager.cs" />
     <Compile Include="Platform\Input\GlfwDeviceManager.cs" />
     <Compile Include="Platform\Input\GlfwJoypad.cs" />
@@ -146,31 +154,31 @@
     <Compile Include="Platform\Monitors\IMonitor.cs" />
     <Compile Include="Platform\Monitors\Resolution.cs" />
     <Compile Include="Platform\GlfwWrapper.cs" />
-    <Compile Include="Utils\Threading\GameLoop.cs" />
+    <Compile Include="Timing\GameLoop.cs" />
     <Compile Include="Utils\Threading\Progress.cs" />
-    <Compile Include="Utils\Threading\ThreadedGameLoop.cs" />
-    <Compile Include="Utils\Timing\Base\IAdjustableClock.cs" />
-    <Compile Include="Utils\Timing\Base\IBeatClock.cs" />
-    <Compile Include="Utils\Timing\Base\IClock.cs" />
-    <Compile Include="Utils\Timing\Base\IFrameBasedClock.cs" />
-    <Compile Include="Utils\Timing\Clocks\BeatClock.cs" />
-    <Compile Include="Utils\Timing\Clocks\FramedClock.cs" />
-    <Compile Include="Utils\Timing\Clocks\InterpolatedFramedClock.cs" />
-    <Compile Include="Utils\Timing\Clocks\ManualClock.cs" />
-    <Compile Include="Utils\Timing\Clocks\OffsetClock.cs" />
-    <Compile Include="Utils\Timing\Clocks\StopWatchClock.cs" />
-    <Compile Include="Utils\Timing\Clocks\ThrottledFramedClock.cs" />
-    <Compile Include="Utils\Timing\IUpdatable.cs" />
+    <Compile Include="Timing\ThreadedGameLoop.cs" />
+    <Compile Include="Timing\Base\IAdjustableClock.cs" />
+    <Compile Include="Timing\Base\IBeatClock.cs" />
+    <Compile Include="Timing\Base\IClock.cs" />
+    <Compile Include="Timing\Base\IFrameBasedClock.cs" />
+    <Compile Include="Timing\Clocks\BeatClock.cs" />
+    <Compile Include="Timing\Clocks\FramedClock.cs" />
+    <Compile Include="Timing\Clocks\InterpolatedFramedClock.cs" />
+    <Compile Include="Timing\Clocks\ManualClock.cs" />
+    <Compile Include="Timing\Clocks\OffsetClock.cs" />
+    <Compile Include="Timing\Clocks\StopWatchClock.cs" />
+    <Compile Include="Timing\Clocks\ThrottledFramedClock.cs" />
+    <Compile Include="Timing\IUpdatable.cs" />
     <Compile Include="Framework\Validation\pObject.cs" />
     <Compile Include="Framework\Validation\Validate.cs" />
     <Compile Include="Framework\Validation\ValidateRange.cs" />
-    <Compile Include="Game.cs" />
-    <Compile Include="Graphics\Containers\Container.cs" />
-    <Compile Include="Graphics\Containers\Layer.cs" />
-    <Compile Include="Graphics\Containers\Scene.cs" />
-    <Compile Include="Graphics\Drawable.cs" />
-    <Compile Include="Graphics\Renderer\Asset.cs" />
-    <Compile Include="Physics\PhysicalObject.cs" />
+    <Compile Include="Games\Game.cs" />
+    <Compile Include="Games\Container.cs" />
+    <Compile Include="Games\Layers\Layer.cs" />
+    <Compile Include="Games\Layers\Scene.cs" />
+    <Compile Include="Games\Drawable.cs" />
+    <Compile Include="Graphics\Asset.cs" />
+    <Compile Include="Games\PhysicalObject.cs" />
     <Compile Include="Platform\Environment.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Resources\Files\File.cs" />
@@ -223,7 +231,9 @@
       <SubType>Designer</SubType>
     </None>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="Physics\" />
+  </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\pEngine.Assemblies\pEngine.Assemblies.csproj">
       <Project>{18c440bd-04b1-417c-9be6-0d4c5f940cca}</Project>

@@ -75,7 +75,7 @@ namespace pEngine.Platform.Monitors
 		/// <summary>
 		/// Glfw pointer to this monitor.
 		/// </summary>
-		private Glfw.Monitor Handle { get; }
+		internal Glfw.Monitor Handle { get; }
 
 		/// <summary>
 		/// Monitor name.

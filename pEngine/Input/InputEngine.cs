@@ -7,8 +7,8 @@ using System.Linq;
 using pEngine.Framework;
 using pEngine.Framework.Modules;
 
-using pEngine.Utils.Threading;
-using pEngine.Utils.Timing.Base;
+using pEngine.Timing;
+using pEngine.Timing.Base;
 
 using pEngine.Platform.Input;
 
@@ -60,22 +60,21 @@ namespace pEngine.Input
 				{
 					currentInputHistory.Clear();
 					inputHistory.TryDequeue(out DeviceStates state);
+
+					Mouse.UpdateCurrentState(state?[Module.HardwareMouse]);
+					Keyboard.UpdateCurrentState(state?[Module.HardwareKeyboard]);
+
+					Mouse.Update(RunningLoop.Clock);
+					Keyboard.Update(RunningLoop.Clock);
+
+					foreach (var j in Joypads)
+					{
+						j.UpdateCurrentState(state?[Module.HardwareJoypads.Where(x => x.Index == j.Index).FirstOrDefault()]);
+						j.Update(RunningLoop.Clock);
+					}
+
 					currentInputHistory.Add(state);
 				}
-
-				Mouse.UpdateCurrentState(currentInputState?[Module.HardwareMouse]);
-				Keyboard.UpdateCurrentState(currentInputState?[Module.HardwareKeyboard]);
-
-				Mouse.Update(RunningLoop.Clock);
-				Keyboard.Update(RunningLoop.Clock);
-
-				foreach (var j in Joypads)
-				{
-					j.UpdateCurrentState(currentInputState?[Module.HardwareJoypads.Where(x => x.Index == j.Index).FirstOrDefault()]);
-					j.Update(RunningLoop.Clock);
-				}
-
-
 			}, 0, true);
 		}
 
@@ -154,12 +153,6 @@ namespace pEngine.Input
 
 		#region Sharing data
 
-		/// <summary>
-		/// Gets the input states.
-		/// </summary>
-		[ServiceProperty("InputStates")]
-		internal DeviceStates SourceState { get; private set; }
-
 		ConcurrentQueue<DeviceStates> inputHistory;
 		List<DeviceStates> currentInputHistory;
 		DeviceStates currentInputState => currentInputHistory.Count() > 0 ? currentInputHistory.Last() : null;
@@ -170,7 +163,9 @@ namespace pEngine.Input
 		/// <param name="clock">Game clock.</param>
 		public override void Update(IFrameBasedClock clock)
 		{
-			inputHistory.Enqueue(SourceState);
+			var values = Module.InputStates.Select(x => new KeyValuePair<IDevice, InputState>(x.Key, new InputState(x.Value)));
+			var dict = values.ToDictionary(p => p.Key, p => p.Value);
+			inputHistory.Enqueue(dict);
 		}
 
 		#endregion
@@ -201,7 +196,10 @@ namespace pEngine.Input
 		{
 			base.Initialize();
 
-			Host.Platform.Input.JoypadConnection += (obj, e) =>
+			HardwareInput = Host.Platform.GetInput(Host.Window);
+			HardwareInput.Initialize();
+
+			HardwareInput.JoypadConnection += (obj, e) =>
 			{
 				if (!InputStates.ContainsKey(e.Joypad))
 					InputStates.Add(e.Joypad, new InputState());
@@ -293,19 +291,24 @@ namespace pEngine.Input
 		#region Devices
 
 		/// <summary>
+		/// Hardware input.
+		/// </summary>
+		public DeviceManager HardwareInput { get; private set; }
+
+		/// <summary>
 		/// Gets the keyboard manager.
 		/// </summary>
-		public IKeyboard HardwareKeyboard => Host.Platform.Input.Keyboard;
+		public IKeyboard HardwareKeyboard => HardwareInput.Keyboard;
 
 		/// <summary>
 		/// Gets the mouse manager.
 		/// </summary>
-		public IMouse HardwareMouse => Host.Platform.Input.Mouse;
+		public IMouse HardwareMouse => HardwareInput.Mouse;
 
 		/// <summary>
 		/// Gets the joypads.
 		/// </summary>
-		public IEnumerable<IJoypad> HardwareJoypads => Host.Platform.Input.Joypads;
+		public IEnumerable<IJoypad> HardwareJoypads => HardwareInput.Joypads;
 
 		/// <summary>
 		/// Triggered on a joypad connection or disconnection.
@@ -338,7 +341,7 @@ namespace pEngine.Input
 		/// <summary>
 		/// Gets the input states.
 		/// </summary>
-		private DeviceStates InputStates { get; }
+		internal DeviceStates InputStates { get; }
 
 		private void HardwareMouse_OnButtonEvent(object sender, MouseKeyEventArgs e)
 		{
@@ -378,6 +381,9 @@ namespace pEngine.Input
 			});
 
 			InputStates[HardwareKeyboard].SetKeyState((uint)e.Key, e.Action);
+
+			if (e.Action == KeyState.Pressed)
+				return;
 		}
 
 		private void HardwareKeyboard_OnTypeWithMods(object sender, KeyboardModTypeEventArgs e)
@@ -422,6 +428,8 @@ namespace pEngine.Input
 		public override void Update(IFrameBasedClock clock)
 		{
 			base.Update(clock);
+
+			HardwareInput.Update(clock);
 
 			InputStates[HardwareKeyboard].Time = clock.CurrentTime;
 			InputStates[HardwareMouse].Time = clock.CurrentTime;

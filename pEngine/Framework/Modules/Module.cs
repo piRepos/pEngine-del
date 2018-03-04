@@ -5,8 +5,8 @@ using System.Text;
 using System.Threading.Tasks;
 
 using pEngine.Utils.Threading;
-using pEngine.Utils.Timing;
-using pEngine.Utils.Timing.Base;
+using pEngine.Timing;
+using pEngine.Timing.Base;
 
 namespace pEngine.Framework.Modules
 {

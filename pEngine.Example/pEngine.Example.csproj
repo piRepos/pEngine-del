@@ -53,6 +53,10 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\pEngine.Assemblies\pEngine.Assemblies.csproj">
+      <Project>{18c440bd-04b1-417c-9be6-0d4c5f940cca}</Project>
+      <Name>pEngine.Assemblies</Name>
+    </ProjectReference>
     <ProjectReference Include="..\pEngine\pEngine.csproj">
       <Project>{f48b50b2-415f-4b0d-a3ee-acd5de6e799f}</Project>
       <Name>pEngine</Name>
