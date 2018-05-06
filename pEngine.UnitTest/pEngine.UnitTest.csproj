@@ -81,12 +81,12 @@
       <Project>{f48b50b2-415f-4b0d-a3ee-acd5de6e799f}</Project>
       <Name>pEngine</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Tools\MethodBoundaryAspect\MethodBoundaryAspect.Fody\MethodBoundaryAspect.Fody.csproj">
-      <Project>{190aee9a-079a-4b59-89e1-e8a97d2a4403}</Project>
+    <ProjectReference Include="..\Tools\MethodBoundaryAspect.Fody\MethodBoundaryAspect.Fody\MethodBoundaryAspect.Fody.csproj">
+      <Project>{8c925d0b-e267-491d-9657-6ee1d4eee7fb}</Project>
       <Name>MethodBoundaryAspect.Fody</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Tools\MethodBoundaryAspect\MethodBoundaryAspect\MethodBoundaryAspect.csproj">
-      <Project>{cc5e014d-d87f-4845-a624-7e4b37c079b4}</Project>
+    <ProjectReference Include="..\Tools\MethodBoundaryAspect.Fody\MethodBoundaryAspect\MethodBoundaryAspect.csproj">
+      <Project>{5712537c-a41a-407d-83b2-035df1f7ae0b}</Project>
       <Name>MethodBoundaryAspect</Name>
     </ProjectReference>
   </ItemGroup>
