@@ -243,17 +243,17 @@
       <Project>{5c569301-50c6-47c4-9850-6cb36d4da267}</Project>
       <Name>Glfw</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Tools\MethodBoundaryAspect\MethodBoundaryAspect.Fody\MethodBoundaryAspect.Fody.csproj">
-      <Project>{190aee9a-079a-4b59-89e1-e8a97d2a4403}</Project>
-      <Name>MethodBoundaryAspect.Fody</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Tools\MethodBoundaryAspect\MethodBoundaryAspect\MethodBoundaryAspect.csproj">
-      <Project>{cc5e014d-d87f-4845-a624-7e4b37c079b4}</Project>
-      <Name>MethodBoundaryAspect</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Tools\OpenGL\OpenGL.Net\OpenGL.Net.csproj">
       <Project>{9e3018f3-770e-4cfd-87d0-baee66e9fe8f}</Project>
       <Name>OpenGL.Net</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Tools\MethodBoundaryAspect.Fody\MethodBoundaryAspect.Fody\MethodBoundaryAspect.Fody.csproj">
+      <Project>{8C925D0B-E267-491D-9657-6EE1D4EEE7FB}</Project>
+      <Name>MethodBoundaryAspect.Fody</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Tools\MethodBoundaryAspect.Fody\MethodBoundaryAspect\MethodBoundaryAspect.csproj">
+      <Project>{5712537C-A41A-407D-83B2-035DF1F7AE0B}</Project>
+      <Name>MethodBoundaryAspect</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
